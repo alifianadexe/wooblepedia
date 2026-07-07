@@ -1,6 +1,13 @@
-/** Single source of truth for the oscilloscope palette used in inline styles / SVG. Mirrors the CSS custom properties in styles/global.css. */
+/**
+ * Solid-color palette for inline SVG/canvas rendering, where fills must be
+ * opaque (no CSS variables, no translucency). `panel`/`panel2`/`screen`/
+ * `border` are deliberately solid here even though the same-named CSS
+ * custom properties in styles/global.css are translucent glass surfaces --
+ * SVG rects and canvas fillStyle need a real opaque backdrop to stay
+ * readable regardless of what the page's glass panels are doing.
+ */
 export const colors = {
-  background: "#070B12",
+  background: "#05070D",
   panel: "#0C1322",
   panel2: "#101A2E",
   screen: "#08101E",
@@ -12,7 +19,7 @@ export const colors = {
   magenta: "#E86AA6",
   red: "#F0716B",
   text: "#DCE6F2",
-  muted: "#64788F",
+  muted: "#7688A4",
   faint: "#3A4A61",
 } as const;
 
