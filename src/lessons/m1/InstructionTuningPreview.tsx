@@ -22,10 +22,10 @@ const INSTRUCT_CONTINUATION =
   'the loop body with i equal to 0, 1, 2, 3, then 4.';
 
 const STAGES: { label: string; desc: string; link: string | null }[] = [
-  { label: "BASE MODEL", desc: "raw next-token completion engine, no notion of \"answering\"", link: null },
-  { label: "SFT", desc: "trained on (prompt, ideal response) demonstrations", link: "/m3/supervised-fine-tuning" },
-  { label: "PREFERENCE OPT.", desc: "shaped further by chosen vs. rejected response pairs", link: "/m3/preference-optimization" },
-  { label: "RL / TOOLS / SAFETY", desc: "verifiable rewards, tool-call training, refusal tuning", link: "/m3/tools-and-safety-tuning" },
+  { label: "BASE MODEL", desc: "raw autocomplete engine, no idea that questions deserve answers", link: null },
+  { label: "SFT", desc: "shown thousands of examples of good answers", link: "/m3/supervised-fine-tuning" },
+  { label: "PREFERENCE OPT.", desc: "taught to prefer better answers over worse ones", link: "/m3/preference-optimization" },
+  { label: "RL / TOOLS / SAFETY", desc: "checkable rewards, tool practice, learning to decline harm", link: "/m3/tools-and-safety-tuning" },
   { label: "DEPLOYED ASSISTANT", desc: "the model you actually talk to", link: null },
 ];
 
@@ -37,17 +37,19 @@ export default function InstructionTuningPreview() {
       lesson={lesson}
       intro={
         <p>
-          Every lesson so far builds toward one destination: a model that predicts the next token of
-          whatever text distribution it was trained on. Point that model at "Explain what a for-loop does."
-          and, left to its own devices, it may just as happily continue with more textbook-style questions
-          as it would answer yours -- because in its training data, questions are often followed by more
-          questions. This lesson is a preview of the fix; Module 3 is the full treatment.
+          Everything so far builds toward one thing: a model that continues text the way the internet
+          would continue it. And there's the catch. Ask that model "Explain what a for-loop does." and it
+          might not answer at all -- it might just add <em>more questions</em>, because on the internet, a
+          question like that often appears in a list of textbook exercises, and more exercises is a
+          perfectly plausible continuation. Turning "plausibly continues text" into "actually answers
+          you" is a whole extra phase of training. This lesson is a sneak preview; Module 3 covers it
+          fully.
         </p>
       }
       takeaways={[
-        "A freshly pre-trained ('base') model is a raw completion engine: it continues text plausibly, with no built-in notion that a prompt phrased as a question should be answered directly.",
-        "The standard fix is three stages: supervised fine-tuning on curated demonstrations, preference optimization from chosen/rejected response pairs, then RL-style refinement (verifiable rewards, tool use, safety tuning).",
-        "The architecture never changes across any of this -- every behavioral difference between a base model and an assistant lives entirely in the weights.",
+        "A freshly trained ('base') model is a raw autocomplete engine: it continues text plausibly, with no built-in idea that a question deserves an answer.",
+        "The standard fix has three stages: first show it thousands of examples of good answers, then teach it to prefer better answers over worse ones, then polish with rewards, tool use, and safety training.",
+        "The machine itself never changes through any of this -- every behavioral difference between raw autocomplete and a helpful assistant lives entirely in the learned numbers.",
         "Each stage below gets a full lesson with real, computed labs in Module 3 -- this lesson is intentionally just the map.",
       ]}
       references={[
@@ -65,20 +67,20 @@ export default function InstructionTuningPreview() {
     >
       <Section title="The gap between a completion engine and an assistant">
         <p>
-          Nothing about pre-training (Module 2) ever shows a model the shape "user asks, assistant answers
-          helpfully and stops." It shows the model the entire internet's distribution of text, in which
-          question-shaped text is followed by all sorts of things: more questions, a table of contents, a
-          forum reply arguing with the premise, or -- sometimes -- a genuinely good answer. A base model
-          samples from that whole distribution. Post-training's job is to concentrate its behavior onto the
-          "genuinely good answer, then stop" slice, without touching the architecture at all.
+          Nothing in the big training phase (Module 2) ever shows the model the pattern "person asks,
+          assistant answers helpfully and stops." It shows the model the whole internet, where a question
+          is followed by all sorts of things: more questions, a table of contents, a forum reply arguing
+          that the question is dumb, or -- sometimes -- a genuinely good answer. A base model happily
+          imitates <em>any</em> of those. The job of post-training is to focus its behavior onto the
+          "genuinely good answer, then stop" slice, without changing the machinery at all.
         </p>
       </Section>
 
       <Section title="Lab — the same prompt, before and after">
         <p>
-          Toggle between a plausible base-model continuation and a plausible instruction-tuned response to
-          the identical prompt. Both are illustrative examples of the two regimes' typical behavior, not
-          output from a running model -- the mechanics that produce this difference are the real content of
+          Toggle between how a base model might continue this prompt and how an instruction-tuned model
+          would respond to it. Both are typical illustrations written for this lesson, not live output
+          from a running model -- the machinery that produces this difference is the real content of
           Module 3.
         </p>
         <ScopeScreen label="Toggle between an illustrative base-model continuation and an illustrative instruction-tuned response to the same prompt">
@@ -105,14 +107,16 @@ export default function InstructionTuningPreview() {
 
       <Section title="Three stages, previewed">
         <p>
-          <strong>Supervised fine-tuning (SFT)</strong> retrains the model, with the same cross-entropy loss
-          from lesson 1.7, on curated (prompt, ideal response) pairs -- teaching the shape of a good answer
-          directly. <strong>Preference optimization</strong> goes further: for qualities that are easier to
-          judge than to demonstrate (is this response more helpful? more honest?), it trains on pairs of
-          chosen versus rejected responses instead. <strong>RL and safety tuning</strong> layers on
-          verifiable rewards (did the code run? did the math check out?), tool-use training, and refusal
-          behavior for genuinely harmful requests. Click through the pipeline below -- each stage links to
-          its full lesson in Module 3.
+          <strong>Supervised fine-tuning (SFT)</strong> continues training the model -- same
+          guess-and-grade loop from lesson 1.7 -- but now on a carefully written collection of
+          question-and-ideal-answer pairs, directly teaching it the shape of a good answer.{" "}
+          <strong>Preference optimization</strong> handles qualities that are easier to judge than to
+          write down: shown two responses to the same question, which is more helpful? More honest? The
+          model learns from thousands of these this-one-not-that-one choices.{" "}
+          <strong>Reward and safety training</strong> adds checkable rewards (did the code actually run?
+          did the math actually check out?), practice at using tools, and learning to decline genuinely
+          harmful requests. Click through the pipeline below -- each stage links to its full lesson in
+          Module 3.
         </p>
         <ScopeScreen label="Five-stage post-training pipeline from base model to deployed assistant, each stage linking to its Module 3 lesson">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
@@ -146,13 +150,13 @@ export default function InstructionTuningPreview() {
 
       <Section title="The punchline">
         <p>
-          Nothing about the transformer block, the attention mechanism, or the parameter count changes
-          between a base model and the assistant built on top of it. Same architecture, same forward pass,
-          same eight-stage pipeline from lesson 1.1 -- the entire behavioral transformation lives in what
-          gradient descent wrote into the weights during these later stages. That fact is also why
-          post-training is where a single engineer with modest compute can make real, measurable progress:
-          Module 3 shows you LoRA and DPO runs that fit on rented GPUs over a weekend, not a data-center
-          fleet.
+          Nothing about the machinery -- not the layers, not attention, not the parameter count --
+          changes between a base model and the assistant built from it. Same architecture, same
+          eight-stage pipeline from lesson 1.1. The entire personality transplant lives in what training
+          wrote into the learned numbers during these later stages. That fact has a happy consequence:
+          because post-training is small compared to pre-training, it's the part where one person with a
+          modest budget can do real, measurable work. Module 3 shows you techniques that fit on rented
+          hardware over a weekend, not a data-center fleet.
         </p>
       </Section>
     </LessonLayout>

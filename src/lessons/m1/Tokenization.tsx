@@ -49,19 +49,19 @@ export default function Tokenization() {
       lesson={lesson}
       intro={
         <p>
-          Before a single weight is multiplied, raw text has to become a fixed sequence of integers. That
-          job belongs entirely to the tokenizer -- a deterministic <strong>serializer</strong>, structurally
-          no different from a backend service turning a JSON payload into a wire format. It runs the same
-          way every time, has zero learned parameters, and its output vocabulary is a static file you could
-          <code>cat</code> and read.
+          A model can only do math on numbers, so before anything else happens, your text has to become a
+          list of numbers. That's the tokenizer's whole job: chop text into pieces (<strong>tokens</strong>)
+          and replace each piece with its ID number, the same way every time -- like an old telegraph
+          codebook where every common word or word-chunk has its own code. Nothing about it is learned or
+          smart: its entire "vocabulary" is a plain list you could open and read in a text editor.
         </p>
       }
       takeaways={[
-        "Byte-pair encoding starts from raw bytes/characters and greedily merges the most frequent adjacent pair, repeated a fixed number of times.",
-        "The result -- a merge-rule list plus an id map -- is a static JSON artifact with zero learned weights, sharply distinct from the embedding matrix that consumes its output.",
-        "Vocabulary size trades sequence length for embedding-table size: bigger vocab means shorter sequences but a bigger vocab*d embedding matrix and LM head.",
-        "Whitespace handling, digit splitting, and non-English scripts are common sources of real tokenizer bugs, not edge cases you can ignore.",
-        "The tokenizer, the embedding matrix, and a vector database are three unrelated storage systems that get confused constantly -- keep them separate in your head.",
+        "Byte-pair encoding (BPE) starts from single characters and repeatedly glues together whichever pair of neighbors shows up most often in the training text -- that's the entire training algorithm, just counting.",
+        "What it produces is a plain list of glue rules plus an ID number for each piece. No learning, no weights -- completely different from the embedding table (next lesson), which is learned.",
+        "Vocabulary size is a trade-off: more tokens in the codebook means any sentence splits into fewer pieces, but the model's lookup tables have to grow to hold a row for every token.",
+        "Spaces, numbers that split inconsistently (\"2024\" vs. \"202\"+\"4\"), and non-English languages are where real tokenizer surprises happen -- not rare corner cases.",
+        "The tokenizer's codebook, the embedding table, and a vector database are three totally different things that people mix up constantly -- keep them separate in your head.",
       ]}
       references={[
         {
@@ -83,41 +83,45 @@ export default function Tokenization() {
     >
       <Section title="Why not characters, or whole words?">
         <p>
-          Character-level tokenization keeps the vocabulary tiny but makes every sequence enormous --
-          quadratic-cost attention then pays for it later, and a model has to relearn "the" as three
-          separate symbol-predictions every single time. Whole-word tokenization goes the other way: it
-          keeps sequences short, but any word missing from a fixed dictionary becomes an unrecoverable
-          <code>&lt;UNK&gt;</code>, and the vocabulary needed to cover a language's morphology explodes.
+          You could split text one letter at a time. The list of symbols stays tiny, but every sentence
+          becomes enormously long, and long sequences make everything downstream slower and more
+          expensive -- plus the model has to re-figure-out that "t", "h", "e" spells a common word every
+          single time. Or you could go the other way and make every whole word its own token. Now
+          sentences are short, but any word not in the dictionary -- a new slang term, a typo, a name --
+          simply can't be represented at all, and covering every possible word form ("run", "runs",
+          "running", "runner"...) makes the dictionary explode.
         </p>
         <p>
-          Byte-pair encoding is the pragmatic middle: start from individual bytes (so nothing is ever truly
-          unrepresentable), then let the training corpus itself decide which multi-character chunks are
-          common enough to deserve their own symbol. Frequent whole words like "the" end up as a single
-          token; rare or unfamiliar words fall back to smaller, still-meaningful pieces.
+          Byte-pair encoding is the practical middle ground: start from single characters (so <em>nothing</em>{" "}
+          is ever impossible to write down), then let the training text itself vote on which letter-chunks
+          appear often enough to earn their own token. Common words like "the" end up as a single token;
+          rare or made-up words just fall back to smaller pieces, like "wooble" becoming "woo" + "ble".
         </p>
       </Section>
 
       <Section title="The algorithm, exactly">
         <p>
-          Represent every word as a sequence of characters plus an end-of-word marker. Count every adjacent
-          symbol pair across the whole corpus, weighted by how often each word occurs. Merge the single
-          most frequent pair everywhere it appears, and record that merge rule. Repeat for a fixed number
-          of merges. That's the entire training algorithm -- no gradients, no loss function, just counting.
+          Here's how a BPE tokenizer gets built. Write every word in the training text as a string of
+          single characters. Then look across all the words and count every pair of neighbors: how many
+          times does "l" sit next to "o"? How about "e" next to "s"? Take the single most common pair,
+          glue it together into one new symbol everywhere it appears, and write that glue rule down.
+          Repeat, over and over, for however many rules you want. That's the whole thing -- no
+          intelligence, no learning in the neural-network sense, just counting and gluing.
         </p>
         <p>
-          Encoding new text applies the learned merge rules in the order they were learned: split into
-          characters, then repeatedly apply whichever applicable merge has the lowest (earliest-learned)
-          rank, until no more rules match. This is exactly the loop implemented in{" "}
-          <code>trainBPE</code> and <code>bpeEncodeWord</code> in <code>src/lib/math.ts</code> -- nothing
-          in the lab below is precomputed or faked.
+          To tokenize <em>new</em> text later, you replay those glue rules in the order they were written
+          down: split into single characters, then keep applying whichever rule was learned earliest,
+          until no rules fit anymore. The lab below runs exactly this algorithm live in your browser --
+          nothing is pre-baked or faked.
         </p>
       </Section>
 
       <Section title="Lab — train a real tokenizer, then use it">
         <p>
-          The corpus below is small on purpose (word-frequency pairs like <em>low/lower/lowest</em> and{" "}
-          <em>new/newer/newest</em> are the textbook BPE example) so you can watch the merge table fill in
-          one rule at a time and see exactly why each rule won.
+          The practice text below is tiny on purpose -- just word families like{" "}
+          <em>low/lower/lowest</em> and <em>new/newer/newest</em> (the classic textbook example). Click
+          "train next merge" and watch the rules appear one at a time; the frequency column shows you
+          exactly why each pair won its round.
         </p>
 
         <ScopeScreen label="Byte-pair encoding merge trainer">
@@ -160,8 +164,8 @@ export default function Tokenization() {
         </ScopeScreen>
 
         <p style={{ marginTop: 20 }}>
-          Now type anything -- including words the tiny corpus above never saw -- and watch it get
-          segmented with whatever merge rules you've trained so far.
+          Now type anything -- including words the tiny training text above never saw -- and watch it get
+          chopped up using whatever glue rules you've trained so far.
         </p>
 
         <ScopeScreen label="Live byte-pair encoder for user-entered text">
@@ -193,28 +197,28 @@ export default function Tokenization() {
 
       <Section title="Three storage systems, never to be confused">
         <p>
-          The merge rules and id map you just trained are a <strong>static JSON artifact</strong> -- no
-          gradients touch it after training, and swapping it changes nothing about the model's weights. The{" "}
-          <strong>embedding matrix</strong> (next lesson) is the opposite: a learned weight tensor, updated
-          every training step. A <strong>vector database</strong> (used for retrieval-augmented generation,
-          much later in this course) is a third, external system entirely -- it stores embeddings for
-          documents, not tokens, and lives outside the model altogether. All three hold "vectors that
-          represent text" in some sense, and mixing them up is a genuinely common source of confusion once
-          you start building real systems.
+          The glue rules and ID numbers you just trained are a <strong>fixed file</strong> -- a codebook
+          that never changes once written, no matter how much the model trains afterward. The{" "}
+          <strong>embedding table</strong> (next lesson) is the opposite: a huge grid of learned numbers
+          that training adjusts constantly. And a <strong>vector database</strong> (a tool you'll meet
+          much later, used to help models look things up) is a third, completely separate thing that
+          lives outside the model entirely. All three "store something about text," which is exactly why
+          people mix them up all the time. Keeping them straight now will save you real confusion later.
         </p>
       </Section>
 
       <Section title="The vocabulary-size trade-off, and real bugs it causes">
         <p>
-          A bigger vocabulary means shorter token sequences for the same text (cheaper attention, since
-          cost grows with sequence length) but a larger embedding matrix and LM head, since both scale with{" "}
-          <code>vocab_size × d_model</code> (you'll compute this exactly in lesson 1.9). GPT-2 shipped with
-          50,257 tokens; modern multilingual models often exceed 128,000 to give non-English scripts fair
-          per-token coverage -- English-centric vocabularies routinely take 3-5x more tokens to represent
-          the same sentence in, say, Thai or Burmese, which quietly inflates cost and latency for those
-          users. Leading or trailing whitespace, digit sequences that split inconsistently ("2024" vs.
-          "202" + "4"), and case sensitivity are the everyday bugs this causes -- not hypothetical corner
-          cases, but the actual reason a prompt that "obviously" should tokenize one way sometimes doesn't.
+          A bigger codebook means any sentence splits into fewer, chunkier tokens -- which makes the model
+          faster and cheaper to run, since cost grows with the number of tokens. But every token in the
+          codebook needs its own row in the model's lookup tables, so those tables get bigger (you'll
+          compute exactly how much in lesson 1.9). GPT-2 shipped with about 50,000 tokens; modern
+          multilingual models often use over 128,000 so that languages like Thai or Burmese get fair
+          treatment -- with an English-centric codebook, the same sentence in those languages can take 3-5
+          times as many tokens, which quietly makes the model slower and more expensive for those users.
+          And the everyday weirdness this causes is real: a space before a word can change its tokens
+          entirely, "2024" might split as "202" + "4", and "Hello" vs. "hello" are different tokens. When
+          a model behaves oddly about spelling or numbers, the tokenizer is often the reason.
         </p>
       </Section>
     </LessonLayout>

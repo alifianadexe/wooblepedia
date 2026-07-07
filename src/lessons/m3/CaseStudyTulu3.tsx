@@ -17,11 +17,11 @@ interface SpecCard {
 
 const CARDS: SpecCard[] = [
   { label: "BASE MODEL", value: "Llama 3.1 (8B and 70B variants)" },
-  { label: "STAGE 1", value: "SFT on a curated mixture, ablated per data source", link: "/m3/supervised-fine-tuning" },
-  { label: "STAGE 2", value: "DPO on a mix of on-policy and off-policy preference pairs", link: "/m3/preference-optimization" },
-  { label: "STAGE 3", value: "RLVR — RL against a programmatic verifier, not a learned reward model" },
-  { label: "DECONTAMINATION", value: "Explicit checks against benchmark test sets throughout" },
-  { label: "RELEASE", value: "Data, training code, and weights all public" },
+  { label: "STAGE 1", value: "SFT — example answers, with each data source's contribution tested separately", link: "/m3/supervised-fine-tuning" },
+  { label: "STAGE 2", value: "DPO — better-vs-worse comparisons, including ones judged on the model's own answers", link: "/m3/preference-optimization" },
+  { label: "STAGE 3", value: "RLVR — practice graded by an answer-checking program, not a judge model" },
+  { label: "TEST HYGIENE", value: "Training data continuously scrubbed of benchmark test questions" },
+  { label: "RELEASE", value: "Data, training code, and finished model all public" },
 ];
 
 interface MathProblem {
@@ -59,17 +59,18 @@ export default function CaseStudyTulu3() {
       lesson={lesson}
       intro={
         <p>
-          Every stage in this module has a well-documented theory and a much murkier practice -- most
-          frontier labs disclose neither their exact data nor their exact recipe. Tulu 3 is the exception:
-          AI2 released the data, the training code, the weights, and a detailed account of the decisions
-          behind all three stages, which makes it the closest thing this module has to ground truth.
+          Every stage in this module has well-documented theory but murky practice -- most labs keep
+          their exact data and recipes secret. Tulu 3, from the Allen Institute for AI, is the exception:
+          they published everything -- the data, the training code, the finished model, and a frank
+          account of every decision along the way. It's the closest thing this module has to a complete
+          published cookbook, and it runs the exact three-stage pipeline you've just learned.
         </p>
       }
       takeaways={[
-        "Tulu 3 runs the exact three-stage pipeline this module teaches -- SFT, then DPO, then RL -- on public Llama 3.1 base models, with every stage's data and code released.",
-        "Its RL stage uses RLVR (RL with verifiable rewards): a programmatic checker (did the math answer match? was the constraint satisfied?) supplies the reward, replacing the learned reward model classic RLHF relies on.",
-        "Decontamination against benchmark test sets is treated as an explicit, ongoing discipline, not an afterthought -- consistent with lesson 2.7's point about keeping evaluation numbers meaningful.",
-        "Because everything is public, reproducing a slice of Tulu 3's recipe on a single rented GPU node is a realistic, well-specified capstone project for this course.",
+        "Tulu 3 runs this module's exact three-stage pipeline -- example answers (SFT), then answer comparisons (DPO), then reward-based practice -- on public Llama 3.1 base models, with every stage's data and code released.",
+        "Its reward stage uses RLVR ('verifiable rewards'): instead of a trained judge model guessing what people like, a plain computer program checks the answer -- did the math come out right? was the rule followed? An answer key, not a judge's opinion.",
+        "Throughout, the team kept scrubbing their training data of anything overlapping the standard tests -- the same keep-the-exam-honest discipline from lesson 2.7.",
+        "Because everything is public, reproducing a slice of the Tulu 3 recipe on rented hardware is a realistic, well-specified capstone project for this course.",
       ]}
       references={[
         {
@@ -102,9 +103,11 @@ export default function CaseStudyTulu3() {
 
       <Section title="Lab — a toy RLVR console">
         <p>
-          Pick an "answer" for each problem below. A real verifier function checks it exactly and emits a
-          reward of 1 or 0 -- no learned reward model, no human preference judgment, just a program deciding
-          whether the answer is correct. This is the essence of RLVR.
+          Play the model's role: pick an answer to each problem below. A real checking function grades
+          your pick and awards 1 point for correct, 0 for wrong -- no opinions, no judge model, just a
+          program comparing against the answer key. That's the entire idea of RLVR: for subjects where
+          answers can be checked mechanically (math, code, following explicit rules), let the checker be
+          the teacher.
         </p>
         <ScopeScreen label="Toy reinforcement learning from verifiable rewards console with math problems and a running mean reward">
           <div className="mono" style={{ fontSize: 14, marginBottom: 10 }}>{problem.question}</div>
@@ -129,11 +132,12 @@ export default function CaseStudyTulu3() {
 
       <Section title="A realistic capstone">
         <p>
-          Because Tulu 3's SFT mixture, preference data, and RLVR prompts are all public, reproducing a
-          meaningful slice of it -- LoRA-based SFT on a subset of its data, followed by DPO on its released
-          preference pairs, both on an 8B model -- is achievable on rented GPUs over a long weekend, using
-          exactly the LoRA and DPO machinery from lessons 3.2 and 3.3. That combination of full
-          transparency and tractable scale is what makes Tulu 3 this course's natural final destination.
+          Because Tulu 3's example answers, comparison data, and practice problems are all public, you
+          can genuinely reproduce a slice of it yourself: fine-tune an 8-billion-parameter model on part
+          of its data using the LoRA add-on trick from lesson 3.2, then run DPO on its released
+          comparisons using lesson 3.3's recipe -- all on rented cloud hardware over a long weekend. A
+          fully published recipe at a scale one person can actually cook: that's what makes Tulu 3 this
+          course's natural final destination.
         </p>
       </Section>
     </LessonLayout>

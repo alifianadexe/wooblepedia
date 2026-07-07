@@ -69,19 +69,20 @@ export default function PositionalEncoding() {
       lesson={lesson}
       intro={
         <p>
-          Attention, as you'll see precisely in the next lesson, is a weighted average over every position
-          -- and a weighted average has no idea which input came first. Shuffle the tokens and, absent
-          anything else, attention produces the identical set of outputs in a shuffled order. Order has to
-          be injected as data. Positional encoding is that injection: think of it as stamping a{" "}
-          <code>created_at</code> value onto every row before it enters the pipeline.
+          Here's a strange fact about the attention step coming up in the next lesson: on its own, it
+          can't tell what order the tokens came in. It treats a sentence like a bag of words -- "the cat
+          sat" and "sat the cat" look identical to it. But word order obviously matters ("dog bites man"
+          is not "man bites dog"), so order has to be smuggled in as part of the data itself. Positional
+          encoding is how: before anything else happens, every token's vector gets a "position stamp"
+          mixed in -- a unique numerical pattern that says "I'm word #1," "I'm word #2," and so on.
         </p>
       }
       takeaways={[
-        "Attention is permutation-invariant by construction; without positional information, \"the cat sat\" and \"sat the cat\" would produce identical per-token outputs.",
-        "Sinusoidal PE adds a fixed, non-learned signal: PE(pos, 2i) = sin(pos / 10000^(2i/d)), PE(pos, 2i+1) = cos(pos / 10000^(2i/d)).",
-        "Different dimensions oscillate at different frequencies -- fast dimensions disambiguate nearby positions, slow dimensions encode coarse position, and together they make every position's combined pattern unique.",
-        "The same token embedding plus a different position produces a genuinely different final vector -- this is computed live below, not asserted.",
-        "Modern models mostly use RoPE instead: it rotates query/key pairs by a position-dependent angle so attention naturally depends on relative offset, which generalizes better to longer sequences.",
+        "Attention on its own is order-blind: without position information, \"the cat sat\" and \"sat the cat\" would come out exactly the same.",
+        "The classic fix adds a fixed wave pattern (made of sines and cosines) to every token's vector -- no learning involved, just a formula.",
+        "The pattern mixes fast waves and slow waves, like a clock's second hand and hour hand: fast ones tell nearby positions apart, slow ones say roughly where you are overall, and together every position gets a unique stamp.",
+        "The same word at two different positions really does become two different vectors -- the lab below computes this live rather than just claiming it.",
+        "Most modern models use a newer scheme called RoPE, which encodes how far apart two words are rather than each word's absolute spot -- and that handles longer texts much more gracefully.",
       ]}
       references={[
         {
@@ -101,43 +102,45 @@ export default function PositionalEncoding() {
         },
       ]}
     >
-      <Section title="Why order has to be injected as data">
+      <Section title="Why order has to be mixed into the data">
         <p>
-          A backend analogy makes this concrete: if a query returned rows with no ordering guarantee and no
-          timestamp column, you could not reconstruct "what happened first" no matter how you post-processed
-          the result set. Attention's raw mechanism is exactly that unordered a fetch. Positional encoding
-          is the fix -- a per-position signal added directly into each token's vector before the first
-          attention layer ever runs, so "order" becomes part of the data itself rather than something the
-          architecture tracks separately.
+          Imagine someone hands you a stack of photos from a trip with no dates written on them and the
+          stack already shuffled. No amount of staring will recover which photo came first -- the order
+          information simply isn't there. Attention receives tokens in exactly that condition: a
+          collection, not a sequence. Positional encoding is the fix, and it works like writing the date
+          on the back of each photo before shuffling: a position-dependent pattern is added directly into
+          each token's vector before the first attention layer ever runs, so "order" travels with the
+          data itself instead of being something the machinery has to track separately.
         </p>
       </Section>
 
-      <Section title="The sinusoidal formula, and why multiple frequencies">
+      <Section title="The wave formula, and why it uses many speeds at once">
         <p>
-          The original transformer's scheme sets, for dimension index <code>2i</code> (even) and{" "}
-          <code>2i+1</code> (odd) of a <code>d</code>-dimensional vector at position <code>pos</code>:
+          The original transformer built each position stamp out of waves -- the smooth, repeating sine
+          and cosine curves from math class. Each slot in the vector gets its own wave, and each wave
+          repeats at a different speed. For position <code>pos</code>, slot <code>2i</code> gets a sine
+          and slot <code>2i+1</code> gets a cosine:
         </p>
         <p className="mono" style={{ fontSize: 14 }}>
           PE(pos, 2i) = sin(pos / 10000^(2i/d)) &nbsp;&nbsp; PE(pos, 2i+1) = cos(pos / 10000^(2i/d))
         </p>
         <p>
-          Picture a clock face: the second hand distinguishes moments within a minute but tells you nothing
-          about the hour; the hour hand does the reverse. Neither hand alone gives an unambiguous time, but
-          the full set together does. Low dimension indices here have a short period -- like the second hand,
-          they oscillate quickly and disambiguate neighboring positions. High dimension indices have a very
-          long period -- like the hour hand, they change slowly and encode coarse position across the whole
-          sequence. The combination lets the model reconstruct both "roughly where am I" and "exactly which
-          neighbor is this" from one additive signal.
+          The formula looks scary, but the idea is a clock face. The second hand spins fast: it can tell
+          two nearby moments apart but says nothing about the hour. The hour hand moves slowly: it tells
+          you the big picture but not the fine detail. Neither hand alone pins down the time -- both
+          together do. Same here: the fast waves tell neighboring positions apart, the slow waves say
+          roughly where you are in the whole text, and the full combination gives every single position a
+          pattern that belongs to it alone.
         </p>
       </Section>
 
       <Section title="Lab — the real PE matrix, and one row of it">
         <p>
-          Below is the actual sinusoidal matrix for d_model = 64 across 128 positions, computed by{" "}
-          <code>buildSinusoidalPEMatrix</code>. Amber is positive, cyan is negative. Drag the slider to
-          select a position; that column is outlined, and its 64 values are traced as a waveform underneath
-          -- notice how low dimensions oscillate fast and high dimensions barely move across nearby
-          positions.
+          Below is the real wave pattern for a vector of 64 numbers across 128 positions, computed live.
+          Every column is one position's stamp; amber means a positive number, cyan means negative. Drag
+          the slider to pick a position -- that column gets outlined, and its 64 values are drawn as a
+          wiggly line underneath. Notice how the top rows flicker rapidly as you slide (the fast waves)
+          while the bottom rows barely change (the slow waves).
         </p>
         <ScopeScreen label="Sinusoidal positional encoding heatmap and single-position waveform">
           <PEHeatmap highlightPos={position} />
@@ -158,10 +161,10 @@ export default function PositionalEncoding() {
 
       <Section title="Lab — the same token, two positions, two different vectors">
         <p>
-          Toggle the comparison: the token "the" uses the identical embedding row both times (lesson 1.3's
-          lookup never changes). What differs is only the additive positional signal for position 0 versus
-          position 4 -- and that's enough to make the final vectors the attention layer sees genuinely
-          different.
+          Flip the toggle: the word "the" starts from the identical table row both times (lesson 1.3's
+          lookup never changes). The only difference is which position stamp gets added -- position 0's or
+          position 4's -- and that alone is enough to make the two final vectors genuinely different by
+          the time the attention layer sees them.
         </p>
         <ScopeScreen label="Comparison of the same token embedding at two different positions">
           <Toggle label="SHOW POSITION 4 INSTEAD OF POSITION 0" checked={compareOn} onChange={setCompareOn} />
@@ -190,20 +193,21 @@ export default function PositionalEncoding() {
 
       <Section title="Learned positions, and where RoPE fits">
         <p>
-          An alternative to a fixed formula is a learned absolute position embedding -- a second lookup
-          table, shape <code>max_context_length × d_model</code>, trained by gradient descent exactly like
-          the token embedding matrix, and simply added to it. Early GPT-2-era models used this. Its
-          practical drawback is rigidity: a model trained with a learned table for positions 0-1023 has
-          nothing sensible to output for position 1024, since that row was never trained.
+          Instead of a fixed formula, a model can also just <em>learn</em> its position stamps -- a second
+          lookup table with one trained row per position, added to the word's vector the same way. Models
+          from the GPT-2 era did this. The catch is rigidity: if the table was only ever trained for
+          positions 0 through 1,023, then position 1,024 has no sensible row at all -- like a hotel with
+          exactly 1,024 numbered mailboxes suddenly needing to handle guest number 1,025.
         </p>
         <p>
-          Most current open-weight models instead use <strong>RoPE</strong> (Rotary Position Embedding):
-          rather than adding a positional vector, RoPE rotates each query/key pair by an angle proportional
-          to its position before the dot product in attention is computed. Because rotating both vectors by
-          their respective position angles leaves the dot product depending only on their <em>difference</em>
-          in position, attention scores become a function of relative offset rather than absolute position --
-          which tends to generalize far better to sequence lengths longer than anything seen in training.
-          You'll see RoPE used for real in lesson 2.2's architecture comparison.
+          Most current models instead use <strong>RoPE</strong> ("rotary position embedding"). Rather than
+          adding a stamp to each token, RoPE gently rotates each token's arrow by an angle that depends on
+          its position -- token #10 gets rotated a little, token #100 a lot. The clever consequence: when
+          two rotated arrows are compared in the attention step, what matters ends up being the{" "}
+          <em>difference</em> between their angles -- in other words, how far apart the two words are, not
+          where each one sits absolutely. "Five words apart" behaves the same anywhere in the text, which
+          is exactly why RoPE handles texts longer than anything seen in training far more gracefully.
+          You'll see it used for real in lesson 2.2.
         </p>
       </Section>
     </LessonLayout>

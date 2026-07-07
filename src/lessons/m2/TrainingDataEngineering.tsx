@@ -17,12 +17,12 @@ interface FunnelStage {
 }
 
 const STAGES: FunnelStage[] = [
-  { key: "extract", label: "TEXT EXTRACTION FROM HTML", retention: 0.35, note: "Strips markup, nav, ads, and boilerplate from raw crawl pages." },
-  { key: "langid", label: "LANGUAGE IDENTIFICATION", retention: 0.65, note: "Keeps only pages classified as the target language(s)." },
-  { key: "quality", label: "QUALITY FILTERING", retention: 0.40, note: "Heuristics (length, symbol ratio, boilerplate patterns) plus a trained quality classifier." },
-  { key: "exactdedup", label: "EXACT DEDUPLICATION", retention: 0.55, note: "Hash-based removal of byte-identical or near-identical documents." },
-  { key: "fuzzydedup", label: "FUZZY DEDUPLICATION (MinHash)", retention: 0.70, note: "Locality-sensitive hashing catches near-duplicates exact hashing misses." },
-  { key: "pii", label: "PII / CONTAMINATION SCRUBBING", retention: 0.92, note: "Removes personal data and documents overlapping known evaluation sets." },
+  { key: "extract", label: "TEXT EXTRACTION FROM WEB PAGES", retention: 0.35, note: "Strips out menus, ads, buttons, and page decoration, keeping just the actual writing." },
+  { key: "langid", label: "LANGUAGE IDENTIFICATION", retention: 0.65, note: "Keeps only pages written in the language(s) you're training for." },
+  { key: "quality", label: "QUALITY FILTERING", retention: 0.40, note: "Simple rules (too short? mostly symbols? copy-paste filler?) plus an automated quality grader." },
+  { key: "exactdedup", label: "EXACT DUPLICATE REMOVAL", retention: 0.55, note: "Drops pages that are word-for-word copies of pages already kept." },
+  { key: "fuzzydedup", label: "NEAR-DUPLICATE REMOVAL", retention: 0.70, note: "Catches almost-copies the exact check misses -- the same article with a different headline, for instance." },
+  { key: "pii", label: "PERSONAL-INFO / TEST-LEAK SCRUB", retention: 0.92, note: "Removes personal data, plus any document that overlaps with the standard tests used to grade models." },
 ];
 
 const RAW_TB = 100;
@@ -89,19 +89,19 @@ export default function TrainingDataEngineering() {
       lesson={lesson}
       intro={
         <p>
-          A training run's ceiling is set by its data, not its architecture. Raw Common Crawl is enormous
-          and mostly useless in its raw form -- boilerplate, duplicate pages, low-quality spam. Everything
-          in this lesson is the funnel that turns "the entire crawlable web" into the tokens that actually
-          go into training, and why the filtering decisions made along the way matter more than almost
-          anything else a small team can control.
+          A model can only be as good as what it reads -- and the raw internet, scraped in bulk, is
+          mostly garbage: menus and cookie banners, the same article copied across a thousand sites,
+          spam. This lesson is about the cleanup funnel that turns "a copy of the crawlable web" into the
+          text a model actually trains on. The filtering choices made here set the ceiling on everything
+          that follows, and they matter more than almost anything else a small team can control.
         </p>
       }
       takeaways={[
-        "The data pipeline is a funnel: extraction → language ID → quality filtering → exact dedup → fuzzy dedup → PII/contamination scrubbing -- each stage discards most of what enters it.",
-        "Only a small single-digit percentage of raw crawled bytes typically survives the full pipeline into training data.",
-        "Deduplication matters twice over: duplicate documents waste compute re-training on the same content, and heavily repeated documents get memorized more easily, a real privacy and quality risk.",
-        "Decontamination -- removing training documents that overlap benchmark test sets -- is what keeps evaluation numbers (lesson 2.7) honest.",
-        "Data curation is one of the highest-leverage areas for a small team without a frontier compute budget -- FineWeb showed a well-engineered filtering pipeline on public data can rival closed, proprietary datasets.",
+        "Data cleaning is a funnel of stages -- pull the text out of web pages, keep the right languages, filter for quality, remove exact copies, remove near-copies, scrub personal info -- and each stage throws away most of what enters it.",
+        "Typically only a few percent of the raw scraped internet survives all the way into training data.",
+        "Removing duplicates matters twice: copies waste training budget on text the model already saw, and text repeated many times gets memorized word-for-word -- a real privacy and quality risk.",
+        "One scrubbing step removes any document that overlaps with the standard tests used to grade models -- otherwise the model would effectively see the exam answers in advance, and its scores would be meaningless (lesson 2.7).",
+        "Data cleaning is the biggest lever a small team has: the FineWeb project showed that a carefully built public pipeline can rival the secret datasets of far bigger labs.",
       ]}
       references={[
         {
@@ -123,9 +123,10 @@ export default function TrainingDataEngineering() {
     >
       <Section title="Lab — the retention funnel">
         <p>
-          Toggle any stage off to see how much survives without it. Retention fractions below are
-          illustrative, order-of-magnitude figures grounded in published pipelines like FineWeb and Dolma --
-          the multiplication itself is real and live.
+          Start with 100 terabytes of raw scraped web -- roughly a hundred laptop hard drives of text --
+          and watch each cleaning stage shrink it. Toggle any stage off to see how much would survive
+          without it. The keep-percentages are ballpark figures based on published real-world pipelines;
+          the multiplication happens live as you flip the switches.
         </p>
         <ScopeScreen label="Data pipeline retention funnel starting from 100 terabytes of raw crawl, with toggleable filter stages">
           <div className="mono" style={{ fontSize: 13, marginBottom: 12 }}>
@@ -145,21 +146,26 @@ export default function TrainingDataEngineering() {
 
       <Section title="Why dedup matters twice">
         <p>
-          Duplicate documents cost you twice. First, directly: every repeated document is compute spent
-          re-training on content the model has already seen, with no new signal. Second, subtly: documents
-          repeated many times across a corpus get disproportionately memorized, which both wastes capacity
-          that could hold more general knowledge and creates a real risk of verbatim regurgitation --
-          including of any personal information those duplicated documents contain. Exact-hash dedup catches
-          identical documents; fuzzy dedup (MinHash-based near-duplicate detection) catches the much more
-          common case of near-identical pages -- syndicated articles, boilerplate templates, scraped mirrors.
+          Duplicate pages cost you twice. First, directly: every repeat is training budget spent on text
+          the model has already seen -- like paying a student to reread the same page. Second, more
+          subtly: text the model sees many times gets memorized word-for-word, the way a song you've
+          heard a hundred times gets stuck in your head. That memorization wastes capacity that could
+          have held general knowledge, and it creates a real risk of the model reciting things verbatim
+          later -- including any personal information those repeated pages contained. The exact-copy
+          check catches identical pages; the near-copy check catches the far more common case of
+          almost-identical ones -- the same news story republished on fifty sites, template pages,
+          mirrored copies.
         </p>
       </Section>
 
       <Section title="Lab — the final training mixture">
         <p>
-          Drag any category's weight; the rest renormalize proportionally so the mixture always sums to
-          100%. Real pretraining mixtures are set by ablation -- training smaller models on candidate
-          mixtures and measuring downstream eval performance -- not by intuition.
+          Cleaned data still has to be blended: how much of the model's reading should be general web
+          pages versus computer code versus math versus books? It's like planning a diet -- each
+          ingredient feeds a different skill. Drag any category and the others rebalance so the total
+          stays 100%. Real labs don't pick these percentages by gut feel: they train small test models on
+          candidate blends and measure which blend produces the best results before committing the big
+          budget.
         </p>
         <ScopeScreen label="Final training data mixture donut chart with draggable, renormalizing category weights">
           <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
@@ -200,11 +206,12 @@ export default function TrainingDataEngineering() {
 
       <Section title="Data as the small team's biggest lever">
         <p>
-          A small team will never out-compute a frontier lab. It can out-engineer them on data curation --
-          FineWeb's release demonstrated that a carefully built, fully public filtering pipeline over Common
-          Crawl produces training data competitive with, or better than, many proprietary corpora used by
-          much larger labs. Filtering heuristics, dedup thresholds, and mixture weights are all things one
-          engineer can iterate on directly, unlike a 16,000-GPU training cluster.
+          A small team will never out-spend a frontier lab on computing power. But it can out-think them
+          on data. The FineWeb project proved the point: a carefully built, fully public cleaning
+          pipeline over the raw web produced training data as good as -- or better than -- the secret
+          datasets many bigger labs use. And unlike a warehouse of 16,000 GPUs, filtering rules,
+          duplicate thresholds, and mixture percentages are things one careful person can experiment
+          with directly.
         </p>
       </Section>
     </LessonLayout>

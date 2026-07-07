@@ -21,35 +21,35 @@ const STAGES: Stage[] = [
     key: "base",
     label: "BASE MODEL",
     link: null,
-    detail: "A raw next-token predictor trained only on the pre-training objective (Module 2). No notion of \"answering\" exists yet.",
+    detail: "A raw next-token guesser straight out of Module 2's training. No idea that questions deserve answers.",
     example: 'How do I reverse a linked list? How do I reverse a string? How do I reverse an array? These are common interview questions...',
   },
   {
     key: "sft",
     label: "SFT",
     link: "/m3/supervised-fine-tuning",
-    detail: "Fine-tuned on curated (prompt, ideal response) demonstrations, with loss computed only on the assistant's turns.",
+    detail: "Trained on a curated collection of questions paired with ideal answers -- and graded only on the answer parts.",
     example: 'To reverse a linked list, iterate through it while re-pointing each node\'s next pointer to the previous node, using three pointers: prev, curr, and next.',
   },
   {
     key: "preference",
     label: "PREFERENCE OPT.",
     link: "/m3/preference-optimization",
-    detail: "Shaped further by chosen-vs-rejected response pairs, sharpening qualities that are easier to judge than to demonstrate directly.",
+    detail: "Shaped further by better-vs-worse answer comparisons -- sharpening qualities that are easier to judge than to write down.",
     example: 'Track three pointers -- prev, curr, next. At each step: save curr.next, point curr.next to prev, then advance prev and curr. Runs in O(n) time, O(1) space.',
   },
   {
     key: "rl",
     label: "RL / TOOLS / SAFETY",
     link: "/m3/tools-and-safety-tuning",
-    detail: "Layers on verifiable rewards, tool-call training, and refusal behavior for genuinely harmful requests.",
+    detail: "Adds checkable rewards (did the code actually run?), practice using tools, and learning to decline genuinely harmful requests.",
     example: '(after running the candidate code against test cases) Verified: the three-pointer approach passes all cases, including empty and single-node lists.',
   },
   {
     key: "deployed",
     label: "DEPLOYED ASSISTANT",
     link: null,
-    detail: "The model you actually talk to -- same architecture as the base model throughout; every difference above lives in the weights.",
+    detail: "The model you actually talk to -- the same machine as the base model; every difference above lives in the learned numbers.",
     example: 'Reverse a linked list with three pointers (prev, curr, next), re-linking each node backward as you go -- O(n) time, O(1) space. Want the code?',
   },
 ];
@@ -64,16 +64,18 @@ export default function Overview() {
       intro={
         <p>
           A freshly pre-trained model is a mirror of the internet: brilliant at continuing any text
-          plausibly, and nearly useless as an assistant, because nothing in its training ever singled out
-          "answer helpfully and stop" as the desired behavior. Post-training is the fix -- and compared to
-          the trillions of tokens and months of compute behind Module 2, it is a small, surgical phase.
+          plausibly, and nearly useless as an assistant, because nothing in its training ever singled
+          out "answer the person helpfully, then stop" as the goal. Post-training is the fix. Think of
+          pre-training as twelve years of school and post-training as a short, intense job-training
+          course afterward -- tiny by comparison, but it's what turns raw knowledge into someone you'd
+          actually want to work with.
         </p>
       }
       takeaways={[
-        "Post-training is cheap relative to pre-training -- typically a small fraction of the compute -- but responsible for essentially all the difference between a completion engine and an assistant.",
-        "The standard pipeline is base → SFT → preference optimization → RL/tools/safety → deployed assistant, each stage covered in its own lesson.",
-        "The architecture and forward pass never change across any stage -- every behavioral difference lives entirely in the weights.",
-        "This is where an individual engineer with modest compute can genuinely compete: LoRA fine-tuning plus DPO on an 8B model is a realistic cloud-GPU weekend project, not a data-center undertaking.",
+        "Post-training costs a tiny fraction of pre-training -- yet it's responsible for essentially all the difference between raw autocomplete and a helpful assistant.",
+        "The standard pipeline: base model → learn from example answers (SFT) → learn from better-vs-worse comparisons → rewards, tools, and safety → the deployed assistant. Each stage has its own lesson.",
+        "The machine never changes at any stage -- every difference in behavior lives entirely in the learned numbers.",
+        "This is the part of the field where one person with a modest budget can genuinely contribute: fine-tuning a mid-sized open model with this module's techniques is a weekend project on rented hardware, not a data-center undertaking.",
       ]}
       references={[
         {
@@ -137,24 +139,25 @@ export default function Overview() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Same architecture, different weights">
+      <Section title="Same machine, different numbers">
         <p>
-          It's worth stating plainly because it's easy to lose track of: nothing about the transformer
-          block, the attention mechanism, or the parameter count changes across any stage above. The base
-          model and the deployed assistant run the identical forward pass from Module 1. Every behavioral
-          difference -- helpfulness, refusals, tool use, tone -- is a fact about what gradient descent wrote
-          into the weights during these later stages, not a fact about the architecture.
+          It's worth stating plainly because it's easy to lose track of: nothing about the model's
+          machinery -- not the layers, not attention, not the parameter count -- changes across any stage
+          above. The base model and the deployed assistant are the identical machine from Module 1. Every
+          difference in behavior -- helpfulness, declining harmful requests, using tools, tone of voice --
+          comes from what training wrote into the learned numbers during these later stages. Personality
+          is data, not hardware.
         </p>
       </Section>
 
       <Section title="Where an individual actually competes">
         <p>
-          Pre-training at frontier scale requires resources far beyond an individual or small team. Post-
-          training does not. LoRA (lesson 3.2) trains a small fraction of a model's parameters; DPO (lesson
-          3.3) needs no separate reward model or RL rollouts. Fine-tuning and preference-optimizing an
-          open 8B-parameter model with both techniques is realistically a single weekend on rented cloud
-          GPUs -- which is exactly why this module, more than Module 2, is where your own hands-on practice
-          should concentrate.
+          Pre-training at the frontier takes resources far beyond any individual or small team.
+          Post-training does not. LoRA (lesson 3.2) trains only a tiny add-on instead of the whole model;
+          DPO (lesson 3.3) learns from answer comparisons without any of the heavyweight machinery that
+          used to be required. Fine-tuning an open mid-sized model with both techniques is realistically
+          a single weekend on rented cloud hardware -- which is exactly why this module, more than Module
+          2, is where your own hands-on practice should concentrate.
         </p>
       </Section>
     </LessonLayout>

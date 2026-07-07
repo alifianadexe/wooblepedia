@@ -39,18 +39,19 @@ export default function EvaluationDuringPretraining() {
       lesson={lesson}
       intro={
         <p>
-          A training run can last weeks and cost millions of dollars, with no way to pause and "check if
-          it's working" other than the instruments you built in beforehand. This lesson is about what those
-          instruments actually are, and why a smooth loss curve and a jumpy benchmark curve can be
-          measuring the exact same underlying improvement.
+          A training run can last months and cost millions, and you can't exactly stop and ask the
+          half-trained model how it's feeling. Like a long flight over open ocean, you fly on
+          instruments -- and the only instruments you'll have are the ones you built in before takeoff.
+          This lesson is about what those instruments actually are, and why two of them -- one smooth,
+          one jumpy -- can be measuring the exact same underlying improvement.
         </p>
       }
       takeaways={[
-        "Held-out loss and its exponential, perplexity, are the primary real-time instrument during a run -- computed every step, cheaply, from data the model never trains on.",
-        "Scaling-law loss predictions (lesson 2.3) serve as sanity checks mid-run: if measured loss diverges badly from the predicted curve, something is wrong before a benchmark would ever catch it.",
-        "Benchmark suites (MMLU, HellaSwag, HumanEval, etc.) are evaluated only periodically and often score in discrete, thresholded ways -- which can make smooth underlying improvement look like a sudden 'emergent' jump.",
-        "Decontamination -- checking that benchmark test data hasn't leaked into training data -- is what keeps those benchmark numbers meaningful at all.",
-        "Loss spikes get handled operationally: rewind to the last good checkpoint, skip the offending data batch, or lower the learning rate and resume -- not by anything fancier.",
+        "The main gauge is the wrongness score measured on set-aside text the model never trains on -- cheap enough to check constantly, like a pop quiz the model never gets to study for.",
+        "The scaling-law curves from lesson 2.3 double as a flight plan: if the measured score drifts badly off the predicted path, something's wrong -- caught long before any other test would notice.",
+        "Standard test suites (trivia, common sense, coding problems) are run only occasionally and score pass/fail -- which can make smooth improvement underneath look like a sudden magical leap.",
+        "Those test scores only mean anything because of the cleaning step from lesson 2.4 that removed test questions from the training data -- otherwise the model has simply seen the answers.",
+        "When the wrongness score suddenly spikes, the fix is mundane: rewind to the last save-point, skip the batch that caused it, maybe ease off the learning speed, and resume.",
       ]}
       references={[
         {
@@ -72,10 +73,11 @@ export default function EvaluationDuringPretraining() {
     >
       <Section title="Lab — a simulated training run">
         <p>
-          This loss curve is generated from a real power law, <code>L(t) = L∞ + a·t^(−b)</code>, with seeded
-          noise and two injected spikes -- not hand-drawn. Scrub through training steps and watch loss and
-          perplexity update; toggle the benchmark overlay to compare a per-step-smooth instrument against
-          one that's only sampled occasionally.
+          This wrongness-score curve is generated from the real mathematical shape training runs follow
+          (with realistic noise and two deliberately injected spikes) -- not hand-drawn. Drag through the
+          training steps and watch the readouts update. Then toggle the benchmark overlay to compare the
+          two kinds of instrument: the score that's measured every single step versus a test that's only
+          run once in a while.
         </p>
         <ScopeScreen label="Simulated training run with a scrubber showing loss, perplexity, and an optional benchmark accuracy overlay">
           <Slider label="TRAINING STEP" value={step} min={1} max={STEPS} step={1} onChange={setStep} />
@@ -125,14 +127,15 @@ export default function EvaluationDuringPretraining() {
 
       <Section title="Why 'emergence' is often a measurement artifact">
         <p>
-          Loss is a continuous, smooth number measured every single step on held-out data, so it reveals
-          gradual improvement directly. Many benchmarks, by contrast, score pass/fail on individual problems
-          (did the model get the exact right answer?) and are only evaluated periodically. A capability that
-          is actually improving smoothly and continuously underneath can cross a scoring threshold abruptly
-          on a coarse, infrequent benchmark, producing what looks like a sudden "emergent" jump. Schaeffer et
-          al.'s analysis argues this is frequently exactly what's happening -- not a genuine discontinuity in
-          the model's underlying ability, but an artifact of measuring smooth progress with a jumpy,
-          thresholded ruler.
+          You may have heard that big models suddenly "unlock" abilities out of nowhere. Often, the
+          suddenness is an illusion created by how we measure. The wrongness score is a smooth number
+          checked every step, so it shows gradual improvement directly. Benchmarks, by contrast, grade
+          pass/fail -- the model either got the exact answer or it didn't -- and run only occasionally.
+          Imagine a kid whose basketball shot improves a tiny bit every day, but the only stat anyone
+          records is "made the shot or missed": for months the scoresheet says zero, then one week it
+          says 60%, and it looks like magic. Nothing jumped -- the skill grew smoothly, and the pass/fail
+          ruler couldn't see it until it crossed the line. Researchers have shown many famous "emergent
+          leaps" in AI are exactly this measurement artifact.
         </p>
       </Section>
     </LessonLayout>

@@ -15,28 +15,28 @@ type DetailKey = "norm" | "attention" | "position" | "mlp";
 
 const DETAILS: Record<DetailKey, { title: string; gpt2: string; llama: string; why: string }> = {
   norm: {
-    title: "NORMALIZATION",
-    gpt2: "LayerNorm (subtract mean, divide by std, then scale/shift)",
-    llama: "RMSNorm (skip mean-centering, divide by root-mean-square)",
-    why: "RMSNorm drops the mean-centering step entirely, keeping only the rescaling. It's cheaper to compute and empirically performs on par with LayerNorm at scale.",
+    title: "NORMALIZATION (the volume knob)",
+    gpt2: "LayerNorm — re-centers the numbers around zero, then rescales them",
+    llama: "RMSNorm — skips the re-centering, only rescales",
+    why: "It turned out the re-centering step wasn't earning its keep. RMSNorm keeps only the rescaling, costs less to compute, and models trained with it come out just as good. A pure simplification win.",
   },
   attention: {
     title: "ATTENTION",
-    gpt2: "Multi-head attention (MHA) — every query head has its own K/V head",
-    llama: "Grouped-query attention (GQA) — groups of query heads share one K/V head",
-    why: "Sharing K/V heads across a group of query heads shrinks the KV cache proportionally to the number of groups, with minimal measured quality loss — the calculator below makes this concrete.",
+    gpt2: "Multi-head attention — every head keeps its own private key/value notes",
+    llama: "Grouped-query attention (GQA) — small groups of heads share one set of notes",
+    why: "Remember the KV-cache from lesson 1.5 — the saved notes that make generating text fast? With every head keeping private notes, that cache gets huge. Letting groups of heads share one set shrinks it dramatically, with almost no measured drop in quality. The calculator below makes this concrete.",
   },
   position: {
     title: "POSITION ENCODING",
-    gpt2: "Learned absolute position embeddings (a second lookup table, added at the input)",
-    llama: "RoPE — rotates query/key pairs by a position-dependent angle inside attention",
-    why: "RoPE makes attention scores depend on relative offset rather than absolute position, which tends to generalize better to sequence lengths beyond what was seen in training (lesson 1.4).",
+    gpt2: "A learned table of position stamps, added to each word at the start",
+    llama: "RoPE — rotates each word's numbers by an angle based on its position",
+    why: "RoPE makes attention care about how far apart two words are, rather than each word's absolute spot in the text. 'Five words apart' works the same everywhere, so the model copes far better with texts longer than anything it trained on (lesson 1.4).",
   },
   mlp: {
-    title: "MLP",
-    gpt2: "Two matrices, GELU nonlinearity, 4x hidden expansion",
-    llama: "SwiGLU — three matrices (one acts as a learned gate), hidden expansion ≈ 8/3·d",
-    why: "SwiGLU multiplies a learned gate against an activation before the down-projection. The 8/3 (rather than 4x) hidden ratio roughly compensates for the extra matrix, keeping total MLP parameters comparable.",
+    title: "MLP (the thinking step)",
+    gpt2: "Two number grids with a simple filter between them",
+    llama: "SwiGLU — three grids, where one acts as a learned gate",
+    why: "The gate is like a dimmer switch the model learns to control: for each piece of information, it decides how much gets through. To pay for the third grid, the middle layer is made a bit narrower, so the total size stays about the same -- but quality improves.",
   },
 };
 
@@ -64,18 +64,19 @@ export default function TrainingObjectivesArchitecture() {
       lesson={lesson}
       intro={
         <p>
-          Train a modern open-weight model and you're still minimizing next-token cross-entropy -- lesson
-          1.7's loss function, unchanged. What's different is the block itself: four component swaps, each
-          made for a concrete, measurable reason, separate the GPT-2 block from a current Llama-3-style
-          block.
+          Train a modern model and the goal is still exactly lesson 1.7's: guess the next token, get
+          graded, improve. What's changed since GPT-2 is the machine's internal parts. Think of it like
+          comparing a 2019 car engine to a current one -- same principle, but four specific components
+          got swapped out, each for a concrete, measurable reason. This lesson walks through those four
+          swaps.
         </p>
       }
       takeaways={[
-        "The training objective is essentially unchanged since GPT-2 -- next-token cross-entropy over massive text.",
-        "RMSNorm replaces LayerNorm (drop mean-centering, cheaper); RoPE replaces learned absolute positions (relative-offset attention, better length generalization).",
-        "SwiGLU replaces the plain GELU MLP (a learned gate, ~8/3·d hidden width); GQA replaces full multi-head attention (shared K/V heads, smaller KV cache).",
-        "GQA's entire value proposition is memory: sharing K/V heads across query-head groups shrinks the KV cache proportionally, directly computed in the calculator below.",
-        "Biases are typically dropped from linear layers and norms in modern blocks -- a small parameter and stability win with negligible quality cost.",
+        "What the model practices hasn't changed since GPT-2: guess the next token across massive amounts of text.",
+        "Swap 1: the 'volume knob' step (layer norm) got simplified to a cheaper version called RMSNorm that skips a step nobody missed. Swap 2: position stamps were replaced by RoPE, which encodes how far apart words are and copes far better with long texts (lesson 1.4).",
+        "Swap 3: the MLP gained a learned gate (SwiGLU) that lets it choose what to let through. Swap 4: attention heads now share their key/value notes in groups (GQA) instead of each keeping their own.",
+        "That last swap is entirely about memory: fewer separate sets of notes means a proportionally smaller KV-cache -- the calculator below computes exactly how much smaller.",
+        "Modern models also dropped many small add-on numbers ('biases') from their layers -- a minor saving with basically no downside.",
       ]}
       references={[
         {
@@ -137,9 +138,10 @@ export default function TrainingObjectivesArchitecture() {
 
       <Section title="Lab — the KV-cache calculator">
         <p>
-          KV-cache bytes = 2 (K and V) × layers × kv_heads × head_dim × context_length × bytes_per_element ×
-          batch. Slide kv_heads down from a full 128-head baseline toward a GQA-style 8 and watch the cache
-          shrink in direct proportion.
+          The memory the saved notes take is straight multiplication: 2 (keys and values) × layers ×
+          note-keeping heads × numbers per head × text length × bytes per number × how many conversations
+          at once. Slide "KV heads" down from 128 (every head keeps private notes) toward 8 (modern
+          shared-notes style) and watch the memory shrink in exact proportion.
         </p>
         <ScopeScreen label="KV cache memory calculator with sliders for layers, KV heads, head dimension, context length, and batch size">
           <Slider label="LAYERS" value={layers} min={1} max={128} step={1} onChange={setLayers} />

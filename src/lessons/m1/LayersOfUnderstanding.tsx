@@ -72,18 +72,19 @@ export default function LayersOfUnderstanding() {
       lesson={lesson}
       intro={
         <p>
-          One attention operation is already useful; a transformer block runs several in parallel, each
-          with its own smaller projections, and stacks dozens of blocks on top of each other. This lesson is
-          about what that parallelism and that stacking buy you: different heads specializing in different
-          relationships, and a residual stream that lets a 100-layer network still train.
+          One attention operation is already useful. Real models run several of them side by side --
+          called <strong>heads</strong> -- and then stack dozens of these layers on top of each other.
+          This lesson is about what all that buys you: different heads that each learn to watch for a
+          different kind of relationship between words, and a clever "running total" design (the residual
+          stream) that keeps a 100-layer-deep model trainable at all.
         </p>
       }
       takeaways={[
-        "Multi-head attention runs h smaller attention operations in parallel (each with its own Wq/Wk/Wv), concatenates their outputs, and mixes them with one output projection Wo -- different heads learn to track different relationships.",
-        "The residual stream is a shared vector that every sublayer reads from and additively writes back into, like middleware mutating a shared request object -- it's why gradients can survive 100+ stacked layers without vanishing.",
-        "Layer norm exists purely to keep the residual stream's scale stable as more and more sublayers add to it, not to add expressive capacity.",
-        "Attention is the block's only cross-token communication (its network I/O); the MLP is purely per-token compute, holding roughly two-thirds of a block's parameters and behaving, per recent interpretability work, like a key-value memory.",
-        "Shallow layers tend to pick up surface patterns (position, adjacent tokens, exact duplicates); deeper layers tend to combine those into more abstract, task-relevant structure.",
+        "Multi-head attention runs several smaller attention operations side by side, each with its own learned lenses, then stitches their answers back together -- and each head tends to specialize in noticing one kind of relationship.",
+        "The residual stream is a running total: each layer reads the current numbers and adds its own small contribution on top, rather than replacing everything. That additive design is why very deep models can still learn -- the training signal has a straight path back through all the plus signs.",
+        "Layer norm is just a volume knob that keeps the running total from drifting too big or too small as dozens of layers add to it. It adds stability, not smarts.",
+        "Attention is the only step where words exchange information; the MLP then works on each word alone -- and it holds roughly two-thirds of a layer's learned numbers, acting a lot like the model's fact-and-pattern storage.",
+        "Early layers tend to notice surface-level things (which word is next door, exact repeats); deeper layers combine those clues into more abstract understanding.",
       ]}
       references={[
         {
@@ -103,24 +104,26 @@ export default function LayersOfUnderstanding() {
         },
       ]}
     >
-      <Section title="Multi-head attention: several smaller lookups, not one big one">
+      <Section title="Multi-head attention: several smaller searches, not one big one">
         <p>
-          Rather than one attention operation over the full d_model width, a block splits into h heads,
-          each with its own, much smaller Wq/Wk/Wv (dimension d_model/h), runs scaled dot-product attention
-          independently in each, concatenates all h outputs back to d_model, and mixes them with a final
-          output projection Wo. Nothing forces the heads to specialize, but empirically they do: some become
-          near-purely positional, some track exact-token recurrence, some track syntactic relationships like
-          subject-verb agreement. The lab below computes three genuinely different heads live, not staged
-          examples.
+          Instead of running one big attention operation, each layer splits the work among several
+          smaller <strong>heads</strong>. Each head gets its own learned lenses for making queries, keys,
+          and values, runs the exact attention math from last lesson independently, and then all the
+          heads' answers get stitched back together and blended. Think of a group of friends watching the
+          same movie: one tracks the plot, one watches the costumes, one catches the background jokes.
+          Nobody assigns those jobs -- and nothing assigns jobs to attention heads either -- but
+          specialization reliably emerges during training: some heads end up watching word positions,
+          some track repeated words, some follow grammar relationships like which noun a verb belongs to.
+          The lab below computes three genuinely different heads live, not staged pictures.
         </p>
       </Section>
 
       <Section title="Lab — three heads, the same sentence, real weights">
         <p>
-          "the cat sat on the mat," causally masked. Head A reuses lesson 1.5's content-based projections.
-          Head B's queries are built to want exactly the previous position. Head C's queries and keys are
-          built from token identity alone, so the repeated word "the" (positions 0 and 4) should light up for
-          each other.
+          The sentence is "the cat sat on the mat," with peeking-ahead blocked. Head A matches words by
+          their meaning, reusing last lesson's setup. Head B is built to always look at whichever word
+          came immediately before. Head C matches on word identity alone -- so the second "the" (position
+          4) should light up strongly for the first "the" (position 0).
         </p>
         <ScopeScreen label="Three attention heads over the same sentence, showing different specializations">
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
@@ -129,24 +132,28 @@ export default function LayersOfUnderstanding() {
             <MiniHeatmap matrix={heads.sameTokenHead} label="HEAD C · SAME-TOKEN" accent={colors.magenta} />
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 10 }}>
-            Read row i as "when token i is the query, how much weight lands on each key column." Head B
-            should show a near-diagonal band one step below the main diagonal; Head C should show token 4
-            ("the") attending strongly back to token 0 ("the").
+            Read each row as "when this token does the looking, how much lands on each column." Head B
+            shows a bright stripe just below the diagonal (everyone looking one word back); in Head C,
+            row 4 ("the") lights up at column 0 (the other "the").
           </p>
         </ScopeScreen>
       </Section>
 
-      <Section title="The residual stream: a middleware chain, not a pipeline">
+      <Section title="The residual stream: a shared document everyone adds notes to">
         <p>
-          Between the embedding layer and the LM head sits a single vector per position -- the residual
-          stream -- that every attention and MLP sublayer reads from and writes back into additively:{" "}
-          <code>stream = stream + sublayer(stream)</code>. It behaves exactly like a middleware chain
-          mutating a shared request object: nothing replaces the object wholesale, each layer just adds its
-          contribution. That additive structure is precisely why gradients survive 100+ stacked layers --
-          the gradient of a sum passes straight through the "+" to every term, so even a very deep stack has
-          an undiminished direct path from loss back to the earliest layers. Layer norm's entire job is
-          keeping that stream's scale from drifting as more and more contributions pile in -- it doesn't add
-          expressiveness, it keeps the numbers well-behaved.
+          From the embedding layer to the very end, each word carries one vector -- the{" "}
+          <strong>residual stream</strong> -- and here's the crucial design choice: no layer ever replaces
+          it. Each attention and MLP step reads the current vector, computes its contribution, and{" "}
+          <em>adds</em> it on top: <code>stream = stream + this layer's contribution</code>. Picture a
+          shared document passed down a long line of editors, where each editor may only append notes in
+          the margin, never rewrite the text. This additive design is the secret to training very deep
+          models. During training, a correction signal has to travel backward from the final answer to
+          the earliest layers, and in older network designs it faded to nothing along the way -- like a
+          message garbled in a hundred-person game of telephone. With addition, the signal passes
+          straight through every plus sign undiminished, so even layer 1 of a 100-layer model hears
+          clearly what it should fix. Layer norm, a small step you'll see mentioned around transformers,
+          is just the volume knob: with dozens of editors adding notes, the numbers would drift ever
+          larger, and layer norm rescales them to a steady size. Stability, not smarts.
         </p>
         <ScopeScreen label="Residual stream diagram: attention and MLP sublayers read from and add back into a shared horizontal stream">
           <svg viewBox="0 0 400 130" width="100%" height="150" aria-label="Residual stream diagram with attention and MLP sublayers tapping into a shared horizontal bus via addition junctions">
@@ -170,24 +177,25 @@ export default function LayersOfUnderstanding() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Attention's I/O vs. the MLP's compute">
+      <Section title="Attention talks, the MLP thinks">
         <p>
-          It helps to map this onto a request-handling analogy directly: attention is the block's network
-          I/O -- the only step where a position's representation can depend on any other position's content.
-          The MLP that follows is pure per-token compute: it takes one position's vector and transforms it,
-          with zero visibility into any other position. Concretely, the MLP typically expands the residual
-          stream's width by 4x, applies a nonlinearity, then projects back down -- and at that ratio, it
-          holds roughly two-thirds of a transformer block's total parameters (you'll verify the exact split
-          with real numbers in lesson 1.9).
+          A useful way to remember the division of labor: attention is the talking step -- the only
+          moment a word's vector can be influenced by other words. The <strong>MLP</strong> (short for
+          "multi-layer perceptron," a small stack of number-crunching operations) is the thinking step:
+          it takes one word's vector, alone, and transforms it, with zero visibility into any other word.
+          Concretely, the MLP stretches the vector out to about 4 times its width, applies a simple
+          filter, and squeezes it back down -- and at that ratio it holds roughly two-thirds of a layer's
+          learned numbers (you'll verify that split with real numbers in lesson 1.9).
         </p>
         <p>
-          That's not idle capacity. Geva et al. (2020) show the MLP's first matrix behaves like a bank of
-          pattern-detecting keys over the residual stream, and its second matrix like a bank of memory
-          values written back in when a key fires -- functionally closer to a large key-value store than to
-          a generic nonlinearity. Shallow layers' detectors tend to fire on surface patterns -- the previous
-          token, exact duplication, punctuation; deeper layers' detectors tend to fire on more abstract,
-          composed structure, including facts and higher-level task signals. This is a tendency observed
-          across many models, not a strict law any single layer must obey.
+          All that capacity isn't sitting idle. Researchers who've looked inside these models find that
+          the MLP behaves a lot like a giant bank of if-then flashcards: the first half learns to
+          recognize patterns in the incoming vector ("this looks like a city name in a sentence about
+          geography"), and the second half writes relevant information back in when a pattern fires
+          ("cities go with countries"). The flashcards in early layers tend to fire on surface-level
+          things -- the previous word, exact repeats, punctuation. The ones in deeper layers fire on more
+          abstract, built-up structure, including stored facts. That's a tendency researchers observe
+          across many models, not a strict rule every layer obeys.
         </p>
       </Section>
     </LessonLayout>

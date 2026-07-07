@@ -33,17 +33,19 @@ export default function AdvancedPretrainingObjectives() {
       lesson={lesson}
       intro={
         <p>
-          Next-token prediction is the load-bearing objective, but it isn't the only signal a pre-training
-          run extracts from the same text. This lesson covers four variations layered on top of it -- each
-          still fundamentally a causal, left-to-right model, just fed cleverly rearranged or augmented data.
+          "Guess the next token" is the main exercise, but it's not the only drill a training run can
+          extract from the same text. This lesson covers four extra drills layered on top of it. The key
+          thing to notice: none of them change the machine. The model stays a strict left-to-right
+          guesser -- the cleverness is entirely in how the practice material gets rearranged before it's
+          fed in.
         </p>
       }
       takeaways={[
-        "Fill-in-the-middle (FIM) rearranges a document into prefix/suffix/middle order with sentinel tokens, teaching an otherwise strictly left-to-right model to infill -- essential for code-editing use cases.",
-        "Multi-token prediction adds extra output heads that predict t+2, t+3, ... alongside the standard t+1 head, giving a denser training signal and later enabling speculative decoding.",
-        "Long-context extension typically trains at a short context first, then extends via RoPE theta scaling or position interpolation and a short continued-training phase at the new length.",
-        "Curriculum and annealing schedule the highest-quality data toward the end of training, when the model is most able to make full use of it.",
-        "UL2-style span corruption (masking random spans, often bidirectionally) is a related but distinct family from FIM -- FIM stays strictly causal by reordering text, span corruption changes the attention pattern itself.",
+        "Fill-in-the-middle (FIM): cut a chunk out of a document, move it to the end, and mark the pieces with special tokens. A strict left-to-right guesser thereby learns to fill in holes -- essential for code editors that complete the middle of your file.",
+        "Multi-token prediction: instead of only guessing the very next token, extra prediction heads also guess two, three, and four ahead -- more learning from every position, and a speed trick at generation time later.",
+        "Long texts are handled in two phases: train mostly on shorter texts (cheaper), then stretch the position encoding and briefly continue training at the new, longer length.",
+        "Curriculum: save the best-quality reading material for the end of training, when the model is best prepared to benefit from it -- the way a course saves its capstone for last.",
+        "A related family called span corruption also teaches hole-filling but changes how the model reads; FIM's charm is that it never touches the machine -- it only rearranges the text.",
       ]}
       references={[
         {
@@ -65,10 +67,13 @@ export default function AdvancedPretrainingObjectives() {
     >
       <Section title="Lab — fill-in-the-middle, literally rearranged">
         <p>
-          Pick a "middle" span inside the snippet below. The lab shows the literal training sequence the
-          model actually sees -- prefix and suffix swapped to the front, sentinel tokens marking each part,
-          and the middle moved to the end, which is exactly what the model is trained (in causal,
-          left-to-right fashion) to predict.
+          Here's the puzzle FIM solves: a left-to-right guesser can only continue text at the end, but a
+          programmer's cursor is usually in the <em>middle</em> of a file. The fix is delightfully
+          simple -- rearrange the training text. Cut out a middle chunk, put the beginning and the ending
+          first (labeled with special marker tokens), and stick the missing middle at the end. Now
+          "filling the hole" <em>is</em> "continuing at the end," which the model already knows how to
+          do. Drag the sliders to choose the cut-out chunk and see the exact rearranged sequence the
+          model would train on.
         </p>
         <ScopeScreen label="Fill-in-the-middle training sequence rearrangement lab">
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, whiteSpace: "pre-wrap" }}>
@@ -87,18 +92,20 @@ export default function AdvancedPretrainingObjectives() {
             <span style={{ background: "rgba(232,106,166,0.25)", color: colors.magenta }}>{middle}</span>
           </pre>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            The highlighted region after &lt;MID&gt; is the loss region -- the only part the model is
-            actually trained to generate; everything before it is context it conditions on.
+            Only the highlighted part after &lt;MID&gt; gets graded -- that's what the model practices
+            producing. Everything before it is just context to read.
           </p>
         </ScopeScreen>
       </Section>
 
       <Section title="Lab — one head or four">
         <p>
-          Standard training attaches one output head that predicts token t+1. Multi-token prediction
-          attaches several extra heads, each predicting further ahead (t+2, t+3, t+4) from the same
-          position's hidden state -- more learning signal per position, and later, at inference time, a
-          mechanism for proposing several tokens at once and verifying them cheaply (speculative decoding).
+          Normally the model makes one guess per position: the very next token. Multi-token prediction
+          bolts on extra guessing heads that simultaneously predict two, three, and four tokens ahead
+          from the same spot -- like a chess student asked to name the next several moves, not just one.
+          The model learns more from every position, and the extra heads pay off again later: at
+          generation time they can propose several tokens at once for quick checking, a speed trick
+          called speculative decoding.
         </p>
         <ScopeScreen label="Diagram comparing single-token and multi-token prediction heads from the same position">
           <Toggle label="SHOW MULTI-TOKEN PREDICTION (4 HEADS)" checked={multiToken} onChange={setMultiToken} />
@@ -135,23 +142,23 @@ export default function AdvancedPretrainingObjectives() {
 
       <Section title="Long context, curriculum, and a nod to span corruption">
         <p>
-          Training at a very long context from step one is expensive -- attention cost grows with sequence
-          length, so most runs train the bulk of pre-training at a shorter context (e.g. 4K-8K tokens) and
-          extend afterward. Two common mechanisms: scaling RoPE's base frequency ("theta scaling") so the
-          same rotation angles cover a longer range, or position interpolation, which compresses long-context
-          positions back into the range the model was originally trained on. Either way, extension is
-          followed by a comparatively short continued-training phase at the new, longer length.
+          Training on very long texts from day one is expensive -- the attention step's cost grows fast
+          with text length. So most runs do the bulk of training on shorter texts (a few thousand tokens)
+          and stretch afterward. Remember RoPE from lesson 1.4, which encodes position by rotating each
+          word's numbers? Stretching mostly means adjusting those rotation angles so the same range of
+          angles covers a longer stretch of text -- like re-marking a ruler so the same physical length
+          now measures a longer distance -- followed by a short extra phase of training at the new
+          length so the model gets used to it.
         </p>
         <p>
-          Curriculum and annealing are scheduling decisions, not architectural ones: many training recipes
-          deliberately hold back their highest-quality data (heavily filtered web text, textbooks, curated
-          instruction-like data) for the final portion of training, when the model is best positioned to
-          make full use of it, rather than mixing it in uniformly from the start. Separately, it's worth
-          knowing this course's FIM and multi-token objectives are not the only game in town: UL2-style{" "}
-          <strong>span corruption</strong> masks random spans in a document and trains the model to fill
-          them in, often in a prefix-LM or encoder-decoder setup that isn't strictly causal token-by-token.
-          FIM, by contrast, never changes the attention pattern at all -- it just reorders the text so a
-          strictly causal, decoder-only model can still learn to infill.
+          <strong>Curriculum</strong> is a scheduling decision, not a machinery change: many training
+          recipes deliberately hold back their best material -- carefully filtered text, textbooks,
+          question-and-answer style data -- for the final stretch of training, when the model has the
+          foundation to actually profit from it. Same logic as a school curriculum: calculus goes after
+          algebra. One last cousin worth knowing by name: <strong>span corruption</strong> also teaches
+          hole-filling by blanking out random chunks, but it changes how the model is allowed to read the
+          text. FIM's whole appeal is that it doesn't -- it just shuffles the text and lets the ordinary
+          left-to-right machine do the rest.
         </p>
       </Section>
     </LessonLayout>

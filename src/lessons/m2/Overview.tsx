@@ -50,18 +50,19 @@ export default function Overview() {
       lesson={lesson}
       intro={
         <p>
-          Pre-training is where knowledge gets written into the weights -- and it is, by a wide margin, the
-          expensive phase. Module 1 built the mechanism a single forward pass runs; Module 2 is about
-          running that mechanism over trillions of tokens, at a cost measured in floating-point operations
-          large enough that "engineering" rather than "mathematics" becomes the binding constraint.
+          Pre-training is the phase where knowledge actually gets written into the model's learned
+          numbers -- and it is, by a mile, the expensive part. Module 1 built the machine; Module 2 is
+          about feeding that machine trillions of words, which takes months, thousands of computers, and
+          budgets in the tens of millions of dollars. At that scale, the hard problems stop being math
+          problems and become logistics problems.
         </p>
       }
       takeaways={[
-        "Pre-training optimizes one objective -- next-token cross-entropy -- over enormous data; nothing about the loss function itself changed much since GPT-2.",
-        "Three currencies govern a training run: compute C, parameters N, and data D, related by C ≈ 6·N·D FLOPs.",
-        "A real training run's phase map is data prep → tokenize/shard → train with checkpoints → evaluate -- each phase gets its own lesson in this module.",
-        "Compute budgets have grown roughly five orders of magnitude from GPT-2 to frontier 2024 models -- a difference of degree, not of the underlying mechanism.",
-        "Almost everything hard in this module -- data pipelines, distributed systems, failure recovery -- is engineering, not new math.",
+        "Pre-training is still just the guess-and-grade loop from lesson 1.7, run over enormous amounts of text. The core recipe hasn't fundamentally changed since GPT-2.",
+        "Three currencies govern any training run: compute (C, the raw calculation you pay for), parameters (N, the model's size), and data (D, how many tokens it reads). They're tied together by one formula: C ≈ 6·N·D.",
+        "A real run has four phases -- prepare the data, tokenize and package it, train with regular save-points, and evaluate constantly -- and each gets its own lesson in this module.",
+        "From GPT-2 to today's frontier models, compute budgets grew about 500,000-fold. The machinery barely changed; the scale did.",
+        "Almost everything hard in this module -- data pipelines, keeping thousands of computers in sync, recovering from crashes -- is engineering and logistics, not new math.",
       ]}
       references={[
         {
@@ -83,21 +84,23 @@ export default function Overview() {
     >
       <Section title="Three currencies">
         <p>
-          Every training run trades between three quantities. <strong>Compute</strong> (C, in FLOPs) is
-          what you pay for, in GPU-hours. <strong>Parameters</strong> (N) is the size of the model you're
-          training. <strong>Data</strong> (D, in tokens) is how much text you train it on. Kaplan et al.'s
-          approximation ties them together: <code>C ≈ 6·N·D</code> -- each parameter, for each token,
-          costs roughly 6 floating-point operations across the forward and backward pass combined. Fix any
-          two and the third falls out; lesson 2.3 spends real time on how to choose N and D optimally for a
-          given C.
+          Every training run is a trade between three quantities. <strong>Compute</strong> (C) is the
+          total amount of raw arithmetic performed, counted in individual multiply-and-add operations
+          (called FLOPs) -- this is what the electricity bill and the rented hardware actually pay for.{" "}
+          <strong>Parameters</strong> (N) is the size of the model being trained.{" "}
+          <strong>Data</strong> (D) is how many tokens of text it reads during training. A famous 2020
+          research result tied them together in one simple formula: <code>C ≈ 6·N·D</code>. In words:
+          every parameter costs about 6 operations for every token it trains on. Pick any two of the
+          three and the formula hands you the third -- and lesson 2.3 is all about picking them wisely.
         </p>
       </Section>
 
       <Section title="Lab — the three-currencies console">
         <p>
-          Set N and D with the sliders (both log-scaled -- real training runs span many orders of
-          magnitude) and watch compute update live via <code>computeFlops</code>. The three markers are
-          real published models, placed by their actual N, D, and the resulting C.
+          Set the model size and data amount with the sliders and watch the compute cost update live.
+          (The sliders move in powers of ten, because real training runs range from millions to
+          trillions.) The three markers are real published models, placed by their actual sizes and
+          training data.
         </p>
         <ScopeScreen label="Three currencies console: compute as a function of parameters and data, with historical model markers">
           <Slider label="LOG10(N) — PARAMETERS" value={logN} min={6} max={12.7} step={0.05} onChange={setLogN} format={(v) => (10 ** v).toExponential(2)} />
@@ -146,26 +149,29 @@ export default function Overview() {
 
       <Section title="The phase map of a real run">
         <p>
-          Concretely, a training run moves through four phases, each the subject of its own lesson here:{" "}
-          <strong>data preparation</strong> (crawling, filtering, deduplicating -- lesson 2.4),{" "}
-          <strong>tokenizing and sharding</strong> the cleaned corpus into fixed-size files distributed
-          across a storage cluster, <strong>training</strong> itself across potentially thousands of GPUs
-          with periodic checkpoints (lessons 2.2, 2.5, 2.6), and continuous <strong>evaluation</strong>{" "}
-          against held-out loss and benchmark suites throughout (lesson 2.7). None of these phases is
-          optional at scale -- skip data quality control and you waste the compute regardless of how
-          correct your training loop is.
+          Concretely, a training run moves through four phases, each with its own lesson here.{" "}
+          <strong>Data preparation</strong>: gather a huge slice of the internet, filter out the junk,
+          and remove duplicates (lesson 2.4). <strong>Tokenizing and packaging</strong>: run all that
+          text through the tokenizer and split the result into evenly-sized chunks spread across many
+          storage machines. <strong>Training</strong> itself: the guess-and-grade loop running on up to
+          thousands of GPUs (specialized processors, originally built for video-game graphics, that
+          happen to be superb at this kind of math), with regular save-points so a crash doesn't erase
+          months of progress (lessons 2.2, 2.5, 2.6). And <strong>evaluation</strong>: constantly testing
+          the model on text it hasn't seen, to catch problems early (lesson 2.7). None of these is
+          optional at scale -- train on junk data and you waste the whole budget, no matter how correct
+          everything else is.
         </p>
       </Section>
 
       <Section title="Orders of magnitude, and why this is an engineering module">
         <p>
-          GPT-2's training run cost on the order of 10^21 FLOPs. LLaMA 3 405B's cost on the order of 10^25.6
-          -- roughly 500,000 times more compute, four years later. None of that growth came from a
-          fundamentally new algorithm; the transformer block from Module 1 is essentially unchanged. What
-          changed is almost entirely engineering: better data pipelines, distributed training systems that
-          keep thousands of GPUs fed and synchronized, and the operational discipline to keep a run alive
-          for months without losing progress to a hardware failure. That's the throughline for the rest of
-          this module.
+          GPT-2's training took around 10²¹ operations. LLaMA 3 405B, four years later, took roughly
+          500,000 times more. Here's the surprising part: almost none of that growth came from new
+          ideas. The transformer machine from Module 1 is essentially unchanged. What changed is
+          engineering -- better data pipelines, systems that keep thousands of GPUs fed and marching in
+          step, and the discipline to keep a months-long run alive when hardware inevitably fails. Think
+          less "brilliant new equation" and more "running a flawless months-long expedition." That's the
+          throughline for the rest of this module.
         </p>
       </Section>
     </LessonLayout>
