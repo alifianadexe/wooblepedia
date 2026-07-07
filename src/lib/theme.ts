@@ -12,7 +12,7 @@ export const colors = {
   magenta: "#E86AA6",
   red: "#F0716B",
   text: "#DCE6F2",
-  muted: "#64788F",
+  muted: "#7688A4",
   faint: "#3A4A61",
 } as const;
 
