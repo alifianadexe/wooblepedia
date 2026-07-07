@@ -8,6 +8,7 @@ import { getLessonMeta } from "../../lib/syllabus";
 import { crossEntropyFromProb, lossSurface, perplexity } from "../../lib/math";
 import { useLabSetting } from "../../lib/storage";
 import { colors } from "../../lib/theme";
+import { Bi, pick, useLang } from "../../lib/i18n";
 
 const lesson = getLessonMeta(1, "learning-to-predict")!;
 
@@ -30,6 +31,7 @@ function yToScreen(f: number): number {
 const CURVE_SAMPLES = Array.from({ length: 140 }, (_, i) => -X_DOMAIN + (i / 139) * 2 * X_DOMAIN);
 
 export default function LearningToPredict() {
+  const { lang } = useLang();
   const [pCorrect, setPCorrect] = useLabSetting("m1-ltp-pcorrect", 0.5);
   const [lr, setLr] = useLabSetting("m1-ltp-lr", 0.15);
   const [x0, setX0] = useLabSetting("m1-ltp-x0", 4);
@@ -71,22 +73,46 @@ export default function LearningToPredict() {
     <LessonLayout
       lesson={lesson}
       intro={
-        <p>
-          Everything you've built so far -- tokenizer, embeddings, position stamps, attention, MLP --
-          ends in one output: for each spot in the text, a set of percentages over "what token comes
-          next." A freshly created model produces garbage percentages, because all its learned numbers
-          start out random. Training is the loop that fixes that: make a guess, measure how wrong it was,
-          nudge every number in the direction that would have made the guess less wrong, and repeat --
-          billions of times.
-        </p>
+        <Bi
+          en={
+            <p>
+              Everything you've built so far -- tokenizer, embeddings, position stamps, attention, MLP --
+              ends in one output: for each spot in the text, a set of percentages over "what token comes
+              next." A freshly created model produces garbage percentages, because all its learned numbers
+              start out random. Training is the loop that fixes that: make a guess, measure how wrong it was,
+              nudge every number in the direction that would have made the guess less wrong, and repeat --
+              billions of times.
+            </p>
+          }
+          id={
+            <p>
+              Semua yang kamu bangun sejauh ini -- tokenizer, embedding, stempel posisi, atensi, MLP --
+              berujung pada satu keluaran: untuk tiap titik di teks, sekumpulan persentase tentang "token apa
+              yang berikutnya". Model yang baru dibuat menghasilkan persentase sampah, karena semua angka
+              hasil belajarnya berawal acak. Pelatihan adalah loop yang memperbaikinya: buat tebakan, ukur
+              seberapa salah, geser setiap angka ke arah yang akan membuat tebakan itu tak sesalah tadi, lalu
+              ulangi -- miliaran kali.
+            </p>
+          }
+        />
       }
-      takeaways={[
-        "The model's wrongness score (\"loss\") for one guess depends only on the percentage it gave to the token that actually came next -- high percentage means low loss. Training works to shrink the average loss across every guess.",
-        "The scoring curve is brutally unfair on purpose: being confidently wrong costs enormously more than honestly hedging. That pressure teaches the model calibrated uncertainty.",
-        "Perplexity re-expresses the loss as \"the model was as unsure as if it were picking blindly among this many equally likely tokens\" -- perplexity 20 means as lost as a 20-way coin flip.",
-        "During training, the model doesn't generate one token at a time -- it grades its guess at every position of a real text simultaneously, in one pass. That trick is called teacher forcing.",
-        "AdamW, the standard training algorithm, gives every individual parameter its own personalized step size instead of one global speed for all -- it's the default for essentially all modern LLM training.",
-      ]}
+      takeaways={pick(
+        lang,
+        [
+          "The model's wrongness score (\"loss\") for one guess depends only on the percentage it gave to the token that actually came next -- high percentage means low loss. Training works to shrink the average loss across every guess.",
+          "The scoring curve is brutally unfair on purpose: being confidently wrong costs enormously more than honestly hedging. That pressure teaches the model calibrated uncertainty.",
+          "Perplexity re-expresses the loss as \"the model was as unsure as if it were picking blindly among this many equally likely tokens\" -- perplexity 20 means as lost as a 20-way coin flip.",
+          "During training, the model doesn't generate one token at a time -- it grades its guess at every position of a real text simultaneously, in one pass. That trick is called teacher forcing.",
+          "AdamW, the standard training algorithm, gives every individual parameter its own personalized step size instead of one global speed for all -- it's the default for essentially all modern LLM training.",
+        ],
+        [
+          "Skor kesalahan model (\"loss\") untuk satu tebakan hanya bergantung pada persentase yang ia berikan ke token yang benar-benar muncul berikutnya -- persentase tinggi berarti loss rendah. Pelatihan bekerja mengecilkan rata-rata loss di semua tebakan.",
+          "Kurva penilaiannya sengaja kejam tak adil: salah dengan percaya diri jauh lebih mahal daripada jujur ragu-ragu. Tekanan itulah yang mengajari model ketidakpastian yang terkalibrasi.",
+          "Perplexity menyatakan ulang loss sebagai \"model sebingung memilih buta di antara sekian token yang sama mungkinnya\" -- perplexity 20 berarti sebingung undian 20 arah.",
+          "Selama pelatihan, model tidak menghasilkan token satu demi satu -- ia menilai tebakannya di setiap posisi sebuah teks asli serentak, dalam satu lintasan. Trik itu bernama teacher forcing.",
+          "AdamW, algoritme pelatihan standar, memberi setiap parameter langkah pribadinya sendiri alih-alih satu kecepatan global untuk semua -- ia bawaan untuk hampir semua pelatihan LLM modern.",
+        ],
+      )}
       references={[
         {
           title: "The Spelled-out Intro to Neural Networks and Backpropagation — Andrej Karpathy",
@@ -105,29 +131,60 @@ export default function LearningToPredict() {
         },
       ]}
     >
-      <Section title="The loop">
-        <p>
-          Training is four steps on repeat. <strong>Guess:</strong> run a real sentence from the training
-          text through the model and get its percentages for the next token at every spot.{" "}
-          <strong>Grade:</strong> compare each guess against the token that <em>actually</em> came next
-          in the text, producing a single wrongness number called the <strong>loss</strong>.{" "}
-          <strong>Diagnose:</strong> work out, for every one of the model's millions of learned numbers,
-          whether raising or lowering it slightly would have made the loss smaller (this per-number
-          direction is called the <strong>gradient</strong>). <strong>Nudge:</strong> move every number a
-          tiny bit in its helpful direction. That's the whole thing. Repeated over trillions of tokens,
-          this loop <em>is</em> pre-training -- Module 2 is about doing it at gigantic scale, not about
-          anything fundamentally different.
-        </p>
+      <Section title={pick(lang, "The loop", "Loop-nya")}>
+        <Bi
+          en={
+            <p>
+              Training is four steps on repeat. <strong>Guess:</strong> run a real sentence from the training
+              text through the model and get its percentages for the next token at every spot.{" "}
+              <strong>Grade:</strong> compare each guess against the token that <em>actually</em> came next
+              in the text, producing a single wrongness number called the <strong>loss</strong>.{" "}
+              <strong>Diagnose:</strong> work out, for every one of the model's millions of learned numbers,
+              whether raising or lowering it slightly would have made the loss smaller (this per-number
+              direction is called the <strong>gradient</strong>). <strong>Nudge:</strong> move every number a
+              tiny bit in its helpful direction. That's the whole thing. Repeated over trillions of tokens,
+              this loop <em>is</em> pre-training -- Module 2 is about doing it at gigantic scale, not about
+              anything fundamentally different.
+            </p>
+          }
+          id={
+            <p>
+              Pelatihan adalah empat langkah yang diulang-ulang. <strong>Tebak:</strong> jalankan kalimat asli
+              dari teks latihan lewat model dan dapatkan persentasenya untuk token berikutnya di tiap titik.{" "}
+              <strong>Nilai:</strong> bandingkan tiap tebakan dengan token yang <em>benar-benar</em> muncul
+              berikutnya di teks, menghasilkan satu angka kesalahan bernama <strong>loss</strong>.{" "}
+              <strong>Diagnosis:</strong> hitung, untuk setiap satu dari jutaan angka hasil belajar model,
+              apakah menaikkan atau menurunkannya sedikit akan membuat loss lebih kecil (arah per-angka ini
+              disebut <strong>gradien</strong>). <strong>Geser:</strong> pindahkan setiap angka sedikit saja
+              ke arah yang menolongnya. Itu saja. Diulang pada triliunan token, loop inilah pra-pelatihan --
+              Modul 2 membahas cara melakukannya dalam skala raksasa, bukan tentang sesuatu yang berbeda
+              secara mendasar.
+            </p>
+          }
+        />
       </Section>
 
-      <Section title="Lab — the shape of being wrong">
-        <p>
-          The official name for the wrongness score is <strong>cross-entropy</strong>, and for one guess
-          it's simply <code>-ln(p)</code>: take the percentage <code>p</code> the model gave to the token
-          that actually came next, and feed it through a curve that's near zero when p is high and
-          skyrockets as p approaches zero. Drag the slider to set that percentage and watch both readouts
-          update live.
-        </p>
+      <Section title={pick(lang, "Lab — the shape of being wrong", "Lab — bentuk dari kesalahan")}>
+        <Bi
+          en={
+            <p>
+              The official name for the wrongness score is <strong>cross-entropy</strong>, and for one guess
+              it's simply <code>-ln(p)</code>: take the percentage <code>p</code> the model gave to the token
+              that actually came next, and feed it through a curve that's near zero when p is high and
+              skyrockets as p approaches zero. Drag the slider to set that percentage and watch both readouts
+              update live.
+            </p>
+          }
+          id={
+            <p>
+              Nama resmi skor kesalahan itu <strong>cross-entropy</strong>, dan untuk satu tebakan rumusnya
+              sesederhana <code>-ln(p)</code>: ambil persentase <code>p</code> yang model berikan ke token
+              yang benar-benar muncul berikutnya, lalu lewatkan melalui kurva yang mendekati nol saat p
+              tinggi dan meroket saat p mendekati nol. Geser slider untuk mengatur persentase itu dan lihat
+              kedua angka pembacaan berubah langsung.
+            </p>
+          }
+        />
         <ScopeScreen label="Cross-entropy loss curve with a slider for the model's assigned probability to the correct token">
           <Slider label="p(CORRECT TOKEN)" value={pCorrect} min={0.02} max={0.98} step={0.01} onChange={setPCorrect} format={(v) => v.toFixed(2)} />
           <svg viewBox="0 0 320 160" width="100%" height="180" aria-label="Plot of negative log probability (cross-entropy) as a function of assigned probability, with the current point marked">
@@ -150,21 +207,41 @@ export default function LearningToPredict() {
             <Readout label="PERPLEXITY = e^loss" value={ppl.toFixed(2)} accent={colors.green} />
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 10 }}>
-            Perplexity {ppl.toFixed(1)} reads as "as uncertain as choosing uniformly among {ppl.toFixed(0)} equally likely tokens."
+            {pick(
+              lang,
+              `Perplexity ${ppl.toFixed(1)} reads as "as uncertain as choosing uniformly among ${ppl.toFixed(0)} equally likely tokens."`,
+              `Perplexity ${ppl.toFixed(1)} dibaca "sebingung memilih rata di antara ${ppl.toFixed(0)} token yang sama mungkinnya."`,
+            )}
           </p>
         </ScopeScreen>
       </Section>
 
-      <Section title="Lab — gradient descent, for real">
-        <p>
-          Picture the loss as a hilly landscape where lower means better, and training as a hiker in
-          thick fog who can only feel the slope underfoot and always steps downhill. The curve below is
-          such a landscape, with two valleys. The <strong>learning rate</strong> is the hiker's stride
-          length. Set it and a starting point, then step downhill one move at a time, or run 30 moves at
-          once. Small strides creep along slowly; sensible strides settle into a valley; and try cranking
-          the stride way up -- the hiker doesn't just descend slower, it overshoots the valley entirely
-          and goes flying out of the landscape. That's called divergence, and it's a real failure mode.
-        </p>
+      <Section title={pick(lang, "Lab — gradient descent, for real", "Lab — gradient descent, sungguhan")}>
+        <Bi
+          en={
+            <p>
+              Picture the loss as a hilly landscape where lower means better, and training as a hiker in
+              thick fog who can only feel the slope underfoot and always steps downhill. The curve below is
+              such a landscape, with two valleys. The <strong>learning rate</strong> is the hiker's stride
+              length. Set it and a starting point, then step downhill one move at a time, or run 30 moves at
+              once. Small strides creep along slowly; sensible strides settle into a valley; and try cranking
+              the stride way up -- the hiker doesn't just descend slower, it overshoots the valley entirely
+              and goes flying out of the landscape. That's called divergence, and it's a real failure mode.
+            </p>
+          }
+          id={
+            <p>
+              Bayangkan loss sebagai lanskap berbukit di mana makin rendah makin baik, dan pelatihan sebagai
+              pendaki dalam kabut tebal yang hanya bisa merasakan kemiringan di bawah kakinya dan selalu
+              melangkah menurun. Kurva di bawah adalah lanskap seperti itu, dengan dua lembah.{" "}
+              <strong>Learning rate</strong> adalah panjang langkah si pendaki. Atur itu dan titik awal, lalu
+              melangkah menurun satu gerakan demi satu, atau jalankan 30 gerakan sekaligus. Langkah kecil
+              merayap pelan; langkah yang masuk akal mengendap ke sebuah lembah; dan coba besarkan langkahnya
+              habis-habisan -- si pendaki bukan sekadar turun lebih lambat, ia melompati lembah sepenuhnya dan
+              terbang keluar dari lanskap. Itu disebut divergensi, dan itu mode kegagalan sungguhan.
+            </p>
+          }
+        />
         <ScopeScreen label="Gradient descent lab on a fixed 1D polynomial loss surface">
           <Slider label="LEARNING RATE" value={lr} min={0.01} max={1.0} step={0.01} onChange={setLr} format={(v) => v.toFixed(2)} />
           <Slider label="START POINT (x0)" value={x0} min={-8} max={8} step={0.5} onChange={(v) => { setX0(v); setTrail([v]); }} format={(v) => v.toFixed(1)} />
@@ -205,32 +282,67 @@ export default function LearningToPredict() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Teacher forcing: grading every guess at once">
-        <p>
-          When a model <em>generates</em> text, it must go one token at a time -- each new token gets fed
-          back in before the next guess. Training has a wonderful shortcut. Given a complete real
-          sentence from the training text, the no-peeking rule from lesson 1.5 already guarantees that
-          each position only sees what came before it. So the model can be graded on <em>every</em>{" "}
-          position of the sentence in a single pass: "after word 3, did you predict word 4?", "after word
-          4, did you predict word 5?" -- all simultaneously, like grading every question on a completed
-          exam at once instead of waiting for the student to answer one question before revealing the
-          next. This is called <strong>teacher forcing</strong>, because at every position the model reads
-          the true, correct history from the real text -- never its own possibly-wrong earlier guesses.
-        </p>
+      <Section title={pick(lang, "Teacher forcing: grading every guess at once", "Teacher forcing: menilai semua tebakan sekaligus")}>
+        <Bi
+          en={
+            <p>
+              When a model <em>generates</em> text, it must go one token at a time -- each new token gets fed
+              back in before the next guess. Training has a wonderful shortcut. Given a complete real
+              sentence from the training text, the no-peeking rule from lesson 1.5 already guarantees that
+              each position only sees what came before it. So the model can be graded on <em>every</em>{" "}
+              position of the sentence in a single pass: "after word 3, did you predict word 4?", "after word
+              4, did you predict word 5?" -- all simultaneously, like grading every question on a completed
+              exam at once instead of waiting for the student to answer one question before revealing the
+              next. This is called <strong>teacher forcing</strong>, because at every position the model reads
+              the true, correct history from the real text -- never its own possibly-wrong earlier guesses.
+            </p>
+          }
+          id={
+            <p>
+              Ketika model <em>menghasilkan</em> teks, ia harus berjalan satu token demi satu -- tiap token
+              baru dimasukkan kembali sebelum tebakan berikutnya. Pelatihan punya jalan pintas yang indah.
+              Diberi kalimat asli yang utuh dari teks latihan, aturan dilarang-mengintip dari pelajaran 1.5
+              sudah menjamin tiap posisi hanya melihat apa yang datang sebelumnya. Jadi model bisa dinilai di{" "}
+              <em>setiap</em> posisi kalimat dalam satu lintasan: "setelah kata 3, apakah kamu menebak kata
+              4?", "setelah kata 4, apakah kamu menebak kata 5?" -- semuanya serentak, seperti menilai semua
+              soal pada ujian yang sudah selesai sekaligus, alih-alih menunggu murid menjawab satu soal
+              sebelum membuka soal berikutnya. Ini disebut <strong>teacher forcing</strong>, karena di setiap
+              posisi model membaca riwayat yang benar dari teks asli -- tak pernah tebakan-tebakan lamanya
+              sendiri yang mungkin salah.
+            </p>
+          }
+        />
       </Section>
 
-      <Section title="AdamW, briefly">
-        <p>
-          The plain "hiker" above uses one stride length for every single parameter in the model. In
-          practice, that's clumsy: some parameters get steady, gentle signals and could safely take
-          bigger steps, while others get wild, noisy signals and need to be reined in.{" "}
-          <strong>AdamW</strong>, the training algorithm nearly every modern LLM actually uses, keeps a
-          short memory of how each individual parameter's signals have been behaving and gives each one
-          its own personalized stride -- bigger for the steady ones, damped for the jumpy ones. The "W"
-          adds one more habit: every step, all parameters get pulled a tiny bit back toward zero
-          ("weight decay"), a gentle discipline that discourages any single number from growing huge and
-          helps the model generalize instead of memorizing.
-        </p>
+      <Section title={pick(lang, "AdamW, briefly", "AdamW, singkatnya")}>
+        <Bi
+          en={
+            <p>
+              The plain "hiker" above uses one stride length for every single parameter in the model. In
+              practice, that's clumsy: some parameters get steady, gentle signals and could safely take
+              bigger steps, while others get wild, noisy signals and need to be reined in.{" "}
+              <strong>AdamW</strong>, the training algorithm nearly every modern LLM actually uses, keeps a
+              short memory of how each individual parameter's signals have been behaving and gives each one
+              its own personalized stride -- bigger for the steady ones, damped for the jumpy ones. The "W"
+              adds one more habit: every step, all parameters get pulled a tiny bit back toward zero
+              ("weight decay"), a gentle discipline that discourages any single number from growing huge and
+              helps the model generalize instead of memorizing.
+            </p>
+          }
+          id={
+            <p>
+              "Pendaki" polos di atas memakai satu panjang langkah untuk setiap parameter di model. Dalam
+              praktik, itu kikuk: sebagian parameter menerima sinyal yang tenang dan mantap sehingga aman
+              mengambil langkah lebih besar, sementara yang lain menerima sinyal liar dan berisik sehingga
+              perlu dikekang. <strong>AdamW</strong>, algoritme pelatihan yang benar-benar dipakai hampir
+              semua LLM modern, menyimpan ingatan pendek tentang perilaku sinyal tiap parameter dan memberi
+              masing-masing langkah pribadinya sendiri -- lebih besar untuk yang mantap, diredam untuk yang
+              melonjak-lonjak. Huruf "W" menambah satu kebiasaan lagi: di tiap langkah, semua parameter
+              ditarik sedikit kembali ke arah nol ("weight decay"), disiplin lembut yang mencegah satu angka
+              pun tumbuh raksasa dan membantu model menggeneralisasi alih-alih menghafal.
+            </p>
+          }
+        />
       </Section>
     </LessonLayout>
   );
