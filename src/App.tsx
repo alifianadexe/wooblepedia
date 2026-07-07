@@ -3,10 +3,11 @@ import { SiteHeader } from "./components/SiteHeader";
 import { Home } from "./pages/Home";
 import { LessonPage } from "./pages/LessonPage";
 import { NotFound } from "./pages/NotFound";
+import { LanguageProvider } from "./lib/i18n";
 
 export default function App() {
   return (
-    <>
+    <LanguageProvider>
       <SiteHeader />
       <main className="site-main">
         <div className="container">
@@ -19,6 +20,6 @@ export default function App() {
           </Routes>
         </div>
       </main>
-    </>
+    </LanguageProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getReadRefs, setRefRead } from "../lib/storage";
+import { useUI } from "../lib/i18n";
 
 export interface ReferenceItem {
   title: string;
@@ -9,9 +10,10 @@ export interface ReferenceItem {
 
 export function RefChecklist({ lessonKey, items }: { lessonKey: string; items: ReferenceItem[] }) {
   const [readMap, setReadMap] = useState(() => getReadRefs(lessonKey));
+  const ui = useUI();
   return (
     <div className="ref-checklist">
-      <div className="ref-checklist__title">REFERENCES — CHECK OFF AS YOU READ</div>
+      <div className="ref-checklist__title">{ui.references}</div>
       {items.map((item, i) => (
         <label className="ref-item" key={i}>
           <input
