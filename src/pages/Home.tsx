@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
-import { lessonsByModule, moduleTitle, lessonPath, type ModuleId } from "../lib/syllabus";
+import { lessonsByModule, moduleTitle, type ModuleId } from "../lib/syllabus";
 import { moduleAccent } from "../lib/theme";
 import { lessonKey } from "../lib/lessonKey";
 import { useCompletedSlugs } from "../lib/storage";
-import { StatusDot } from "../components/StatusDot";
+import { JourneyPath } from "../components/JourneyPath";
 
 const MODULES: ModuleId[] = [1, 2, 3];
 
@@ -15,8 +14,9 @@ export function Home() {
     <div>
       <h1 style={{ fontSize: 20 }}>LLM FUNDAMENTALS — SIGNAL LAB CURRICULUM</h1>
       <p className="lesson-prose" style={{ maxWidth: "68ch", color: "var(--muted)" }}>
-        Twenty-two channels across three modules. Every lab on this site computes its numbers live
-        from the real equations underneath — read the lecture, then turn the dials yourself.
+        Twenty-two stops across three modules, laid out as one continuous path. Every lab on this
+        site computes its numbers live from the real equations underneath — follow the trail, then
+        turn the dials yourself.
       </p>
 
       {MODULES.map((m) => {
@@ -27,7 +27,11 @@ export function Home() {
           <div
             className="module-card"
             key={m}
-            style={{ borderTopColor: accent, borderTopWidth: 3 }}
+            style={{
+              borderTopColor: accent,
+              borderTopWidth: 3,
+              boxShadow: `var(--card-shadow), 0 0 40px -22px ${accent}`,
+            }}
           >
             <div className="module-card__header">
               <span className="module-card__title" style={{ color: accent }}>
@@ -37,16 +41,9 @@ export function Home() {
                 {doneCount}/{topics.length} CALIBRATED
               </span>
             </div>
-            {topics.map((t) => {
-              const complete = completedSet.has(lessonKey(t));
-              return (
-                <Link className="topic-row" to={lessonPath(t)} key={t.slug}>
-                  <StatusDot complete={complete} />
-                  <span className="topic-row__chapter">CH{t.chapter}</span>
-                  <span className="topic-row__title">{t.title}</span>
-                </Link>
-              );
-            })}
+            <div style={{ padding: "28px 16px 32px" }}>
+              <JourneyPath lessons={topics} accent={accent} completedKeys={completedSet} />
+            </div>
           </div>
         );
       })}

@@ -5,7 +5,10 @@ import { moduleAccent } from "../lib/theme";
 export function ChannelHeader({ lesson }: { lesson: LessonMeta }) {
   const accent = moduleAccent[lesson.module];
   return (
-    <header className="channel-header" style={{ borderLeftColor: accent }}>
+    <header
+      className="channel-header"
+      style={{ borderLeftColor: accent, boxShadow: `var(--card-shadow), 0 0 32px -18px ${accent}` }}
+    >
       <span
         className="status-dot status-dot--glow"
         aria-hidden="true"
