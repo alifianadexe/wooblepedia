@@ -72,19 +72,20 @@ export default function LearningToPredict() {
       lesson={lesson}
       intro={
         <p>
-          Everything upstream -- tokenizer, embeddings, position, attention, MLP -- produces one thing per
-          position: a distribution over the next token. Training is the loop that turns "produces some
-          distribution" into "produces a good one": run the forward pass, measure how wrong the
-          distribution was, push weights in the direction that makes it less wrong, repeat billions of
-          times.
+          Everything you've built so far -- tokenizer, embeddings, position stamps, attention, MLP --
+          ends in one output: for each spot in the text, a set of percentages over "what token comes
+          next." A freshly created model produces garbage percentages, because all its learned numbers
+          start out random. Training is the loop that fixes that: make a guess, measure how wrong it was,
+          nudge every number in the direction that would have made the guess less wrong, and repeat --
+          billions of times.
         </p>
       }
       takeaways={[
-        "Cross-entropy loss per position is -ln(p(correct token)); training minimizes the average of this across every position in every sequence.",
-        "The -ln curve is brutal near p=0 and cheap near p=1: a confidently wrong prediction costs enormously more than a hedged, uncertain one.",
-        "Perplexity = e^loss is the loss re-expressed as \"the model was as uncertain as choosing uniformly among this many tokens\" -- more interpretable than a raw nat value.",
-        "Teacher forcing plus the causal mask let every position in a sequence be trained in parallel in one forward pass, rather than one token at a time.",
-        "AdamW adapts a per-parameter step size from running estimates of the gradient's mean and variance, and decouples weight decay from that adaptive step -- it's the default optimizer for essentially all modern LLM training.",
+        "The model's wrongness score (\"loss\") for one guess depends only on the percentage it gave to the token that actually came next -- high percentage means low loss. Training works to shrink the average loss across every guess.",
+        "The scoring curve is brutally unfair on purpose: being confidently wrong costs enormously more than honestly hedging. That pressure teaches the model calibrated uncertainty.",
+        "Perplexity re-expresses the loss as \"the model was as unsure as if it were picking blindly among this many equally likely tokens\" -- perplexity 20 means as lost as a 20-way coin flip.",
+        "During training, the model doesn't generate one token at a time -- it grades its guess at every position of a real text simultaneously, in one pass. That trick is called teacher forcing.",
+        "AdamW, the standard training algorithm, gives every individual parameter its own personalized step size instead of one global speed for all -- it's the default for essentially all modern LLM training.",
       ]}
       references={[
         {
@@ -106,21 +107,26 @@ export default function LearningToPredict() {
     >
       <Section title="The loop">
         <p>
-          Forward pass: run the current sequence through the model, get a probability distribution over
-          the vocabulary at every position. Loss: compare each position's distribution against the actual
-          next token that appeared in the training text, using cross-entropy. Backward pass: compute the
-          gradient of that loss with respect to every weight in the network. Optimizer step: nudge every
-          weight slightly against its gradient. That four-step loop, repeated over trillions of tokens, is
-          the entirety of pre-training -- Module 2 is about how to do it at scale, not what it fundamentally
-          is.
+          Training is four steps on repeat. <strong>Guess:</strong> run a real sentence from the training
+          text through the model and get its percentages for the next token at every spot.{" "}
+          <strong>Grade:</strong> compare each guess against the token that <em>actually</em> came next
+          in the text, producing a single wrongness number called the <strong>loss</strong>.{" "}
+          <strong>Diagnose:</strong> work out, for every one of the model's millions of learned numbers,
+          whether raising or lowering it slightly would have made the loss smaller (this per-number
+          direction is called the <strong>gradient</strong>). <strong>Nudge:</strong> move every number a
+          tiny bit in its helpful direction. That's the whole thing. Repeated over trillions of tokens,
+          this loop <em>is</em> pre-training -- Module 2 is about doing it at gigantic scale, not about
+          anything fundamentally different.
         </p>
       </Section>
 
       <Section title="Lab — the shape of being wrong">
         <p>
-          Cross-entropy for one position is <code>-ln(p)</code>, where p is the probability the model
-          assigned to the token that actually came next. Drag the slider to set that probability and watch
-          both numbers update live.
+          The official name for the wrongness score is <strong>cross-entropy</strong>, and for one guess
+          it's simply <code>-ln(p)</code>: take the percentage <code>p</code> the model gave to the token
+          that actually came next, and feed it through a curve that's near zero when p is high and
+          skyrockets as p approaches zero. Drag the slider to set that percentage and watch both readouts
+          update live.
         </p>
         <ScopeScreen label="Cross-entropy loss curve with a slider for the model's assigned probability to the correct token">
           <Slider label="p(CORRECT TOKEN)" value={pCorrect} min={0.02} max={0.98} step={0.01} onChange={setPCorrect} format={(v) => v.toFixed(2)} />
@@ -151,10 +157,13 @@ export default function LearningToPredict() {
 
       <Section title="Lab — gradient descent, for real">
         <p>
-          A fixed, smooth loss surface with two shallow minima. Set a learning rate and a starting point,
-          then step through gradient descent one update at a time, or run 30 updates at once. Watch what a
-          learning rate that's too high actually does -- it isn't "slower convergence," it's outright
-          divergence.
+          Picture the loss as a hilly landscape where lower means better, and training as a hiker in
+          thick fog who can only feel the slope underfoot and always steps downhill. The curve below is
+          such a landscape, with two valleys. The <strong>learning rate</strong> is the hiker's stride
+          length. Set it and a starting point, then step downhill one move at a time, or run 30 moves at
+          once. Small strides creep along slowly; sensible strides settle into a valley; and try cranking
+          the stride way up -- the hiker doesn't just descend slower, it overshoots the valley entirely
+          and goes flying out of the landscape. That's called divergence, and it's a real failure mode.
         </p>
         <ScopeScreen label="Gradient descent lab on a fixed 1D polynomial loss surface">
           <Slider label="LEARNING RATE" value={lr} min={0.01} max={1.0} step={0.01} onChange={setLr} format={(v) => v.toFixed(2)} />
@@ -196,27 +205,31 @@ export default function LearningToPredict() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Teacher forcing: training every position at once">
+      <Section title="Teacher forcing: grading every guess at once">
         <p>
-          Generation is sequential -- one token at a time, fed back in. Training doesn't have to be: given a
-          full real sequence from the training corpus, the causal mask (lesson 1.5) already guarantees
-          position i can only see positions ≤ i. That means every position's "predict the next token" loss
-          can be computed in a single forward pass over the whole sequence simultaneously -- position 3 is
-          trained to predict the real token 4 using only tokens 0-3, position 4 to predict token 5 using
-          tokens 0-4, all at once. This is "teacher forcing": the model is always shown the real, correct
-          history, never its own (possibly wrong) previous guesses, during training.
+          When a model <em>generates</em> text, it must go one token at a time -- each new token gets fed
+          back in before the next guess. Training has a wonderful shortcut. Given a complete real
+          sentence from the training text, the no-peeking rule from lesson 1.5 already guarantees that
+          each position only sees what came before it. So the model can be graded on <em>every</em>{" "}
+          position of the sentence in a single pass: "after word 3, did you predict word 4?", "after word
+          4, did you predict word 5?" -- all simultaneously, like grading every question on a completed
+          exam at once instead of waiting for the student to answer one question before revealing the
+          next. This is called <strong>teacher forcing</strong>, because at every position the model reads
+          the true, correct history from the real text -- never its own possibly-wrong earlier guesses.
         </p>
       </Section>
 
       <Section title="AdamW, briefly">
         <p>
-          Plain gradient descent uses one global learning rate for every parameter. AdamW keeps a running
-          estimate of each parameter's gradient mean and variance and uses them to give every parameter its
-          own effective step size -- parameters with small, consistent gradients get bigger relative steps;
-          parameters with noisy or huge gradients get damped ones. The "W" is decoupled weight decay: rather
-          than folding L2 regularization into the gradient itself (where Adam's adaptive scaling distorts
-          it), AdamW applies weight decay directly to the weights each step, independent of the adaptive
-          part. This combination is the default optimizer for nearly every LLM trained today.
+          The plain "hiker" above uses one stride length for every single parameter in the model. In
+          practice, that's clumsy: some parameters get steady, gentle signals and could safely take
+          bigger steps, while others get wild, noisy signals and need to be reined in.{" "}
+          <strong>AdamW</strong>, the training algorithm nearly every modern LLM actually uses, keeps a
+          short memory of how each individual parameter's signals have been behaving and gives each one
+          its own personalized stride -- bigger for the steady ones, damped for the jumpy ones. The "W"
+          adds one more habit: every step, all parameters get pulled a tiny bit back toward zero
+          ("weight decay"), a gentle discipline that discourages any single number from growing huge and
+          helps the model generalize instead of memorizing.
         </p>
       </Section>
     </LessonLayout>

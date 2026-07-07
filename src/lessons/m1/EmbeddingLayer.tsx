@@ -72,18 +72,18 @@ export default function EmbeddingLayer() {
       lesson={lesson}
       intro={
         <p>
-          The tokenizer's output is just an integer -- an id with no meaning of its own. The embedding
-          layer is where meaning enters the system: a single learned weight matrix, shape{" "}
-          <code>vocab_size × d_model</code>, where row <em>i</em> is the coordinate of token <em>i</em> in
-          a high-dimensional "meaning space." Looking up a token is nothing more exotic than{" "}
-          <code>SELECT vector FROM embeddings WHERE id = ?</code>.
+          The tokenizer's output is just an ID number, and a number like 4,082 carries no meaning by
+          itself. The embedding layer is where meaning enters the system. It's one giant table with a row
+          for every token in the vocabulary, and each row holds a long list of numbers -- that token's
+          coordinates in a kind of "meaning space," where words used in similar ways sit near each other.
+          Using it couldn't be simpler: given token number 4,082, go fetch row 4,082. That's it.
         </p>
       }
       takeaways={[
-        "The embedding matrix is learned weights (vocab_size × d_model), updated by gradient descent -- unlike the tokenizer's static merge rules.",
-        "A token's embedding is a coordinate in meaning-space; semantic closeness is measured by cosine similarity (the angle between vectors), not raw distance.",
-        "Tokenizer vocabulary (static JSON), embedding matrix (learned weights), and vector databases (external, for RAG) are three separate storage systems -- don't conflate them.",
-        "Many models tie the input embedding matrix and the output LM-head projection to the same weights, roughly halving that parameter cost -- previewed here, used for real in lesson 1.9's accounting.",
+        "The embedding table is learned: training constantly nudges every row, unlike the tokenizer's fixed codebook, which never changes.",
+        "A token's embedding is its position in meaning space. How related two words are gets measured by the angle between their arrows (cosine similarity), not by how long the arrows are.",
+        "Tokenizer codebook (a fixed file), embedding table (learned numbers inside the model), and vector databases (a separate tool outside the model) are three different things -- don't blur them together.",
+        "Many models reuse this same table at the very end of the pipeline too (turning final vectors back into token scores), roughly halving that cost -- you'll use this fact in lesson 1.9's accounting.",
       ]}
       references={[
         {
@@ -103,24 +103,27 @@ export default function EmbeddingLayer() {
         },
       ]}
     >
-      <Section title="A row fetch, not a computation">
+      <Section title="A table lookup, not a calculation">
         <p>
-          Everything downstream of this layer -- attention, the MLP, the residual stream -- operates on
-          vectors, not integers. The embedding layer's entire job is the conversion: given a token id, fetch
-          row <em>id</em> from a matrix. There is no arithmetic here at inference time, just indexing. What
-          makes the vectors meaningful is what happened during training: gradient descent nudged each row
-          so that tokens used in similar contexts end up with similar vectors, in exactly the same sense
-          that a well-designed schema puts related records near each other in an index.
+          Everything after this layer -- attention, the MLP -- works on vectors (those lists of numbers),
+          never on the raw ID numbers. So the embedding layer's entire job is the swap: token number in,
+          row of the table out. No math happens here at all when the model runs -- it's like flipping to a
+          page in a book. What makes the rows <em>meaningful</em> is what happened during training. Every
+          time the model practiced predicting text, the training process nudged these rows a tiny bit, and
+          after trillions of nudges, words that show up in similar sentences ("cat" and "dog," "king" and
+          "queen") ended up with similar rows. Nobody planned that layout -- it emerged.
         </p>
       </Section>
 
       <Section title="Meaning space, measured with cosine similarity">
         <p>
-          Pick any two words below (a hand-placed 2-D toy embedding space, small enough to see directly --
-          real models use 768 to 16,384 dimensions). The arrows are the actual vectors; the numbers beneath
-          are computed live by <code>cosineSimilarity</code> and <code>dotProduct</code> from{" "}
-          <code>src/lib/math.ts</code>. Cosine similarity cares about direction, not magnitude -- it's why
-          two rare, low-magnitude function words can still point the same way.
+          Click any two words below. This toy meaning space uses just 2 numbers per word so you can
+          actually see it as a map -- real models use hundreds or thousands of numbers per word, which
+          works the same way but can't be drawn. Each word is an arrow from the center of the map to its
+          spot. The "cosine similarity" computed underneath measures the <em>angle</em> between the two
+          arrows: pointing the same way scores near 1 (very related), at right angles scores near 0
+          (unrelated), and opposite ways scores negative. Direction is what matters, not how long the
+          arrows are.
         </p>
         <ScopeScreen label="2D toy embedding space with clickable words and live cosine similarity">
           <svg viewBox="0 0 300 300" width="100%" height="320" aria-label="Scatter plot of toy word embeddings in 2D meaning space">
@@ -187,8 +190,8 @@ export default function EmbeddingLayer() {
 
       <Section title="The lookup, made literal">
         <p>
-          Click a row below. This is the entire forward-pass cost of the embedding layer: an index into a
-          matrix, and a vector comes out.
+          Click a token below and watch its row get fetched. This really is everything the embedding
+          layer does while the model runs: number in, row out.
         </p>
         <ScopeScreen label="Embedding matrix row lookup by token id">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
@@ -226,25 +229,25 @@ export default function EmbeddingLayer() {
 
       <Section title="Three storage systems, restated">
         <p>
-          This lesson's matrix, the tokenizer's merge rules from lesson 1.2, and a vector database are easy
-          to blur together because all three "hold vectors related to text." They don't overlap in
-          practice: the tokenizer vocabulary is a static file with zero learned weights; the embedding
-          matrix here is trained weights, updated every step; a vector database is an external index of
-          embeddings computed by some model, used for retrieval (covered later in this course), and is not
-          part of the model's weights at all. Confusing "the embedding matrix" with "a vector database" is
-          one of the most common category errors newcomers to this field make -- they are solving
-          completely different problems.
+          This lesson's table, the tokenizer's glue rules from lesson 1.2, and a vector database are easy
+          to blur together because all three "store something about text." But they don't overlap at all.
+          The tokenizer's codebook is a fixed file that never learns anything. The embedding table here is
+          made of learned numbers inside the model, adjusted throughout training. A vector database is a
+          separate piece of software outside the model entirely -- a searchable filing cabinet where you
+          can store descriptions of whole documents so a model can look things up later (covered much
+          later in this course). Confusing "the embedding table" with "a vector database" is one of the
+          most common mix-ups newcomers make; they solve completely different problems.
         </p>
       </Section>
 
       <Section title="Weight tying, previewed">
         <p>
-          The LM head at the end of the model (the layer that turns a final hidden vector back into logits
-          over the vocabulary) has the exact same shape as this embedding matrix, transposed. Many
-          architectures, including GPT-2, simply reuse the same weight tensor for both -- "weight tying" --
-          rather than learning two separate vocab-sized matrices. It's a meaningful parameter savings at
-          GPT-2 scale and a detail you'll use directly when you total up a real parameter budget in lesson
-          1.9.
+          Here's a neat trick to file away. At the very end of the model, a final layer has to turn a
+          vector back into a score for every token in the vocabulary -- meaning it needs a table of
+          exactly the same size as this one, just used in the reverse direction. Many models, including
+          GPT-2, simply reuse the same table for both jobs instead of storing two. It's called "weight
+          tying," it saves a meaningful chunk of the model's total size, and you'll use it directly when
+          you add up a real model's parameter count in lesson 1.9.
         </p>
       </Section>
     </LessonLayout>

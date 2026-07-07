@@ -66,19 +66,20 @@ export default function Attention() {
       lesson={lesson}
       intro={
         <p>
-          Attention is the only place in the whole architecture where information moves between token
-          positions -- the MLP (next lesson) never looks sideways. Structurally it's a soft hash-map lookup:
-          every position issues a <strong>query</strong> ("what am I looking for"), every position advertises
-          a <strong>key</strong> ("what I contain") and holds a <strong>value</strong> ("what I'll hand over
-          if matched"), and instead of an exact key match you get a similarity-weighted blend of every value
-          in the map.
+          Attention is the only place in the whole model where words get to look at each other and share
+          information -- every other step processes each word alone. The way it works is like a classroom
+          where everyone asks around for help at once. Each word raises a <strong>query</strong> ("here's
+          what I'm looking for"), each word wears a <strong>key</strong> ("here's what I know about"), and
+          each word carries a <strong>value</strong> ("here's what I'll share if you pick me"). But
+          instead of picking exactly one classmate, every word takes a little from everyone -- more from
+          the good matches, less from the poor ones -- and blends it all together.
         </p>
       }
       takeaways={[
-        "q = x·Wq, k = x·Wk, v = x·Wv are three learned linear projections of the same input vector, playing three different roles.",
-        "Scores s = q·k / √d are scaled by the key dimension specifically to keep dot-product variance roughly constant, preventing softmax from saturating into near-one-hot, low-gradient territory as d grows.",
-        "The causal mask -- setting future scores to −∞ before softmax so their weight becomes exactly 0 -- is the single architectural difference between a GPT-style generator and a BERT-style bidirectional encoder.",
-        "Because past keys and values never change once computed, inference caches them (\"KV-cache\") instead of recomputing the whole sequence at every generation step -- the memory cost of that cache gets its own calculator in lesson 2.2.",
+        "Each word's query, key, and value are three different remixes of the same word vector, made by multiplying it against three learned grids of numbers. Same input, three different roles.",
+        "A query and a key are compared by multiplying matching entries and adding them up (a \"dot product\") -- big result means good match. The result is divided by a size-correction factor (√d) so the numbers don't blow up in bigger models and turn the blend into a winner-take-all.",
+        "The \"causal mask\" blocks every word from peeking at words that come after it -- essential when the whole game is predicting what comes next. This one rule is the main difference between a GPT-style text generator and models that read whole sentences at once.",
+        "Once a word's key and value are computed, they never change -- so when generating text, models save them (the \"KV-cache\") instead of redoing the math for the whole text at every step. You'll compute what that cache costs in memory in lesson 2.2.",
       ]}
       references={[
         {
@@ -98,36 +99,40 @@ export default function Attention() {
         },
       ]}
     >
-      <Section title="The soft hash-map lookup">
+      <Section title="A lookup that never says 'not found'">
         <p>
-          A real hash map returns the exact value for an exact key match, or nothing. Attention softens
-          both sides of that: instead of an equality test, it measures similarity between a query and every
-          key via a dot product, and instead of returning one value, it returns a weighted average of every
-          value, weighted by that similarity. "the cat sat" and "the dog sat" can share almost all of their
-          machinery precisely because the lookup is soft -- similar keys get similar weight even when they
-          aren't identical.
+          Think of a strict library catalog: you ask for one exact title and get that book or nothing.
+          Attention is the friendly librarian instead. You describe what you're after, and rather than
+          demanding an exact match, she checks your description against every book's cover, then hands
+          you a blend -- mostly from the best matches, a pinch from everything else. That fuzziness is a
+          feature, not sloppiness: it means "the cat sat" and "the dog sat" can be handled by nearly the
+          same machinery, because similar-but-not-identical things still find each other.
         </p>
       </Section>
 
       <Section title="Scores, scaling, and softmax">
         <p>
-          For a query vector q at one position and key vectors k at every position, the raw compatibility
-          score is a dot product: <code>s = q · k</code>. Dot products grow with dimensionality -- summing
-          more terms, even random ones, produces larger typical magnitudes -- so scores are divided by{" "}
-          <code>√d</code> (d being the key dimension) to keep their variance roughly constant regardless of
-          model width. Skip that scaling and, at high dimensions, scores routinely land far enough apart
-          that softmax saturates: one weight near 1, the rest near 0, and gradients through the "rest"
-          vanish. The scaled scores then pass through softmax to become weights that sum to 1, and the
-          output is <code>Σ weight·v</code> across all positions.
+          How is a match actually scored? A query and a key are both just lists of numbers, so you
+          multiply them entry by entry and add up the results -- an operation called a{" "}
+          <strong>dot product</strong>. When two lists point in a similar direction, the sum comes out
+          big; when they're unrelated, it comes out near zero. One wrinkle: the longer the lists, the
+          more terms get added, so raw scores naturally balloon in bigger models. That's why every score
+          is divided by <code>√d</code> (the square root of the list length) -- pure size correction.
+          Skip it and one score tends to tower over the rest, the blend collapses into "listen to exactly
+          one word and ignore everyone else," and the model has a much harder time learning. Finally, the
+          corrected scores go through <strong>softmax</strong>, a formula that converts any set of scores
+          into positive percentages summing to 100%. Those percentages are the recipe for the blend: each
+          word's output is that weighted mix of everyone's values.
         </p>
       </Section>
 
       <Section title="Lab — pick a query, watch the weights">
         <p>
-          Six real tokens, real 4-d query/key/value vectors derived from fixed weight matrices (
-          <code>Q = X·Wq</code>, etc.), and real scaled-dot-product attention. Pick which token is doing
-          the "looking," and toggle the causal mask to see GPT-style generation versus BERT-style
-          bidirectional attention on the identical vectors.
+          Six real tokens, each with genuinely computed query, key, and value lists, run through the real
+          attention math -- nothing staged. Click a token to make it the one doing the "looking," and
+          watch the arcs: thicker means that word is contributing more to the blend. Flip the causal-mask
+          toggle to see the difference between a model that must not peek ahead (how text generators
+          work) and one allowed to look both directions.
         </p>
         <ScopeScreen label="Attention arc diagram from a selected query token to every key token">
           <Toggle label="CAUSAL MASK (GPT-style)" checked={causal} onChange={setCausal} />
@@ -201,10 +206,11 @@ export default function Attention() {
 
       <Section title="Lab — every query at once, one batched matmul">
         <p>
-          Production attention never loops over queries one at a time -- every position's query attends to
-          every key simultaneously as a single matrix multiplication. This is the full 6×6 weight matrix
-          for the sentence above; with the causal mask on, the upper triangle (attending to future
-          positions) is exactly zero.
+          A real model doesn't handle one "looking" word at a time -- it computes every word's blend
+          percentages simultaneously in one big batch of arithmetic. Here's the full grid for the
+          sentence above: each row is one word doing the looking, each column is a word being looked at,
+          and each cell shows the percentage. With the causal mask on, the upper-right half is exactly
+          zero -- those cells would be words peeking at the future.
         </p>
         <ScopeScreen label="Full 6 by 6 attention weight matrix heatmap, upper triangle zeroed when causal mask is on">
           <svg viewBox="0 0 216 216" width={280} height={280} aria-label="6 by 6 attention weight heatmap, rows are queries, columns are keys">
@@ -224,12 +230,14 @@ export default function Attention() {
 
       <Section title="KV-caching, previewed">
         <p>
-          Once a key and value vector is computed for a position, it never changes -- <code>Wk</code> and{" "}
-          <code>Wv</code> are fixed after training, and the input to that position doesn't change either.
-          During generation, that means step <em>t+1</em> only needs to compute one new query, one new key,
-          and one new value for the newest token; every earlier key/value pair can be read from a cache
-          instead of recomputed. This is exactly why generation speed depends heavily on how much of that
-          cache fits in memory -- you'll build the real calculator for it, GQA and all, in lesson 2.2.
+          Here's a money-saving observation: once a word's key and value have been computed, they never
+          change -- the grids that produce them are frozen after training, and the word itself isn't
+          going anywhere. So when a model is generating text one token at a time, it doesn't redo the
+          math for the entire text at every step. It computes the newest token's query, key, and value,
+          and simply re-reads everyone else's from a saved copy called the <strong>KV-cache</strong>.
+          It's the difference between re-reading a whole book every time you add a sentence versus
+          keeping your notes. The catch is that those notes take up memory -- and how much, exactly, is a
+          calculation you'll do yourself in lesson 2.2.
         </p>
       </Section>
     </LessonLayout>

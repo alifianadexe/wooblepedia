@@ -43,18 +43,19 @@ export default function ToolsAndSafetyTuning() {
       lesson={lesson}
       intro={
         <p>
-          Tool use and safety behavior are both, mechanically, data problems layered on top of the same
-          SFT and preference-optimization machinery from the last two lessons -- not new architectures or
-          new loss functions. What changes is what the training data looks like and what it's designed to
+          How does a model learn to check the weather, run code, or refuse a dangerous request? Here's
+          the anticlimax: with the exact same training machinery from the last two lessons -- example
+          conversations and better-vs-worse comparisons. Nothing new gets bolted onto the model. What
+          changes is purely what the training conversations <em>contain</em> and what they're designed to
           teach.
         </p>
       }
       takeaways={[
-        "Tool use is trained on function-call traces: the model emits a structured call, the runtime executes it and injects the result as a special-role message, and the model continues -- an agent is just this loop iterated.",
-        "Only the assistant-authored turns (the function call and the final answer) are loss-relevant; the injected tool result is context, not something the model is trained to generate.",
-        "Safety tuning pushes refusal behavior through the same SFT and preference-optimization stages as helpfulness -- they are not separate systems.",
-        "Constitutional AI judges and revises model outputs against an explicit written set of principles using AI feedback (RLAIF), reducing reliance on purely human-labeled harmful/harmless data.",
-        "Jailbreaks are best understood as a distribution-shift problem: adversarial prompts push inputs into regions unlike anything safety training covered, which is why red-teaming and evals matter as an ongoing process, not a one-time check.",
+        "A model can't actually fetch the weather -- it can only write a request in an agreed format. Separate software reads the request, does the real work, and pastes the result back into the conversation for the model to read. Tool use is trained by showing thousands of examples of this exchange. (An 'agent' is just this loop repeated.)",
+        "In those examples, the model is graded only on its own lines -- the request and the final answer. The pasted-in tool result is something it learns to read, never to invent.",
+        "Refusing harmful requests is taught through the same two stages as helpfulness -- example refusals, plus comparisons where the appropriate response beats both dangerous compliance and pointless over-refusal. Safety is not a separate system.",
+        "Constitutional AI has the model critique and revise its own answers against an explicit written list of principles, so AI-generated feedback can supplement expensive human labeling.",
+        "Jailbreaks work by dressing a harmful request up to look unlike anything the safety training covered -- which is why teams attack their own model continuously (red-teaming), not as a one-time check before launch.",
       ]}
       references={[
         {
@@ -75,7 +76,12 @@ export default function ToolsAndSafetyTuning() {
       ]}
     >
       <Section title="Lab — a tool-call trace, step by step">
-        <p>Step through the exchange. Green-labeled turns are what the model is actually trained to produce.</p>
+        <p>
+          Step through a full exchange: the person asks, the model writes a weather request in the agreed
+          format, outside software actually fetches the data and pastes it in, and the model turns it
+          into a plain-language answer. Notice the labels -- the model is only trained on the turns it
+          authors itself.
+        </p>
         <ScopeScreen label="Step-through tool-call trace showing a user question, a function call, an injected tool result, and a grounded final answer">
           <div className="btn-row">
             <button type="button" className="btn" disabled={stepIdx <= 0} onClick={() => setStepIdx(Math.max(0, stepIdx - 1))}>← PREV TURN</button>
@@ -93,7 +99,11 @@ export default function ToolsAndSafetyTuning() {
       </Section>
 
       <Section title="Lab — grounded vs. hallucinated">
-        <p>Without tool access, the same question still gets an answer -- just not necessarily a correct one.</p>
+        <p>
+          Why bother with all this? Because without tools, the model still answers -- it just makes
+          something up. A language model always produces fluent, confident text; fluency is no guarantee
+          of truth. Flip the toggle to compare.
+        </p>
         <ScopeScreen label="Toggle between a tool-grounded weather answer and an illustrative hallucinated guess with no tool access">
           <Toggle label="TOOL ACCESS ENABLED" checked={grounded} onChange={setGrounded} />
           <div className="panel-2" style={{ padding: 14, marginTop: 10, borderLeft: `3px solid ${grounded ? colors.green : colors.red}` }}>
@@ -111,24 +121,26 @@ export default function ToolsAndSafetyTuning() {
 
       <Section title="Safety tuning: the same pipeline, different data">
         <p>
-          Refusal behavior for genuinely harmful requests is trained the same way helpfulness is: SFT
-          demonstrations of appropriate refusals, and preference pairs where an appropriate refusal (or a
-          safe, helpful answer) is "chosen" over either harmful compliance or unhelpful over-refusal. This
-          creates a real, unavoidable tension -- a model tuned only for harmlessness tends to refuse far too
-          much, including entirely benign requests, while one tuned only for helpfulness risks unsafe
-          compliance. Getting this balance right is an explicit objective of post-training, not a side
-          effect.
+          Learning to decline genuinely harmful requests is trained exactly the way helpfulness is:
+          example conversations showing appropriate refusals, plus comparisons where the right response
+          -- a safe, helpful answer, or a polite refusal when warranted -- is chosen over both dangerous
+          compliance <em>and</em> pointless over-caution. That last part matters, because there's a real
+          tension here: push only on safety and the model starts refusing harmless questions ("how do I
+          kill a process on my computer?"); push only on helpfulness and it risks going along with
+          genuinely dangerous requests. Getting that balance right is an explicit goal teams work on
+          directly, not something that happens by accident.
         </p>
         <p>
-          <strong>Constitutional AI</strong> is one concrete approach to generating the preference data this
-          requires without needing a human to label every single harmful/harmless comparison: a model
-          critiques and revises its own outputs against an explicit, written set of principles (a
-          "constitution"), and that AI-generated feedback (RLAIF, reinforcement learning from AI feedback)
-          supplies additional preference pairs alongside human-labeled ones. Jailbreaks are best understood
-          as a <strong>distribution-shift</strong> problem: an adversarial prompt is specifically constructed
-          to look unlike anything the safety-tuning data covered, so the learned refusal behavior simply
-          doesn't generalize there. This is exactly why red-teaming and evaluation are treated as an ongoing
-          process throughout deployment, not a checkbox exercise completed once before shipping.
+          Labeling enough safe-versus-unsafe comparisons by hand is expensive, and{" "}
+          <strong>Constitutional AI</strong> is one clever way around it: write out an explicit list of
+          principles (a "constitution"), then have the model critique and revise its own answers against
+          that list -- AI-generated feedback that supplements the human-labeled kind. And a note on{" "}
+          <strong>jailbreaks</strong>, the prompts people craft to trick models past their training: they
+          work by making a harmful request look unlike anything the safety examples covered -- wrapping it
+          in a costume, a fictional story, an elaborate roleplay. The lesson a model learned from its
+          training examples simply may not stretch to inputs that strange. That's why serious teams
+          attack their own models continuously ("red-teaming"), treating safety as an ongoing practice
+          rather than a box checked once before launch.
         </p>
       </Section>
     </LessonLayout>

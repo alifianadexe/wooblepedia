@@ -53,18 +53,19 @@ export default function TrainingInfrastructureSystems() {
       lesson={lesson}
       intro={
         <p>
-          A model too large for one GPU's memory can't simply be "run slower" -- it has to be split across
-          many GPUs in a specific, deliberate way, and the choice of how to split it is itself a major
-          engineering decision. This lesson starts from the raw memory arithmetic and builds up to the three
-          ways a model actually gets distributed across a cluster.
+          When a model is too big for one GPU's memory, you can't just "run it slower" -- like a puzzle
+          too large for one table, it has to be split across many machines, and <em>how</em> you split it
+          is a genuine engineering decision with big consequences. This lesson starts from the plain
+          memory arithmetic and builds up to the three ways a model actually gets divided across a
+          warehouse of GPUs.
         </p>
       }
       takeaways={[
-        "Inference costs about 2 bytes/parameter (fp16 weights); mixed-precision AdamW training costs about 16 bytes/parameter -- before any activations are counted.",
-        "Data parallelism replicates the whole model on every GPU and splits the batch; tensor parallelism splits individual matrix multiplications across GPUs; pipeline parallelism splits the layers themselves into sequential stages.",
-        "ZeRO/FSDP shards optimizer states, gradients, and parameters across data-parallel ranks instead of replicating them, trading some communication for a dramatic per-GPU memory reduction.",
-        "Activation checkpointing trades recomputation for memory: instead of storing every intermediate activation for backprop, it recomputes them on the backward pass from a handful of saved checkpoints.",
-        "At thousands of GPUs, hardware failures become a near-constant background process -- automated checkpoint-and-resume tooling, not failure prevention, is what keeps a multi-month run alive.",
+        "Running a model takes about 2 bytes of memory per parameter; training takes about 16, because of all the extra bookkeeping numbers -- and that's before counting the temporary working numbers.",
+        "Three ways to split the work: give every GPU a full copy of the model and different text to chew on (data parallel); split each layer's math across GPUs (tensor parallel); or deal out the layers themselves like an assembly line (pipeline parallel). Big runs combine all three.",
+        "A trick called ZeRO stops every GPU from wastefully storing identical copies of the training bookkeeping -- each holds just its slice and they share on demand, cutting per-GPU memory dramatically.",
+        "Activation checkpointing saves memory by throwing away most in-between results and redoing that math later when needed -- deliberately trading extra computation for space.",
+        "With thousands of GPUs running for months, something is always breaking. What keeps a run alive isn't preventing failures -- it's automatic save-points and fast restarts.",
       ]}
       references={[
         {
@@ -91,9 +92,9 @@ export default function TrainingInfrastructureSystems() {
     >
       <Section title="Lab — the memory console">
         <p>
-          Set a model size and a GPU count, pick inference or training, and toggle full replication against
-          ZeRO-3 style sharding. Every reading is <code>trainingMemoryPerGPU</code> from{" "}
-          <code>src/lib/math.ts</code>.
+          Set a model size and a GPU count, pick running versus training, and toggle between "every GPU
+          stores everything" and "each GPU stores only its share." Every readout is computed live -- watch
+          how sharing the storage makes an impossible model suddenly fit.
         </p>
         <ScopeScreen label="Per-GPU memory console with model size, GPU count, mode, and sharding controls">
           <Slider label="MODEL SIZE (BILLIONS OF PARAMS, LOG SCALE)" value={log2SizeB} min={0} max={9} step={0.05}
@@ -124,14 +125,17 @@ export default function TrainingInfrastructureSystems() {
 
       <Section title="Three ways to split a model">
         <p>
-          <strong>Data parallelism</strong> is the simplest: every GPU holds an identical full copy of the
-          model and processes a different slice of the batch; gradients are all-reduced (averaged) across
-          GPUs before the optimizer step. <strong>Tensor parallelism</strong> (Megatron-style) instead splits
-          individual weight matrices themselves -- a single matrix multiplication is computed cooperatively
-          across GPUs, each holding only a column or row slice. <strong>Pipeline parallelism</strong> splits
-          the model's layers into sequential stages, each living on a different GPU, with microbatching used
-          to keep every stage busy rather than idle while waiting on the stage before it (the "pipeline
-          bubble" problem). Real large-scale training runs combine all three simultaneously.
+          <strong>Data parallelism</strong> is the simplest: every GPU gets an identical full copy of the
+          model and a different pile of text to practice on -- like giving every student in a class the
+          same textbook but different homework problems, then averaging what everyone learned after each
+          round. <strong>Tensor parallelism</strong> splits the math <em>inside</em> each layer: one
+          giant multiplication is carved into slices, each GPU computes its slice, and the pieces get
+          stitched together -- several cooks chopping one enormous onion. <strong>Pipeline
+          parallelism</strong> deals out the layers themselves like an assembly line: GPU 1 holds layers
+          1-4, GPU 2 holds layers 5-8, and text flows down the line station by station. (The classic
+          assembly-line problem applies too -- stations idling while waiting for the one before them --
+          and it's managed by keeping many small batches moving at once.) Real large-scale runs combine
+          all three at the same time.
         </p>
         <ScopeScreen label="Eight-GPU grid recolored to show what each GPU holds under data, tensor, or pipeline parallelism">
           <SegmentedControl
@@ -153,17 +157,19 @@ export default function TrainingInfrastructureSystems() {
 
       <Section title="ZeRO/FSDP, activation checkpointing, and staying alive at scale">
         <p>
-          Data parallelism's obvious waste is that every GPU redundantly stores the full optimizer state,
-          gradients, and parameters. ZeRO (and its widely-used implementation, FSDP) shards all three across
-          the data-parallel group instead of replicating them -- each GPU holds only its slice, reconstructing
-          the full parameter briefly via communication only when needed for compute. The memory console above
-          computed exactly this trade-off. Separately, <strong>activation checkpointing</strong> discards
-          most intermediate activations during the forward pass and recomputes them during the backward pass
-          from a small number of saved checkpoints -- trading extra compute for a large activation-memory
-          reduction, often essential once a model plus its optimizer state already consumes most of a GPU's
-          budget. At the scale of thousands of GPUs running for months, hardware failures stop being an edge
-          case and become routine background noise; frequent, fast checkpoint-and-resume is the operational
-          discipline that makes runs at that scale survivable at all.
+          The give-everyone-a-full-copy approach has an obvious waste: a thousand GPUs storing a thousand
+          identical copies of all the training bookkeeping. The fix, called <strong>ZeRO</strong>, works
+          like a study group that splits up one textbook instead of everyone buying their own: each GPU
+          permanently stores only its assigned slice, and whenever a GPU briefly needs a part it doesn't
+          hold, the group passes it over the network. Some extra chatter, dramatically less memory each --
+          the console above computed exactly this trade. A second trick, <strong>activation
+          checkpointing</strong>, deals with the temporary working numbers: instead of keeping every
+          in-between result around for the learning step, the GPU throws most of them away and simply
+          redoes that math later when it's needed -- spending extra computation to free up space, like
+          re-deriving a formula instead of keeping every page of scratch work. And one last reality of
+          scale: with thousands of machines running for months, hardware failures stop being emergencies
+          and become weather. Runs survive not by preventing failures but by saving progress constantly
+          and restarting fast when -- not if -- something dies.
         </p>
       </Section>
     </LessonLayout>

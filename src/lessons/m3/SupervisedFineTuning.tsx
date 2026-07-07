@@ -61,18 +61,19 @@ export default function SupervisedFineTuning() {
       lesson={lesson}
       intro={
         <p>
-          Supervised fine-tuning reuses lesson 1.7's exact machinery -- cross-entropy loss, forward pass,
-          backward pass, optimizer step -- and points it at a different, much smaller dataset: curated
-          conversations instead of raw internet text. The mechanism doesn't change; what changes is what the
-          model is shown, and, critically, which tokens it's actually graded on.
+          Supervised fine-tuning (SFT) is nothing more than lesson 1.7's guess-and-grade training loop
+          pointed at new material: instead of the raw internet, a small, carefully written collection of
+          example conversations showing what a good assistant sounds like. The mechanism doesn't change
+          at all. What changes is what the model reads -- and, crucially, which parts of it the model
+          actually gets graded on.
         </p>
       }
       takeaways={[
-        "SFT is ordinary next-token cross-entropy applied to curated (prompt, ideal response) conversations, not a new loss function.",
-        "A chat template wraps each turn in special tokens (e.g. <|user|>, <|assistant|>) so the model can condition on conversational structure, not just raw text.",
-        "The loss mask restricts gradients to assistant-turn tokens only -- the model is trained to produce good answers, not to imitate user messages or system prompts.",
-        "LIMA's result (a small, extremely high-quality dataset outperforming much larger, noisier ones) is the empirical case for data quality over quantity in SFT specifically.",
-        "LoRA freezes the base weights and learns a low-rank update ΔW = B·A per targeted matrix; QLoRA adds 4-bit base-weight quantization on top, which is what makes fine-tuning an 8B+ model realistic on an 8GB card.",
+        "SFT is the ordinary guess-and-grade training from lesson 1.7 applied to example conversations -- no new math, just new reading material.",
+        "A chat template wraps each speaker's turn in special marker tokens (like <|user|> and <|assistant|>) -- stage directions in a script -- so the model can tell who's talking.",
+        "The loss mask means the model is only graded on the assistant's lines. It reads the user's messages but isn't trained to imitate them -- you want it to learn the answering role, not both sides of the conversation.",
+        "A famous result called LIMA showed that about a thousand truly excellent example conversations beat hundreds of thousands of mediocre ones. For SFT, quality beats quantity, decisively.",
+        "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
       ]}
       references={[
         {
@@ -99,9 +100,10 @@ export default function SupervisedFineTuning() {
     >
       <Section title="Lab — the template and mask microscope">
         <p>
-          Toggle the loss mask to see exactly which tokens the model is actually trained on -- everything
-          else, including the special structural tokens and the user's own messages, is part of the input
-          context but contributes no gradient.
+          Below is a training conversation as the model actually sees it, marker tokens and all. Toggle
+          the loss mask to see which parts the model is graded on: only the assistant's own lines.
+          Everything else -- the markers, the user's messages -- is read as context but never counted in
+          the grade.
         </p>
         <ScopeScreen label="Chat template with special tokens, and a loss mask toggle dimming everything except assistant response tokens">
           <Toggle label="APPLY LOSS MASK (train on assistant tokens only)" checked={maskOn} onChange={setMaskOn} />
@@ -126,22 +128,28 @@ export default function SupervisedFineTuning() {
 
       <Section title="Data quality over quantity">
         <p>
-          LIMA's central result is that roughly a thousand extremely carefully curated (prompt, response)
-          pairs produced a model competitive with ones trained on orders of magnitude more, noisier
-          demonstration data. For SFT specifically -- where the goal is teaching the *shape* of a good
-          answer, not new world knowledge -- a small, consistent, high-quality dataset routinely beats a
-          large messy one. Multi-turn conversations are typically packed together (several conversations
-          concatenated into one training sequence, separated by the template's turn boundaries) purely for
-          training efficiency, with the loss mask making sure that packing never blurs across conversations.
+          The LIMA study made the point unforgettably: roughly a thousand extremely carefully written
+          example conversations produced a model that held its own against ones trained on vastly more,
+          messier examples. The insight is that SFT isn't teaching the model new facts -- it already
+          absorbed those in pre-training. It's teaching the <em>shape</em> of a good answer: how to
+          structure it, how long to make it, when to stop. For teaching a style, a small stack of perfect
+          examples beats a warehouse of sloppy ones -- the same way one great writing tutor beats a
+          thousand random internet comments. (One practical detail: to save time, several short
+          conversations are usually bundled into one training sequence, with the grading mask making sure
+          they never blur into each other.)
         </p>
       </Section>
 
       <Section title="Lab — the LoRA budget console">
         <p>
-          Rather than updating every weight, LoRA freezes the base matrix W and learns a low-rank update{" "}
-          <code>ΔW = B·A</code> (B is d_out×r, A is r×d_in), so trainable parameters per targeted matrix are{" "}
-          <code>r·(d_in + d_out)</code>. Pick a rank and which matrices to target on an 8B-parameter,
-          32-layer Llama-style config.
+          Fine-tuning every one of 8 billion parameters takes serious hardware. <strong>LoRA</strong>{" "}
+          ("low-rank adaptation") is the workaround: freeze the entire original model and bolt small
+          trainable side-pieces onto chosen parts of it -- like renovating a house by adding a few new
+          fixtures instead of rebuilding every wall. The side-pieces are deliberately skinny: instead of
+          learning a full correction the size of the original grid, LoRA learns two thin strips whose
+          product stands in for it, and a dial called the <strong>rank</strong> sets how thin. Pick a
+          rank and choose which parts of the model get side-pieces, and watch how few parameters you
+          actually end up training.
         </p>
         <ScopeScreen label="LoRA trainable parameter budget console with rank slider, target module checkboxes, and QLoRA memory estimate">
           <Slider label="RANK r" value={rank} min={1} max={256} step={1} onChange={setRank} />
@@ -161,8 +169,9 @@ export default function SupervisedFineTuning() {
             <Readout label="QLoRA ESTIMATED MEMORY" value={`${qloraGB.toFixed(2)} GB`} accent={qloraGB <= 8 ? colors.green : colors.red} />
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            QLoRA estimate = 4-bit quantized base weights (0.5 bytes/param) + full-precision AdamW training
-            memory on just the adapter parameters -- excludes activations.
+            The QLoRA estimate = the frozen model compressed to half a byte per parameter, plus full
+            training bookkeeping on just the tiny add-on pieces. (Temporary working numbers not
+            included.)
           </p>
         </ScopeScreen>
       </Section>

@@ -107,19 +107,20 @@ export default function Introduction() {
       lesson={lesson}
       intro={
         <p>
-          Every capability you will hear attributed to an LLM -- writing code, answering questions,
-          holding a conversation -- comes out of one relentlessly simple mechanism repeated billions of
-          times: <strong>predict the next token, append it, repeat</strong>. This lesson builds the whole
-          request lifecycle end to end, at a toy scale you can click through, so that every later lesson
-          has a skeleton to hang onto.
+          Every impressive thing a large language model (LLM) does -- writing code, answering questions,
+          holding a conversation -- comes from one surprisingly simple trick repeated over and over:{" "}
+          <strong>guess the next piece of text, add it on, and guess again</strong>. This lesson walks
+          through that whole journey, from the text you type to the word the model picks, using a tiny
+          model small enough to click through step by step. Every later lesson zooms in on one of these
+          steps.
         </p>
       }
       takeaways={[
-        "An LLM is an autoregressive next-token predictor: text → tokens → vectors → transformer blocks → logits → sampled token → loop.",
-        "Apparent \"understanding\" is a side effect of an objective that is brutally simple to state and astronomically rich to optimize at scale.",
-        "Parameters are the fixed, learned weights (the compiled binary); activations are the transient per-request numbers a forward pass produces (the request's stack + heap).",
-        "Your 8GB card comfortably holds small models at inference; it is the training-time memory (gradients + optimizer state) that gets expensive first.",
-        "Everything downstream in this course -- tokenizer, embeddings, position, attention, MLP, training, alignment -- is a deeper look at one stage of the pipeline you just clicked through.",
+        "An LLM is a next-token guesser running in a loop: text becomes tokens, tokens become lists of numbers, those numbers flow through the model, and out comes a probability for every possible next token. One gets picked, added to the text, and the loop runs again.",
+        "Nobody teaches the model grammar or facts directly. It picks them up anyway, because knowing them turns out to be the only way to get really good at guessing the next token.",
+        "Parameters are the model's saved, learned numbers -- fixed once training ends. Activations are the temporary numbers created while answering one prompt, then thrown away.",
+        "A small model fits easily in an ordinary graphics card's memory. Training is what gets expensive first, because it needs several extra bookkeeping numbers for every single parameter.",
+        "Everything later in this course -- tokenizer, embeddings, position, attention, MLP, training, alignment -- is a closer look at one of the eight steps you just clicked through.",
       ]}
       references={[
         {
@@ -141,46 +142,48 @@ export default function Introduction() {
     >
       <Section title="What a language model actually is">
         <p>
-          Strip away the branding and an LLM is a function: it takes a sequence of tokens and returns a
-          probability distribution over "what comes next." That's it. There is no separate
-          "understanding module" sitting beside it. If you've built a backend service, think of it as a
-          single, very large, purely functional endpoint: <code>POST /next-token</code> with the sequence
-          so far as the body, and a probability vector over the vocabulary as the response. Generation is
-          just calling that endpoint in a loop, feeding each response back in as part of the next request.
+          Strip away the branding and an LLM is one giant math function. You give it the text so far
+          (chopped into pieces called <strong>tokens</strong> -- roughly word-chunks), and it hands back a
+          score for every token it knows, saying how likely each one is to come next. That's the whole
+          job. There is no separate "understanding part" hiding inside. It works like your phone's
+          autocomplete, just enormously bigger and better: to write a full answer, the model guesses one
+          token, sticks it onto the end of the text, and asks itself the same question again -- hundreds
+          of times in a row.
         </p>
         <p>
-          "Autoregressive" is the formal name for that loop: the model's own past outputs become part of
-          its future inputs. Nothing about the architecture knows about words, facts, or grammar directly
-          -- it only ever sees the training signal "given everything so far, what token is next," applied to
-          trillions of examples of real text. Module 2 is entirely about that training process; this lesson
-          is about the shape of the pipeline that gets trained.
+          "Autoregressive" is the formal name for that loop: the model's own past guesses become part of
+          what it reads next time around. Notice what's missing -- nobody programs in words, facts, or
+          grammar. During training the model only ever practices one exercise, "given everything so far,
+          which token comes next?", on trillions of examples of real text. Module 2 is all about that
+          training process; this lesson is about the pipeline the text flows through.
         </p>
       </Section>
 
       <Section title="The request lifecycle, stage by stage">
         <p>
-          Click through the eight stages below. Each one is a real, computed step over a small 5-token
-          sentence and a toy 4-dimensional model -- small enough to read every number, structurally
-          identical to what happens inside a production model with a 12,288-dimensional hidden state and
-          126 layers (that's LLaMA 3 405B, which you'll meet properly in lesson 2.8).
+          Click through the eight stages below. Each one is a genuinely computed step over a tiny 5-token
+          sentence and a toy model that describes each token with just 4 numbers -- small enough that you
+          can read every value on screen. A real production model does exactly the same steps, just with
+          thousands of numbers per token and over a hundred stacked layers (you'll meet one, LLaMA 3 405B,
+          in lesson 2.8).
         </p>
         <ol>
-          <li><strong>Raw text</strong> — a string, nothing more. No tokens exist yet.</li>
-          <li><strong>Tokenizer</strong> — a fixed, deterministic serializer (lesson 1.2) turning text into a sequence of integer ids from a static vocabulary. Zero learned weights live here.</li>
-          <li><strong>Embedding</strong> — each token id becomes a row lookup into a learned matrix (lesson 1.3) -- structurally a <code>SELECT vector FROM embeddings WHERE id = ?</code>.</li>
-          <li><strong>+Position</strong> — because attention alone can't tell order, a position-dependent signal is added to each vector (lesson 1.4) -- think of it as stamping each row with a <code>created_at</code>.</li>
-          <li><strong>Attention</strong> — every position issues a query and reads from every earlier position's key/value pair, like a soft hash-map lookup (lesson 1.5). This is the block's network I/O: the only place information moves between tokens.</li>
-          <li><strong>MLP</strong> — each position, independently, runs its vector through a small nonlinear transform (lesson 1.6) -- the block's per-request compute, with no cross-token communication at all.</li>
-          <li><strong>LM head</strong> — the final hidden vector is projected back onto the vocabulary, producing one raw score (logit) per possible next token.</li>
-          <li><strong>Softmax → sample</strong> — logits become probabilities, and a token is drawn from that distribution. It gets appended to the sequence, and the whole pipeline runs again.</li>
+          <li><strong>Raw text</strong> — just characters, like a sentence in a text message. No tokens exist yet.</li>
+          <li><strong>Tokenizer</strong> — a fixed set of rules (lesson 1.2) chops the text into tokens and gives each one an ID number, like every word in a dictionary having its own page number. Nothing here is learned.</li>
+          <li><strong>Embedding</strong> — each ID number is swapped for its own long list of numbers (called a <em>vector</em>) by looking up a row in a big table (lesson 1.3). Words with similar meanings end up with similar lists.</li>
+          <li><strong>+Position</strong> — the attention step coming up can't tell which token came first on its own, so each token's numbers get a "position stamp" mixed in (lesson 1.4).</li>
+          <li><strong>Attention</strong> — the step where tokens look at each other and pass information around (lesson 1.5). "It" can find out that it refers to "the cat." This is the only step where tokens communicate.</li>
+          <li><strong>MLP</strong> — each token, entirely on its own, gets pushed through a small number-crunching layer that reshapes its vector (lesson 1.6). No looking at neighbors here.</li>
+          <li><strong>LM head</strong> — the final vector gets converted into one raw score (called a <em>logit</em>) for every possible next token.</li>
+          <li><strong>Softmax → sample</strong> — the raw scores are turned into percentages that add up to 100%, and one token is drawn, like a raffle where likelier tokens hold more tickets. It's added to the text, and the whole pipeline runs again.</li>
         </ol>
       </Section>
 
       <Section title="Lab — the signal path">
         <p>
-          Step through the pipeline yourself, or hit <strong>run generation step</strong> to execute all
-          eight stages on the current sequence and sample a real next token from the resulting
-          distribution using the actual softmax probabilities below.
+          Step through the pipeline yourself, or hit <strong>run generation step</strong> to run all
+          eight stages on the current sentence and actually draw the next token using the real
+          percentages computed below -- exactly the raffle described in step 8.
         </p>
         <div className="btn-row">
           <button type="button" className="btn" onClick={() => setPlaying((p) => !p)} aria-pressed={playing}>
@@ -360,46 +363,49 @@ export default function Introduction() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Why next-token prediction yields apparent understanding">
+      <Section title="Why guessing the next token leads to apparent understanding">
         <p>
-          "Predict the next token" sounds like a party trick, not a path to competence. The trick is
-          scale: to predict the next token in an arbitrary paragraph of code, you have to implicitly model
-          syntax; to predict the next token after "the capital of France is," you have to have encoded a
-          fact; to predict what comes after "the plaintiff argued," you have to track who is speaking. The
-          objective is a single, cheap-to-compute number (cross-entropy loss, covered in lesson 1.7), but
-          minimizing it over enough text forces the model to build internal machinery for grammar,
-          reasoning chains, and world facts as a side effect -- not because anyone asked for those
-          capabilities directly, but because they are the cheapest way to get good at the one thing it was
-          actually asked to do.
+          "Guess the next token" sounds like a party trick, not a path to intelligence. The secret is
+          what it takes to be <em>good</em> at it. To guess the next word of a computer program, you have
+          to pick up the rules of the programming language. To guess what follows "the capital of France
+          is," you have to have stored the fact that it's Paris. To guess what comes after "the lawyer
+          argued," you have to keep track of who's talking in the story. Nobody ever asks the model to
+          learn grammar, facts, or logic directly -- but soaking up those skills turns out to be the only
+          way to get really good at the one thing it <em>is</em> asked to do, across trillions of words of
+          practice text. Understanding shows up as a side effect.
         </p>
       </Section>
 
-      <Section title="Parameters vs. activations, and your 8GB card">
+      <Section title="Parameters vs. activations, and your 8GB graphics card">
         <p>
-          Two numbers get conflated constantly and shouldn't be: <strong>parameters</strong> are the
-          learned weights -- the embedding matrix, every attention and MLP weight, fixed after training,
-          serialized to disk. <strong>Activations</strong> are the transient numbers a single forward pass
-          produces -- every intermediate vector you just watched flow through the eight stages above. Loosely:
-          parameters are your compiled binary; activations are one request's stack and heap.
+          Two kinds of numbers live inside a running model, and it pays to keep them straight.{" "}
+          <strong>Parameters</strong> (also called <em>weights</em>) are the model's learned numbers --
+          the big lookup table, all the attention and MLP numbers -- locked in place once training ends
+          and saved to disk. <strong>Activations</strong> are the temporary numbers made fresh for each
+          prompt -- every in-between vector you just watched flow through the eight stages. Think of a
+          cookbook versus the mess on the kitchen counter: the recipes (parameters) never change while
+          you cook; the chopped onions and dirty bowls (activations) exist only for tonight's meal and
+          get cleared away after.
         </p>
         <p>
-          On your 8GB card, parameters at fp16 cost roughly 2 bytes each -- GPT-2 small's 124M parameters
-          are about 0.23GB, trivial. A 7B model is about 14GB at fp16, already over budget for inference
-          alone before a single activation is computed; that's exactly why lesson 1.9 and Module 3 spend so
-          much time on quantization and LoRA. Activations scale with sequence length and batch size, not
-          just parameter count, which is why "it loaded fine but ran out of memory mid-generation" is a
-          real failure mode you'll learn to predict rather than debug blind.
+          Why care? Memory. Stored compactly, each parameter takes about 2 bytes. GPT-2 small's 124
+          million parameters need only about 0.23 GB -- a cheap 8 GB graphics card barely notices. But a
+          7-billion-parameter model needs about 14 GB just to sit in memory, already too big for that
+          card before any actual work happens. That's why lesson 1.9 and Module 3 spend so much time on
+          tricks for shrinking models. Activations grow with how much text you feed in, not with model
+          size -- which is why a model can load fine and still run out of memory halfway through a long
+          answer.
         </p>
       </Section>
 
       <Section title="Where this course goes">
         <p>
-          Module 1 dissects every stage you just clicked through -- tokenizer, embeddings, position,
-          attention, the residual stream, training, and a capstone where you size and reason about a real
-          GPT-2. Module 2 is the expensive phase that writes knowledge into the weights: scaling laws,
-          data engineering, and the systems work of training at scale. Module 3 is the small, surgical
-          phase that turns a raw completion engine into the assistant you actually talk to. Same
-          architecture throughout -- everything that changes is what's written into the weights.
+          Module 1 takes apart every stage you just clicked through -- tokenizer, embeddings, position,
+          attention, training -- and ends with you sizing up a real GPT-2. Module 2 covers the big,
+          expensive phase where knowledge gets written into the parameters: what data to use, how much of
+          it, and the engineering it takes to train at scale. Module 3 covers the short, careful phase
+          that turns a raw autocomplete engine into the helpful assistant you actually chat with. The
+          machine itself never changes across all of this -- only the numbers stored inside it do.
         </p>
       </Section>
     </LessonLayout>

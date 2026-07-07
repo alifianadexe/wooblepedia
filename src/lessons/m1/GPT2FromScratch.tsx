@@ -50,19 +50,20 @@ export default function GPT2FromScratch() {
       lesson={lesson}
       intro={
         <p>
-          Every idea from this module -- tokens, embeddings, position, attention, the residual stream,
-          training -- adds up to one concrete artifact: a real GPT-2. Before writing a line of model code,
-          a competent engineer sizes it: how many parameters, how much memory to run it, how much to train
-          it, and whether any of that fits the hardware on hand. This lesson does that sizing exactly, then
-          maps it onto the actual file structure you'd write.
+          Every idea from this module -- tokens, embeddings, position stamps, attention, training -- adds
+          up to one concrete thing: a real GPT-2, the model OpenAI released in 2019. Before building
+          anything big, it's smart to do what an architect does before construction: figure out the
+          size. How many learned numbers will this model have? How much memory does it take to run? To
+          train? Does any of that fit on an ordinary graphics card? This lesson answers those questions
+          with exact arithmetic, then shows how little code the real thing actually takes.
         </p>
       }
       takeaways={[
-        "Parameter count decomposes exactly: embeddings = vocab·d + ctx·d; each block = 12d² + 13d (attention 4d²+4d, MLP 8d²+5d, norms 4d); plus a final 2d for the last layer norm.",
-        "That formula reproduces GPT-2's published sizes exactly: 124M (small), ~355M (medium), 774M (large), 1.56B (XL) at their respective (d, layers) settings.",
-        "Inference memory is roughly 2 bytes/param at fp16; mixed-precision AdamW training is roughly 16 bytes/param (fp16 weights + fp16 grads + fp32 master weights + two fp32 Adam moments) -- before a single activation is counted.",
-        "On an 8GB card, GPT-2 small trains comfortably; GPT-2 XL's training footprint alone (~25GB) does not fit without offloading, quantization, or a smaller model.",
-        "nanoGPT's entire model definition lives in about 300 lines across four classes (CausalSelfAttention, MLP, Block, GPT) -- proof that the ideas in this module, not raw code volume, are the hard part.",
+        "A model's total parameter count isn't a mystery number -- it's simple arithmetic you can do yourself: the embedding tables plus a fixed formula per layer, and everything adds up exactly.",
+        "That arithmetic reproduces GPT-2's four published sizes on the nose: 124M, 355M, 774M, and 1.56B parameters. No magic.",
+        "Running a model costs about 2 bytes of memory per parameter. Training costs about 16 bytes per parameter -- eight times more -- because training keeps several extra bookkeeping numbers for every single one.",
+        "On an 8GB graphics card, the smallest GPT-2 trains comfortably; the largest one's training footprint (~25GB) simply doesn't fit without special tricks or a smaller model.",
+        "A complete, working GPT-2 fits in about 300 lines of code. The ideas in this module, not the volume of code, are the hard part.",
       ]}
       references={[
         {
@@ -79,8 +80,10 @@ export default function GPT2FromScratch() {
     >
       <Section title="Lab — the parameter budget console">
         <p>
-          Adjust d_model and layer count directly, or jump to one of the four published GPT-2 sizes. Every
-          number below comes from <code>gpt2ParamCount</code> in <code>src/lib/math.ts</code>.
+          Two dials control a GPT-2's size: <strong>d_model</strong>, how many numbers describe each
+          token (the "width"), and <strong>n_layers</strong>, how many transformer layers are stacked up
+          (the "depth"). Adjust them directly or jump to one of the four sizes OpenAI actually
+          published. Every number below is computed live from the real formula -- nothing is hard-coded.
         </p>
         <ScopeScreen label="GPT-2 parameter budget console with sliders, presets, and memory verdicts for an 8GB GPU">
           <SegmentedControl
@@ -135,26 +138,30 @@ export default function GPT2FromScratch() {
             </div>
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 10 }}>
-            These figures exclude activations, which scale with batch size and sequence length on top of
-            this floor -- a model that "fits" here can still run out of memory mid-forward-pass at a large
-            batch size or long context.
+            These figures leave out activations -- the temporary numbers from lesson 1.1 -- which pile on
+            top depending on how much text you process at once. A model that "fits" here can still run
+            out of memory mid-answer on a very long text.
           </p>
         </ScopeScreen>
       </Section>
 
       <Section title="Verifying the formula against reality">
         <p>
-          Set the preset to SMALL: d_model 768, 12 layers, GPT-2's real vocab (50,257) and context (1,024).
-          The console should read exactly 124.4M parameters -- the widely cited "GPT-2 124M." Switch through
-          MEDIUM, LARGE, and XL and you'll land on 355M, 774M, and 1.56B respectively, matching OpenAI's
-          published sizes. This isn't a coincidence baked into the demo; it's the same arithmetic
-          (embeddings + 12 layers × (12d²+13d) + final norm) that produced those numbers in the first place.
+          Set the preset to SMALL: width 768, 12 layers, GPT-2's real vocabulary (50,257 tokens) and
+          context window (1,024 tokens). The console reads exactly 124.4 million parameters -- the widely
+          cited "GPT-2 124M." Click through MEDIUM, LARGE, and XL and you land on 355M, 774M, and 1.56B,
+          matching OpenAI's published numbers exactly. That's not a coincidence baked into this demo --
+          it's the same arithmetic (the embedding tables, plus a fixed formula for each layer) that
+          produced those famous numbers in the first place. Model sizes you read about in the news are
+          just this kind of addition.
         </p>
       </Section>
 
       <Section title="The implementation map">
         <p>
-          nanoGPT's <code>model.py</code> mirrors this module's lessons almost one-to-one. A quick tour:
+          If you ever want to read a real implementation, nanoGPT (a famous, deliberately minimal GPT-2
+          codebase by Andrej Karpathy) mirrors this module's lessons almost one-to-one. You don't need to
+          read code to finish this course -- but it's reassuring to see how short the real thing is:
         </p>
         <ScopeScreen label="nanoGPT file and class structure">
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, lineHeight: 1.9 }}>
@@ -174,9 +181,10 @@ train.py                  — lesson 1.7: the forward/loss/backward/optimizer-st
 
       <Section title="Your first run, on your 8GB card">
         <p>
-          The smallest meaningful nanoGPT experiment is character-level Shakespeare -- a few megabytes of
-          text, a vocabulary of about 65 characters, and a model small enough to train from scratch in
-          minutes rather than days:
+          If you do want to try training something yourself, the classic first experiment is teaching a
+          tiny model to write fake Shakespeare, one character at a time -- a few megabytes of text, an
+          alphabet of about 65 characters, and a model small enough to train from scratch in minutes
+          rather than days:
         </p>
         <ScopeScreen label="Command sequence for training a tiny character-level GPT-2 on an 8GB GPU">
           <pre className="mono" style={{ fontSize: 12.5, margin: 0 }}>
@@ -191,10 +199,10 @@ python train.py config/train_shakespeare_char.py \\
           </pre>
         </ScopeScreen>
         <p>
-          That configuration -- 6 layers, 384-dim, 256-token context -- lands at only a few million
-          parameters: comfortably inside 8GB even with full fp32 AdamW training and room to spare for
-          activations. It's small enough to be wrong in instructive ways and fast enough to iterate on in
-          one sitting, which is exactly what a first from-scratch run should be.
+          That configuration -- 6 layers, width 384, 256-token context -- lands at only a few million
+          parameters: comfortably inside an 8GB graphics card even during training, with room to spare.
+          It's small enough to make mistakes you can learn from and fast enough to try again five minutes
+          later, which is exactly what a first from-scratch run should be.
         </p>
       </Section>
     </LessonLayout>

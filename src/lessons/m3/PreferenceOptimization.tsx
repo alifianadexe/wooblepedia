@@ -31,18 +31,20 @@ export default function PreferenceOptimization() {
       lesson={lesson}
       intro={
         <p>
-          Some qualities of a response -- is it more helpful, more honest, funnier -- are far easier for a
-          human to judge by comparison than to demonstrate by writing an ideal example from scratch. Once
-          you accept that, the natural training signal isn't "here's the correct answer," it's "this
-          response is better than that one" -- a chosen/rejected pair.
+          Try writing down the perfect answer to "cheer me up, my day was awful." Hard, right? But shown
+          two attempts, you'd instantly know which was better. Many qualities -- helpfulness, honesty,
+          humor -- are like that: far easier to judge by comparison than to demonstrate from scratch.
+          Once you accept that, the natural teaching signal isn't "here's the correct answer" but "this
+          one, not that one" -- a chosen-versus-rejected pair. This lesson is about how to train on
+          exactly that kind of data.
         </p>
       }
       takeaways={[
-        "Bradley-Terry models the probability that one response is preferred as σ(reward_chosen − reward_rejected) -- a pairwise comparison model, not an absolute score.",
-        "Classic RLHF trains a separate reward model on preference pairs, then optimizes the policy against it with PPO, constrained by a KL penalty back to a reference model.",
-        "DPO collapses that entire pipeline into one direct classification loss on the policy itself: L = −log σ(β·margin), where margin is the difference in log-probability ratios between chosen and rejected responses -- no reward model, no RL rollouts.",
-        "β acts as a leash: it controls how sharply the loss punishes preferring the rejected response, which is functionally similar to RLHF's KL penalty but expressed directly in the loss.",
-        "DPO trades RLHF's online exploration for offline simplicity and stability -- newer variants (IPO, KTO, GRPO) each adjust a different part of that trade.",
+        "The Bradley-Terry formula turns two quality scores into a probability of which answer a person would prefer -- the same math behind chess ratings, where two players' ratings predict who wins.",
+        "The classic approach (called RLHF) has two stages: first train a separate judge model to predict human preferences, then train the assistant to score highly with that judge -- while a 'leash' keeps it from drifting too far from its starting point.",
+        "DPO's discovery: all of that collapses into one simple exercise on the assistant itself -- directly boost the chosen answer and suppress the rejected one. No judge model, no two-stage complexity.",
+        "DPO's β dial sets the leash tightness: how hard the training yanks when the model still prefers the rejected answer.",
+        "The trade: DPO is simpler and more stable but only learns from the comparisons it's handed, while RLHF explores fresh answers as it trains. Newer variants each adjust a different corner of that trade.",
       ]}
       references={[
         {
@@ -69,8 +71,10 @@ export default function PreferenceOptimization() {
     >
       <Section title="Lab — the Bradley-Terry model">
         <p>
-          Set two reward scores; the probability that the "chosen" response wins the comparison is exactly
-          the sigmoid of their difference.
+          Give two answers a quality score each and watch the formula convert the <em>difference</em>{" "}
+          into a win probability. Equal scores means a coin flip; a big gap means a near-certain win.
+          It's exactly how chess ratings work: only the gap between two players matters, never the raw
+          numbers.
         </p>
         <ScopeScreen label="Bradley-Terry preference probability from two reward scores">
           <Slider label="REWARD(CHOSEN)" value={rewardChosen} min={-5} max={5} step={0.1} onChange={setRewardChosen} />
@@ -83,29 +87,33 @@ export default function PreferenceOptimization() {
         </ScopeScreen>
       </Section>
 
-      <Section title="From reward model + PPO to one direct loss">
+      <Section title="From a two-stage system to one direct exercise">
         <p>
-          Classic RLHF is a two-stage system: first, train a reward model on human preference pairs so it
-          predicts which of two responses a person would prefer; then, run reinforcement learning (PPO)
-          against that frozen reward model, adding a KL penalty that keeps the evolving policy from drifting
-          too far from a fixed reference model (usually the SFT checkpoint). It works, but it means running
-          an RL training loop with online rollouts against a separately-trained model -- real infrastructure
-          complexity and real instability risk.
+          The classic approach, <strong>RLHF</strong> (reinforcement learning from human feedback), works
+          in two stages. First, train a separate "judge" model on thousands of human this-one-not-that-one
+          choices until it can predict which of two answers a person would prefer. Then let the assistant
+          practice: it writes answers, the judge scores them, and the assistant learns to score higher --
+          with a leash keeping it from wandering too far from its starting point (a model chasing a judge's
+          approval will otherwise find weird shortcuts, like flattery or padding). It works, but running
+          two models against each other in a live training loop is complicated and famously touchy.
         </p>
         <p>
-          DPO's insight is that, under the same Bradley-Terry assumption, the optimal RLHF policy has a
-          closed form in terms of the reference model -- and substituting that back in collapses the entire
-          two-stage pipeline into one direct loss computed on the policy alone, with no reward model and no
-          RL rollouts required.
+          Then came <strong>DPO</strong> (direct preference optimization), with a genuinely surprising
+          mathematical discovery: under the same assumptions, that whole two-stage contraption is exactly
+          equivalent to one simple exercise applied directly to the assistant -- for each pair, nudge the
+          model to make the chosen answer more likely and the rejected one less likely, with the leash
+          built right into the formula. No judge model, no live practice loop. Cheaper, simpler, and far
+          more stable.
         </p>
       </Section>
 
       <Section title="Lab — the DPO loss curve">
         <p>
-          Margin here is <code>(log π/π_ref)(chosen) − (log π/π_ref)(rejected)</code> -- how much more the
-          current policy favors the chosen response over the rejected one, relative to the reference model.
-          Negative margin means the policy still prefers the rejected response; the loss is steep there.
-          Positive margin means it already prefers the chosen one; the loss flattens out.
+          The curve below is DPO's grading rule. The "margin" measures how much more the model currently
+          favors the chosen answer over the rejected one (compared against its starting point). Left of
+          zero, the model still prefers the <em>wrong</em> answer -- and the penalty is steep, demanding
+          correction. Right of zero, it already prefers the right one -- and the curve flattens: no point
+          pushing a lesson the model has already learned. Try the β slider to tighten or loosen the leash.
         </p>
         <ScopeScreen label="DPO loss curve as a function of margin, with beta as a KL-strength control">
           <Slider label="β (KL LEASH STRENGTH)" value={beta} min={0.05} max={1.5} step={0.01} onChange={setBeta} />
@@ -127,26 +135,25 @@ export default function PreferenceOptimization() {
             <Readout label="|dLOSS/dMARGIN|" value={gradMag.toFixed(4)} accent={colors.cyan} />
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            Gradient magnitude peaks near margin = 0 (the model is still unsure) and vanishes at large
-            positive margin (already confidently correct) -- exactly the same "confidently wrong is punished,
-            hedging is safe" shape from lesson 1.7's cross-entropy curve.
+            The correction is strongest near zero (the model is still torn) and fades to nothing at high
+            positive margin (already confidently right) -- the same "confidently wrong hurts most" shape
+            as lesson 1.7's grading curve.
           </p>
         </ScopeScreen>
       </Section>
 
       <Section title="Honest trade-offs, and what came after DPO">
         <p>
-          DPO is simpler and more stable to run than RLHF, at the cost of being purely offline -- it can only
-          learn from the preference pairs it's given, with no online exploration of new responses the way
-          PPO's rollouts provide. β plays a similar role to RLHF's KL penalty (both keep the policy from
-          straying too far from the reference), but it's a fixed hyperparameter in DPO rather than an
-          adaptively-tuned constraint. Since DPO's introduction, several variants have addressed specific
-          weaknesses: <strong>IPO</strong> bounds the objective to reduce DPO's tendency to overfit sharp
-          preferences; <strong>KTO</strong> learns from unpaired binary "good/bad" labels instead of requiring
-          matched pairs; <strong>GRPO</strong> returns to an RL-style update but drops the learned value
-          network, using the relative reward within a sampled group of responses instead -- popularized by
-          reasoning-focused post-training. None of these replace the others outright; each is a different
-          point on the same simplicity-versus-flexibility trade-off.
+          DPO's simplicity has a price: it's a student who only studies flashcards it was handed, while
+          RLHF is a student who writes fresh practice essays and gets them graded -- exploring new
+          territory as it learns. DPO can never discover an answer better than anything in its stack of
+          comparisons. Since DPO's debut, a family of variants has tinkered with the recipe, and you'll
+          see their names around: <strong>IPO</strong> tames DPO's tendency to over-learn lopsided
+          comparisons; <strong>KTO</strong> works from simple thumbs-up/thumbs-down labels instead of
+          matched pairs (much easier data to collect); <strong>GRPO</strong> brings back live practice
+          but grades each answer against the average of a batch of the model's own attempts -- the method
+          behind several recent reasoning-focused models. None of them wins outright; each picks a
+          different spot on the same simplicity-versus-flexibility trade.
         </p>
       </Section>
     </LessonLayout>
