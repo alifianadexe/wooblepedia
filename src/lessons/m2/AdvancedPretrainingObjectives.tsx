@@ -7,6 +7,7 @@ import { getLessonMeta } from "../../lib/syllabus";
 import { fimRearrange } from "../../lib/math";
 import { useLabSetting } from "../../lib/storage";
 import { colors } from "../../lib/theme";
+import { Bi, pick, useLang } from "../../lib/i18n";
 
 const lesson = getLessonMeta(2, "advanced-pretraining-objectives")!;
 
@@ -15,6 +16,7 @@ const SNIPPET = "def factorial(n):\n    if n == 0:\n        return 1\n    return
 const SEQ_TOKENS = ["The", "cat", "sat", "on", "the", "mat", "and", "slept"];
 
 export default function AdvancedPretrainingObjectives() {
+  const { lang } = useLang();
   const [midStart, setMidStart] = useLabSetting("m2-fim-start", 18);
   const [midEnd, setMidEnd] = useLabSetting("m2-fim-end", 40);
   const [multiToken, setMultiToken] = useLabSetting("m2-multitoken", true);
@@ -32,21 +34,44 @@ export default function AdvancedPretrainingObjectives() {
     <LessonLayout
       lesson={lesson}
       intro={
-        <p>
-          "Guess the next token" is the main exercise, but it's not the only drill a training run can
-          extract from the same text. This lesson covers four extra drills layered on top of it. The key
-          thing to notice: none of them change the machine. The model stays a strict left-to-right
-          guesser -- the cleverness is entirely in how the practice material gets rearranged before it's
-          fed in.
-        </p>
+        <Bi
+          en={
+            <p>
+              "Guess the next token" is the main exercise, but it's not the only drill a training run can
+              extract from the same text. This lesson covers four extra drills layered on top of it. The key
+              thing to notice: none of them change the machine. The model stays a strict left-to-right
+              guesser -- the cleverness is entirely in how the practice material gets rearranged before it's
+              fed in.
+            </p>
+          }
+          id={
+            <p>
+              "Tebak token berikutnya" adalah latihan utamanya, tetapi bukan satu-satunya drill yang bisa
+              diperas sebuah pelatihan dari teks yang sama. Pelajaran ini membahas empat drill ekstra yang
+              dilapiskan di atasnya. Hal kunci untuk diperhatikan: tak satu pun mengubah mesinnya. Model
+              tetap penebak kiri-ke-kanan yang ketat -- kecerdikannya sepenuhnya ada pada cara bahan latihan
+              disusun ulang sebelum disuapkan.
+            </p>
+          }
+        />
       }
-      takeaways={[
-        "Fill-in-the-middle (FIM): cut a chunk out of a document, move it to the end, and mark the pieces with special tokens. A strict left-to-right guesser thereby learns to fill in holes -- essential for code editors that complete the middle of your file.",
-        "Multi-token prediction: instead of only guessing the very next token, extra prediction heads also guess two, three, and four ahead -- more learning from every position, and a speed trick at generation time later.",
-        "Long texts are handled in two phases: train mostly on shorter texts (cheaper), then stretch the position encoding and briefly continue training at the new, longer length.",
-        "Curriculum: save the best-quality reading material for the end of training, when the model is best prepared to benefit from it -- the way a course saves its capstone for last.",
-        "A related family called span corruption also teaches hole-filling but changes how the model reads; FIM's charm is that it never touches the machine -- it only rearranges the text.",
-      ]}
+      takeaways={pick(
+        lang,
+        [
+          "Fill-in-the-middle (FIM): cut a chunk out of a document, move it to the end, and mark the pieces with special tokens. A strict left-to-right guesser thereby learns to fill in holes -- essential for code editors that complete the middle of your file.",
+          "Multi-token prediction: instead of only guessing the very next token, extra prediction heads also guess two, three, and four ahead -- more learning from every position, and a speed trick at generation time later.",
+          "Long texts are handled in two phases: train mostly on shorter texts (cheaper), then stretch the position encoding and briefly continue training at the new, longer length.",
+          "Curriculum: save the best-quality reading material for the end of training, when the model is best prepared to benefit from it -- the way a course saves its capstone for last.",
+          "A related family called span corruption also teaches hole-filling but changes how the model reads; FIM's charm is that it never touches the machine -- it only rearranges the text.",
+        ],
+        [
+          "Fill-in-the-middle (FIM): gunting sepotong dari dokumen, pindahkan ke ujung, dan tandai kepingannya dengan token khusus. Penebak kiri-ke-kanan yang ketat dengan begitu belajar mengisi lubang -- wajib untuk editor kode yang melengkapi bagian tengah berkasmu.",
+          "Multi-token prediction: alih-alih hanya menebak token persis berikutnya, head penebak ekstra juga menebak dua, tiga, dan empat langkah ke depan -- lebih banyak belajar dari tiap posisi, dan trik kecepatan saat menghasilkan teks nanti.",
+          "Teks panjang ditangani dua fase: latih kebanyakan pada teks lebih pendek (lebih murah), lalu regangkan pengodean posisinya dan lanjutkan pelatihan sebentar pada panjang baru yang lebih besar.",
+          "Kurikulum: simpan bahan bacaan kualitas terbaik untuk akhir pelatihan, saat model paling siap memanfaatkannya -- seperti kursus menyimpan proyek puncaknya untuk terakhir.",
+          "Keluarga serumpun bernama span corruption juga mengajarkan isi-lubang tetapi mengubah cara model membaca; pesona FIM adalah ia tak pernah menyentuh mesinnya -- hanya menyusun ulang teksnya.",
+        ],
+      )}
       references={[
         {
           title: "Efficient Training of Language Models to Fill in the Middle — Bavarian et al., 2022",
@@ -65,16 +90,31 @@ export default function AdvancedPretrainingObjectives() {
         },
       ]}
     >
-      <Section title="Lab — fill-in-the-middle, literally rearranged">
-        <p>
-          Here's the puzzle FIM solves: a left-to-right guesser can only continue text at the end, but a
-          programmer's cursor is usually in the <em>middle</em> of a file. The fix is delightfully
-          simple -- rearrange the training text. Cut out a middle chunk, put the beginning and the ending
-          first (labeled with special marker tokens), and stick the missing middle at the end. Now
-          "filling the hole" <em>is</em> "continuing at the end," which the model already knows how to
-          do. Drag the sliders to choose the cut-out chunk and see the exact rearranged sequence the
-          model would train on.
-        </p>
+      <Section title={pick(lang, "Lab — fill-in-the-middle, literally rearranged", "Lab — fill-in-the-middle, benar-benar disusun ulang")}>
+        <Bi
+          en={
+            <p>
+              Here's the puzzle FIM solves: a left-to-right guesser can only continue text at the end, but a
+              programmer's cursor is usually in the <em>middle</em> of a file. The fix is delightfully
+              simple -- rearrange the training text. Cut out a middle chunk, put the beginning and the ending
+              first (labeled with special marker tokens), and stick the missing middle at the end. Now
+              "filling the hole" <em>is</em> "continuing at the end," which the model already knows how to
+              do. Drag the sliders to choose the cut-out chunk and see the exact rearranged sequence the
+              model would train on.
+            </p>
+          }
+          id={
+            <p>
+              Ini teka-teki yang dipecahkan FIM: penebak kiri-ke-kanan hanya bisa melanjutkan teks di
+              ujungnya, padahal kursor programmer biasanya di <em>tengah</em> berkas. Perbaikannya
+              menyenangkan sederhananya -- susun ulang teks latihannya. Gunting sepotong bagian tengah, taruh
+              bagian awal dan akhirnya lebih dulu (dilabeli token penanda khusus), dan tempelkan bagian
+              tengah yang hilang di ujung. Sekarang "mengisi lubang" <em>adalah</em> "melanjutkan di ujung",
+              yang sudah model tahu caranya. Geser slider untuk memilih potongan yang digunting dan lihat
+              persis barisan susun-ulang yang akan dilatihkan ke model.
+            </p>
+          }
+        />
         <ScopeScreen label="Fill-in-the-middle training sequence rearrangement lab">
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, whiteSpace: "pre-wrap" }}>
             <span style={{ color: colors.muted }}>{prefix}</span>
@@ -84,7 +124,7 @@ export default function AdvancedPretrainingObjectives() {
           <Slider label="MIDDLE START (char index)" value={start} min={0} max={SNIPPET.length - 1} step={1} onChange={setMidStart} />
           <Slider label="MIDDLE END (char index)" value={end} min={1} max={SNIPPET.length} step={1} onChange={setMidEnd} />
 
-          <div className="mono" style={{ fontSize: 11, color: "var(--muted)", margin: "12px 0 4px" }}>REARRANGED TRAINING SEQUENCE:</div>
+          <div className="mono" style={{ fontSize: 11, color: "var(--muted)", margin: "12px 0 4px" }}>{pick(lang, "REARRANGED TRAINING SEQUENCE:", "BARISAN LATIHAN SETELAH DISUSUN ULANG:")}</div>
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, whiteSpace: "pre-wrap", padding: 10, border: `1px solid ${colors.border}`, borderRadius: 6 }}>
             <span style={{ color: colors.amber }}>&lt;PRE&gt;</span> {prefix}{" "}
             <span style={{ color: colors.cyan }}>&lt;SUF&gt;</span> {suffix}{" "}
@@ -92,21 +132,38 @@ export default function AdvancedPretrainingObjectives() {
             <span style={{ background: "rgba(232,106,166,0.25)", color: colors.magenta }}>{middle}</span>
           </pre>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            Only the highlighted part after &lt;MID&gt; gets graded -- that's what the model practices
-            producing. Everything before it is just context to read.
+            {pick(
+              lang,
+              "Only the highlighted part after <MID> gets graded -- that's what the model practices producing. Everything before it is just context to read.",
+              "Hanya bagian tersorot setelah <MID> yang dinilai -- itulah yang model latih untuk dihasilkan. Semua sebelumnya hanyalah konteks untuk dibaca.",
+            )}
           </p>
         </ScopeScreen>
       </Section>
 
-      <Section title="Lab — one head or four">
-        <p>
-          Normally the model makes one guess per position: the very next token. Multi-token prediction
-          bolts on extra guessing heads that simultaneously predict two, three, and four tokens ahead
-          from the same spot -- like a chess student asked to name the next several moves, not just one.
-          The model learns more from every position, and the extra heads pay off again later: at
-          generation time they can propose several tokens at once for quick checking, a speed trick
-          called speculative decoding.
-        </p>
+      <Section title={pick(lang, "Lab — one head or four", "Lab — satu head atau empat")}>
+        <Bi
+          en={
+            <p>
+              Normally the model makes one guess per position: the very next token. Multi-token prediction
+              bolts on extra guessing heads that simultaneously predict two, three, and four tokens ahead
+              from the same spot -- like a chess student asked to name the next several moves, not just one.
+              The model learns more from every position, and the extra heads pay off again later: at
+              generation time they can propose several tokens at once for quick checking, a speed trick
+              called speculative decoding.
+            </p>
+          }
+          id={
+            <p>
+              Biasanya model membuat satu tebakan per posisi: token persis berikutnya. Multi-token prediction
+              memasang head penebak ekstra yang serentak memprediksi dua, tiga, dan empat token ke depan dari
+              titik yang sama -- seperti murid catur yang diminta menyebut beberapa langkah berikutnya, bukan
+              cuma satu. Model belajar lebih banyak dari tiap posisi, dan head ekstranya berbuah lagi nanti:
+              saat menghasilkan teks mereka bisa mengusulkan beberapa token sekaligus untuk dicek cepat, trik
+              kecepatan bernama speculative decoding.
+            </p>
+          }
+        />
         <ScopeScreen label="Diagram comparing single-token and multi-token prediction heads from the same position">
           <Toggle label="SHOW MULTI-TOKEN PREDICTION (4 HEADS)" checked={multiToken} onChange={setMultiToken} />
           <svg viewBox="0 0 320 90" width="100%" height="100" aria-label={multiToken ? "Four prediction heads from the current position, predicting t+1 through t+4" : "One prediction head from the current position, predicting only t+1"}>
@@ -140,26 +197,63 @@ export default function AdvancedPretrainingObjectives() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Long context, curriculum, and a nod to span corruption">
-        <p>
-          Training on very long texts from day one is expensive -- the attention step's cost grows fast
-          with text length. So most runs do the bulk of training on shorter texts (a few thousand tokens)
-          and stretch afterward. Remember RoPE from lesson 1.4, which encodes position by rotating each
-          word's numbers? Stretching mostly means adjusting those rotation angles so the same range of
-          angles covers a longer stretch of text -- like re-marking a ruler so the same physical length
-          now measures a longer distance -- followed by a short extra phase of training at the new
-          length so the model gets used to it.
-        </p>
-        <p>
-          <strong>Curriculum</strong> is a scheduling decision, not a machinery change: many training
-          recipes deliberately hold back their best material -- carefully filtered text, textbooks,
-          question-and-answer style data -- for the final stretch of training, when the model has the
-          foundation to actually profit from it. Same logic as a school curriculum: calculus goes after
-          algebra. One last cousin worth knowing by name: <strong>span corruption</strong> also teaches
-          hole-filling by blanking out random chunks, but it changes how the model is allowed to read the
-          text. FIM's whole appeal is that it doesn't -- it just shuffles the text and lets the ordinary
-          left-to-right machine do the rest.
-        </p>
+      <Section
+        title={pick(
+          lang,
+          "Long context, curriculum, and a nod to span corruption",
+          "Konteks panjang, kurikulum, dan sekilas span corruption",
+        )}
+      >
+        <Bi
+          en={
+            <p>
+              Training on very long texts from day one is expensive -- the attention step's cost grows fast
+              with text length. So most runs do the bulk of training on shorter texts (a few thousand tokens)
+              and stretch afterward. Remember RoPE from lesson 1.4, which encodes position by rotating each
+              word's numbers? Stretching mostly means adjusting those rotation angles so the same range of
+              angles covers a longer stretch of text -- like re-marking a ruler so the same physical length
+              now measures a longer distance -- followed by a short extra phase of training at the new
+              length so the model gets used to it.
+            </p>
+          }
+          id={
+            <p>
+              Berlatih pada teks yang sangat panjang sejak hari pertama itu mahal -- biaya langkah atensi
+              tumbuh cepat mengikuti panjang teks. Maka kebanyakan pelatihan mengerjakan porsi besarnya pada
+              teks lebih pendek (beberapa ribu token) dan meregang setelahnya. Ingat RoPE dari pelajaran 1.4,
+              yang mengodekan posisi dengan memutar angka-angka tiap kata? Meregang kebanyakan berarti
+              menyetel sudut-sudut putaran itu supaya rentang sudut yang sama mencakup bentangan teks lebih
+              panjang -- seperti menandai ulang penggaris supaya panjang fisik yang sama kini mengukur jarak
+              lebih jauh -- diikuti fase pelatihan ekstra singkat pada panjang baru supaya model terbiasa.
+            </p>
+          }
+        />
+        <Bi
+          en={
+            <p>
+              <strong>Curriculum</strong> is a scheduling decision, not a machinery change: many training
+              recipes deliberately hold back their best material -- carefully filtered text, textbooks,
+              question-and-answer style data -- for the final stretch of training, when the model has the
+              foundation to actually profit from it. Same logic as a school curriculum: calculus goes after
+              algebra. One last cousin worth knowing by name: <strong>span corruption</strong> also teaches
+              hole-filling by blanking out random chunks, but it changes how the model is allowed to read the
+              text. FIM's whole appeal is that it doesn't -- it just shuffles the text and lets the ordinary
+              left-to-right machine do the rest.
+            </p>
+          }
+          id={
+            <p>
+              <strong>Kurikulum</strong> adalah keputusan penjadwalan, bukan perubahan mesin: banyak resep
+              pelatihan sengaja menahan bahan terbaiknya -- teks yang tersaring cermat, buku pelajaran, data
+              bergaya tanya-jawab -- untuk bentangan akhir pelatihan, saat model sudah punya fondasi untuk
+              benar-benar memetiknya. Logika yang sama dengan kurikulum sekolah: kalkulus datang setelah
+              aljabar. Satu sepupu terakhir yang layak dikenal namanya: <strong>span corruption</strong> juga
+              mengajarkan isi-lubang dengan mengosongkan potongan acak, tetapi ia mengubah cara model boleh
+              membaca teksnya. Seluruh daya tarik FIM adalah ia tidak begitu -- ia hanya mengocok teks dan
+              membiarkan mesin kiri-ke-kanan biasa mengerjakan sisanya.
+            </p>
+          }
+        />
       </Section>
     </LessonLayout>
   );
