@@ -8,6 +8,7 @@ import { getLessonMeta } from "../../lib/syllabus";
 import { bytesToGB, loraTrainableParams, type LoRAModuleDims } from "../../lib/math";
 import { useLabSetting } from "../../lib/storage";
 import { colors } from "../../lib/theme";
+import { Bi, pick, useLang } from "../../lib/i18n";
 
 const lesson = getLessonMeta(3, "supervised-fine-tuning")!;
 
@@ -39,6 +40,7 @@ const MODULES: (LoRAModuleDims & { group: string })[] = [
 ];
 
 export default function SupervisedFineTuning() {
+  const { lang } = useLang();
   const [maskOn, setMaskOn] = useLabSetting("m3-sft-mask", true);
   const [rank, setRank] = useLabSetting("m3-sft-rank", 16);
   const [selected, setSelected] = useState<Record<string, boolean>>({
@@ -60,21 +62,44 @@ export default function SupervisedFineTuning() {
     <LessonLayout
       lesson={lesson}
       intro={
-        <p>
-          Supervised fine-tuning (SFT) is nothing more than lesson 1.7's guess-and-grade training loop
-          pointed at new material: instead of the raw internet, a small, carefully written collection of
-          example conversations showing what a good assistant sounds like. The mechanism doesn't change
-          at all. What changes is what the model reads -- and, crucially, which parts of it the model
-          actually gets graded on.
-        </p>
+        <Bi
+          en={
+            <p>
+              Supervised fine-tuning (SFT) is nothing more than lesson 1.7's guess-and-grade training loop
+              pointed at new material: instead of the raw internet, a small, carefully written collection of
+              example conversations showing what a good assistant sounds like. The mechanism doesn't change
+              at all. What changes is what the model reads -- and, crucially, which parts of it the model
+              actually gets graded on.
+            </p>
+          }
+          id={
+            <p>
+              Supervised fine-tuning (SFT) tak lebih dari loop latihan tebak-lalu-nilai pelajaran 1.7 yang
+              diarahkan ke bahan baru: alih-alih internet mentah, koleksi kecil percakapan contoh yang
+              ditulis cermat, memperlihatkan seperti apa asisten yang baik. Mekanismenya tak berubah sama
+              sekali. Yang berubah adalah apa yang dibaca model -- dan, yang krusial, bagian mana darinya
+              yang benar-benar dinilai.
+            </p>
+          }
+        />
       }
-      takeaways={[
-        "SFT is the ordinary guess-and-grade training from lesson 1.7 applied to example conversations -- no new math, just new reading material.",
-        "A chat template wraps each speaker's turn in special marker tokens (like <|user|> and <|assistant|>) -- stage directions in a script -- so the model can tell who's talking.",
-        "The loss mask means the model is only graded on the assistant's lines. It reads the user's messages but isn't trained to imitate them -- you want it to learn the answering role, not both sides of the conversation.",
-        "A famous result called LIMA showed that about a thousand truly excellent example conversations beat hundreds of thousands of mediocre ones. For SFT, quality beats quantity, decisively.",
-        "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
-      ]}
+      takeaways={pick(
+        lang,
+        [
+          "SFT is the ordinary guess-and-grade training from lesson 1.7 applied to example conversations -- no new math, just new reading material.",
+          "A chat template wraps each speaker's turn in special marker tokens (like <|user|> and <|assistant|>) -- stage directions in a script -- so the model can tell who's talking.",
+          "The loss mask means the model is only graded on the assistant's lines. It reads the user's messages but isn't trained to imitate them -- you want it to learn the answering role, not both sides of the conversation.",
+          "A famous result called LIMA showed that about a thousand truly excellent example conversations beat hundreds of thousands of mediocre ones. For SFT, quality beats quantity, decisively.",
+          "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
+        ],
+        [
+          "SFT adalah latihan tebak-lalu-nilai biasa dari pelajaran 1.7 yang diterapkan pada percakapan contoh -- tanpa matematika baru, hanya bahan bacaan baru.",
+          "Templat obrolan membungkus giliran tiap pembicara dengan token penanda khusus (seperti <|user|> dan <|assistant|>) -- petunjuk panggung dalam naskah -- supaya model tahu siapa yang bicara.",
+          "Loss mask berarti model hanya dinilai pada kalimat-kalimat si asisten. Ia membaca pesan pengguna tetapi tak dilatih menirunya -- kamu ingin ia mempelajari peran menjawab, bukan kedua sisi percakapan.",
+          "Temuan terkenal bernama LIMA menunjukkan sekitar seribu percakapan contoh yang benar-benar unggul mengalahkan ratusan ribu yang biasa-biasa saja. Untuk SFT, kualitas mengalahkan kuantitas, telak.",
+          "LoRA adalah trik yang membuat fine-tuning terjangkau: bekukan seluruh model dan latih hanya kepingan tempelan kecil. QLoRA juga memampatkan model beku ke memori lebih hemat -- bersama-sama keduanya memuatkan fine-tune 8 miliar parameter di kartu grafis biasa.",
+        ],
+      )}
       references={[
         {
           title: "LIMA: Less Is More for Alignment — Zhou et al., 2023",
@@ -98,13 +123,25 @@ export default function SupervisedFineTuning() {
         },
       ]}
     >
-      <Section title="Lab — the template and mask microscope">
-        <p>
-          Below is a training conversation as the model actually sees it, marker tokens and all. Toggle
-          the loss mask to see which parts the model is graded on: only the assistant's own lines.
-          Everything else -- the markers, the user's messages -- is read as context but never counted in
-          the grade.
-        </p>
+      <Section title={pick(lang, "Lab — the template and mask microscope", "Lab — mikroskop templat dan mask")}>
+        <Bi
+          en={
+            <p>
+              Below is a training conversation as the model actually sees it, marker tokens and all. Toggle
+              the loss mask to see which parts the model is graded on: only the assistant's own lines.
+              Everything else -- the markers, the user's messages -- is read as context but never counted in
+              the grade.
+            </p>
+          }
+          id={
+            <p>
+              Di bawah ini percakapan latihan persis seperti yang dilihat model, lengkap dengan token
+              penandanya. Balik sakelar loss mask untuk melihat bagian mana yang dinilai: hanya
+              kalimat-kalimat si asisten sendiri. Semua yang lain -- penanda, pesan pengguna -- dibaca
+              sebagai konteks tetapi tak pernah dihitung dalam nilai.
+            </p>
+          }
+        />
         <ScopeScreen label="Chat template with special tokens, and a loss mask toggle dimming everything except assistant response tokens">
           <Toggle label="APPLY LOSS MASK (train on assistant tokens only)" checked={maskOn} onChange={setMaskOn} />
           <div style={{ marginTop: 12, lineHeight: 2.2 }}>
@@ -121,36 +158,79 @@ export default function SupervisedFineTuning() {
             })}
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 10 }}>
-            {maskOn ? "Only the highlighted assistant text contributes to the loss." : "Mask off: every token in the sequence would contribute to the loss, including the user's own messages."}
+            {maskOn
+              ? pick(
+                  lang,
+                  "Only the highlighted assistant text contributes to the loss.",
+                  "Hanya teks asisten yang tersorot yang dihitung ke dalam loss.",
+                )
+              : pick(
+                  lang,
+                  "Mask off: every token in the sequence would contribute to the loss, including the user's own messages.",
+                  "Mask mati: setiap token dalam barisan akan dihitung ke dalam loss, termasuk pesan-pesan si pengguna sendiri.",
+                )}
           </p>
         </ScopeScreen>
       </Section>
 
-      <Section title="Data quality over quantity">
-        <p>
-          The LIMA study made the point unforgettably: roughly a thousand extremely carefully written
-          example conversations produced a model that held its own against ones trained on vastly more,
-          messier examples. The insight is that SFT isn't teaching the model new facts -- it already
-          absorbed those in pre-training. It's teaching the <em>shape</em> of a good answer: how to
-          structure it, how long to make it, when to stop. For teaching a style, a small stack of perfect
-          examples beats a warehouse of sloppy ones -- the same way one great writing tutor beats a
-          thousand random internet comments. (One practical detail: to save time, several short
-          conversations are usually bundled into one training sequence, with the grading mask making sure
-          they never blur into each other.)
-        </p>
+      <Section title={pick(lang, "Data quality over quantity", "Kualitas data di atas kuantitas")}>
+        <Bi
+          en={
+            <p>
+              The LIMA study made the point unforgettably: roughly a thousand extremely carefully written
+              example conversations produced a model that held its own against ones trained on vastly more,
+              messier examples. The insight is that SFT isn't teaching the model new facts -- it already
+              absorbed those in pre-training. It's teaching the <em>shape</em> of a good answer: how to
+              structure it, how long to make it, when to stop. For teaching a style, a small stack of perfect
+              examples beats a warehouse of sloppy ones -- the same way one great writing tutor beats a
+              thousand random internet comments. (One practical detail: to save time, several short
+              conversations are usually bundled into one training sequence, with the grading mask making sure
+              they never blur into each other.)
+            </p>
+          }
+          id={
+            <p>
+              Studi LIMA menegaskan poinnya tak terlupakan: kira-kira seribu percakapan contoh yang ditulis
+              luar biasa cermat menghasilkan model yang sanggup mengimbangi model-model yang dilatih dengan
+              contoh jauh lebih banyak tapi lebih berantakan. Wawasannya: SFT bukan mengajari model fakta
+              baru -- itu sudah ia serap di pra-pelatihan. Ia mengajarkan <em>bentuk</em> jawaban yang baik:
+              cara menyusunnya, seberapa panjang, kapan berhenti. Untuk mengajarkan gaya, setumpuk kecil
+              contoh sempurna mengalahkan segudang contoh asal-asalan -- sebagaimana satu guru menulis hebat
+              mengalahkan seribu komentar internet acak. (Satu detail praktis: demi hemat waktu, beberapa
+              percakapan pendek biasanya dibundel jadi satu barisan latihan, dengan mask penilaian memastikan
+              mereka tak pernah melebur satu sama lain.)
+            </p>
+          }
+        />
       </Section>
 
-      <Section title="Lab — the LoRA budget console">
-        <p>
-          Fine-tuning every one of 8 billion parameters takes serious hardware. <strong>LoRA</strong>{" "}
-          ("low-rank adaptation") is the workaround: freeze the entire original model and bolt small
-          trainable side-pieces onto chosen parts of it -- like renovating a house by adding a few new
-          fixtures instead of rebuilding every wall. The side-pieces are deliberately skinny: instead of
-          learning a full correction the size of the original grid, LoRA learns two thin strips whose
-          product stands in for it, and a dial called the <strong>rank</strong> sets how thin. Pick a
-          rank and choose which parts of the model get side-pieces, and watch how few parameters you
-          actually end up training.
-        </p>
+      <Section title={pick(lang, "Lab — the LoRA budget console", "Lab — konsol anggaran LoRA")}>
+        <Bi
+          en={
+            <p>
+              Fine-tuning every one of 8 billion parameters takes serious hardware. <strong>LoRA</strong>{" "}
+              ("low-rank adaptation") is the workaround: freeze the entire original model and bolt small
+              trainable side-pieces onto chosen parts of it -- like renovating a house by adding a few new
+              fixtures instead of rebuilding every wall. The side-pieces are deliberately skinny: instead of
+              learning a full correction the size of the original grid, LoRA learns two thin strips whose
+              product stands in for it, and a dial called the <strong>rank</strong> sets how thin. Pick a
+              rank and choose which parts of the model get side-pieces, and watch how few parameters you
+              actually end up training.
+            </p>
+          }
+          id={
+            <p>
+              Fine-tuning kedelapan miliar parameter satu per satu menuntut perangkat serius.{" "}
+              <strong>LoRA</strong> ("low-rank adaptation") adalah jalan pintasnya: bekukan seluruh model
+              asli dan pasang kepingan-samping kecil yang bisa dilatih pada bagian-bagian pilihannya --
+              seperti merenovasi rumah dengan menambah beberapa perabot baru alih-alih membangun ulang semua
+              tembok. Kepingan-sampingnya sengaja kurus: alih-alih mempelajari koreksi penuh seukuran kisi
+              aslinya, LoRA mempelajari dua bilah tipis yang hasil kalinya mewakilinya, dan kenop bernama{" "}
+              <strong>rank</strong> mengatur seberapa tipis. Pilih rank dan tentukan bagian model mana yang
+              mendapat kepingan-samping, lalu lihat betapa sedikitnya parameter yang akhirnya kamu latih.
+            </p>
+          }
+        />
         <ScopeScreen label="LoRA trainable parameter budget console with rank slider, target module checkboxes, and QLoRA memory estimate">
           <Slider label="RANK r" value={rank} min={1} max={256} step={1} onChange={setRank} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: "10px 0" }}>
@@ -169,9 +249,11 @@ export default function SupervisedFineTuning() {
             <Readout label="QLoRA ESTIMATED MEMORY" value={`${qloraGB.toFixed(2)} GB`} accent={qloraGB <= 8 ? colors.green : colors.red} />
           </div>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            The QLoRA estimate = the frozen model compressed to half a byte per parameter, plus full
-            training bookkeeping on just the tiny add-on pieces. (Temporary working numbers not
-            included.)
+            {pick(
+              lang,
+              "The QLoRA estimate = the frozen model compressed to half a byte per parameter, plus full training bookkeeping on just the tiny add-on pieces. (Temporary working numbers not included.)",
+              "Perkiraan QLoRA = model beku dimampatkan jadi setengah byte per parameter, plus pembukuan latihan penuh hanya pada kepingan tempelan mungilnya. (Angka kerja sementara belum termasuk.)",
+            )}
           </p>
         </ScopeScreen>
       </Section>
