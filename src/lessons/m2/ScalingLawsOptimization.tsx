@@ -8,12 +8,14 @@ import { getLessonMeta } from "../../lib/syllabus";
 import { chinchillaAllocation, lrSchedule, perplexity } from "../../lib/math";
 import { useLabSetting } from "../../lib/storage";
 import { colors } from "../../lib/theme";
+import { Bi, pick, useLang } from "../../lib/i18n";
 
 const lesson = getLessonMeta(2, "scaling-laws-optimization")!;
 
 const RATIO_SAMPLES = Array.from({ length: 200 }, (_, i) => 1 + (i / 199) * 399);
 
 export default function ScalingLawsOptimization() {
+  const { lang } = useLang();
   const [logC, setLogC] = useLabSetting("m2-scaling-logc", 24);
   const [ratio, setRatio] = useLabSetting("m2-scaling-ratio", 20);
 
@@ -41,23 +43,49 @@ export default function ScalingLawsOptimization() {
     <LessonLayout
       lesson={lesson}
       intro={
-        <p>
-          Suppose you have a fixed budget for training. Should you build a bigger model and show it less
-          text, or a smaller model and show it more? Remarkably, this question has a mathematical answer.
-          Researchers discovered that a model's final wrongness score falls along smooth, predictable
-          curves as you add more compute, more parameters, or more data -- so predictable you can plan a
-          $100 million run with them. A famous 2022 study nicknamed "Chinchilla" then showed that almost
-          everyone had been getting the split wrong: models were too big and read too little. This lesson
-          lets you compute the right split yourself.
-        </p>
+        <Bi
+          en={
+            <p>
+              Suppose you have a fixed budget for training. Should you build a bigger model and show it less
+              text, or a smaller model and show it more? Remarkably, this question has a mathematical answer.
+              Researchers discovered that a model's final wrongness score falls along smooth, predictable
+              curves as you add more compute, more parameters, or more data -- so predictable you can plan a
+              $100 million run with them. A famous 2022 study nicknamed "Chinchilla" then showed that almost
+              everyone had been getting the split wrong: models were too big and read too little. This lesson
+              lets you compute the right split yourself.
+            </p>
+          }
+          id={
+            <p>
+              Misalkan kamu punya anggaran pelatihan yang tetap. Sebaiknya bangun model lebih besar dan beri
+              ia lebih sedikit bacaan, atau model lebih kecil dengan bacaan lebih banyak? Luar biasanya,
+              pertanyaan ini punya jawaban matematis. Para peneliti menemukan bahwa skor kesalahan akhir
+              sebuah model turun mengikuti kurva yang mulus dan bisa diprediksi saat kamu menambah komputasi,
+              parameter, atau data -- begitu terprediksinya sampai kamu bisa merencanakan pelatihan senilai
+              $100 juta dengannya. Sebuah studi terkenal tahun 2022 berjulukan "Chinchilla" lalu menunjukkan
+              hampir semua orang salah membaginya: model terlalu besar dan bacaannya terlalu sedikit.
+              Pelajaran ini membiarkanmu menghitung pembagian yang benar sendiri.
+            </p>
+          }
+        />
       }
-      takeaways={[
-        "The Chinchilla formula predicts a model's final wrongness score from just two inputs -- model size and amount of training text: L(N,D) = 1.69 + 406.4/N^0.34 + 410.7/D^0.28. Bigger model shrinks one term, more data shrinks the other.",
-        "The 1.69 at the front is the floor: human language is genuinely unpredictable to a degree, and no amount of scale removes that part.",
-        "The headline rule of thumb: for the best model per unit of budget, train on about 20 tokens of text per parameter. (The exact best ratio drifts a little as budgets grow.)",
-        "Many real models deliberately 'overtrain' way past 20-to-1: paying somewhat more at training time buys a smaller model that's permanently cheaper to run for every future user -- usually a great trade.",
-        "Around the main training loop sits standard scaffolding -- easing the learning speed up then smoothly down, capping oversized updates, starting with smaller batches. Not optional extras; every big run uses them.",
-      ]}
+      takeaways={pick(
+        lang,
+        [
+          "The Chinchilla formula predicts a model's final wrongness score from just two inputs -- model size and amount of training text: L(N,D) = 1.69 + 406.4/N^0.34 + 410.7/D^0.28. Bigger model shrinks one term, more data shrinks the other.",
+          "The 1.69 at the front is the floor: human language is genuinely unpredictable to a degree, and no amount of scale removes that part.",
+          "The headline rule of thumb: for the best model per unit of budget, train on about 20 tokens of text per parameter. (The exact best ratio drifts a little as budgets grow.)",
+          "Many real models deliberately 'overtrain' way past 20-to-1: paying somewhat more at training time buys a smaller model that's permanently cheaper to run for every future user -- usually a great trade.",
+          "Around the main training loop sits standard scaffolding -- easing the learning speed up then smoothly down, capping oversized updates, starting with smaller batches. Not optional extras; every big run uses them.",
+        ],
+        [
+          "Rumus Chinchilla memprediksi skor kesalahan akhir model dari hanya dua masukan -- ukuran model dan banyaknya teks latihan: L(N,D) = 1,69 + 406,4/N^0,34 + 410,7/D^0,28. Model lebih besar mengecilkan satu suku, data lebih banyak mengecilkan suku lainnya.",
+          "Angka 1,69 di depan adalah lantainya: bahasa manusia memang tak terprediksi sampai taraf tertentu, dan skala sebesar apa pun tak menghapus bagian itu.",
+          "Aturan praktis utamanya: untuk model terbaik per satuan anggaran, latih dengan sekitar 20 token teks per parameter. (Rasio terbaik persisnya bergeser sedikit saat anggaran tumbuh.)",
+          "Banyak model sungguhan sengaja 'overtrain' jauh melewati 20-banding-1: membayar agak lebih di waktu pelatihan membeli model lebih kecil yang selamanya lebih murah dijalankan untuk setiap pengguna -- biasanya pertukaran yang hebat.",
+          "Di sekeliling loop pelatihan utama ada perancah standar -- menaikkan kecepatan belajar pelan-pelan lalu menurunkannya mulus, membatasi pembaruan kebesaran, memulai dengan batch lebih kecil. Bukan pelengkap opsional; setiap pelatihan besar memakainya.",
+        ],
+      )}
       references={[
         {
           title: "Scaling Laws for Neural Language Models — Kaplan et al., 2020",
@@ -76,15 +104,29 @@ export default function ScalingLawsOptimization() {
         },
       ]}
     >
-      <Section title="Lab — the Chinchilla allocation console">
-        <p>
-          Set a total compute budget, then choose how to split it using the tokens-per-parameter ratio --
-          low ratio means "big model, less reading," high ratio means "small model, lots of reading." The
-          model size, data amount, and predicted wrongness score all update live from the real Chinchilla
-          formula. The curve traces the predicted score across every ratio from 1 to 400 at your chosen
-          budget, with the true best point marked in green -- notice it hovers near 20 but isn't pinned
-          exactly there.
-        </p>
+      <Section title={pick(lang, "Lab — the Chinchilla allocation console", "Lab — konsol alokasi Chinchilla")}>
+        <Bi
+          en={
+            <p>
+              Set a total compute budget, then choose how to split it using the tokens-per-parameter ratio --
+              low ratio means "big model, less reading," high ratio means "small model, lots of reading." The
+              model size, data amount, and predicted wrongness score all update live from the real Chinchilla
+              formula. The curve traces the predicted score across every ratio from 1 to 400 at your chosen
+              budget, with the true best point marked in green -- notice it hovers near 20 but isn't pinned
+              exactly there.
+            </p>
+          }
+          id={
+            <p>
+              Atur total anggaran komputasi, lalu pilih cara membaginya lewat rasio token-per-parameter --
+              rasio rendah berarti "model besar, bacaan sedikit", rasio tinggi berarti "model kecil, bacaan
+              banyak". Ukuran model, jumlah data, dan skor kesalahan terprediksi semuanya berubah langsung
+              dari rumus Chinchilla asli. Kurvanya menelusuri skor prediksi di semua rasio dari 1 sampai 400
+              pada anggaran pilihanmu, dengan titik terbaik sejati ditandai hijau -- perhatikan ia melayang
+              dekat 20 tetapi tak terpaku persis di sana.
+            </p>
+          }
+        />
         <ScopeScreen label="Chinchilla compute-optimal allocation console with loss-vs-ratio curve">
           <Slider label="LOG10(COMPUTE BUDGET, FLOPS)" value={logC} min={19} max={26} step={0.1} onChange={setLogC} format={(v) => (10 ** v).toExponential(2)} />
           <Slider label="TOKENS PER PARAMETER" value={ratio} min={1} max={400} step={1} onChange={setRatio} />
@@ -122,33 +164,68 @@ export default function ScalingLawsOptimization() {
             />
           </svg>
           <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
-            green = numerically-optimal ratio at this budget (≈{optimal.r.toFixed(0)} tokens/param) — amber = your current ratio
+            {pick(
+              lang,
+              `green = numerically-optimal ratio at this budget (≈${optimal.r.toFixed(0)} tokens/param) — amber = your current ratio`,
+              `hijau = rasio optimal numerik pada anggaran ini (≈${optimal.r.toFixed(0)} token/param) — kuning = rasiomu saat ini`,
+            )}
           </div>
         </ScopeScreen>
       </Section>
 
-      <Section title="Why deliberately overtrain">
-        <p>
-          Look at the curve's shape: it's steep on the left (a big model starved of reading material is a
-          bad waste of budget) but nearly flat on the right (a small model that reads extra costs only a
-          little quality). Now add a business fact: what it costs to <em>use</em> a model every day
-          depends on its size, not on how much it read during training. A company expecting billions of
-          conversations will gladly pay somewhat more once, at training time, to end up with a smaller
-          model that's cheaper to run forever after -- sliding right along that flat part of the curve on
-          purpose. That's exactly why the LLaMA models train far past the 20-to-1 ratio (LLaMA 3 405B, in
-          lesson 2.8, reads about 38 tokens per parameter).
-        </p>
+      <Section title={pick(lang, "Why deliberately overtrain", "Kenapa sengaja overtrain")}>
+        <Bi
+          en={
+            <p>
+              Look at the curve's shape: it's steep on the left (a big model starved of reading material is a
+              bad waste of budget) but nearly flat on the right (a small model that reads extra costs only a
+              little quality). Now add a business fact: what it costs to <em>use</em> a model every day
+              depends on its size, not on how much it read during training. A company expecting billions of
+              conversations will gladly pay somewhat more once, at training time, to end up with a smaller
+              model that's cheaper to run forever after -- sliding right along that flat part of the curve on
+              purpose. That's exactly why the LLaMA models train far past the 20-to-1 ratio (LLaMA 3 405B, in
+              lesson 2.8, reads about 38 tokens per parameter).
+            </p>
+          }
+          id={
+            <p>
+              Lihat bentuk kurvanya: curam di kiri (model besar yang kelaparan bahan bacaan adalah pemborosan
+              anggaran yang buruk) tetapi nyaris rata di kanan (model kecil yang membaca ekstra hanya
+              kehilangan sedikit kualitas). Sekarang tambahkan fakta bisnis: biaya <em>memakai</em> model
+              setiap hari bergantung pada ukurannya, bukan pada banyaknya bacaan saat pelatihan. Perusahaan
+              yang mengantisipasi miliaran percakapan akan dengan senang hati membayar agak lebih sekali, di
+              waktu pelatihan, demi berakhir dengan model lebih kecil yang lebih murah dijalankan selamanya --
+              sengaja meluncur ke kanan sepanjang bagian rata kurva itu. Persis itulah kenapa model-model
+              LLaMA berlatih jauh melewati rasio 20-banding-1 (LLaMA 3 405B, di pelajaran 2.8, membaca sekitar
+              38 token per parameter).
+            </p>
+          }
+        />
       </Section>
 
-      <Section title="Lab — the learning-rate schedule">
-        <p>
-          Remember the learning rate from lesson 1.7 -- the hiker's stride length? In big training runs
-          it isn't held constant; it follows a planned schedule, like a runner pacing a marathon. Start
-          gently (a "warmup" -- the model's numbers are random garbage at first, and big steps early on
-          cause chaos), ramp up to full speed, then ease off smoothly toward zero by the end so the model
-          settles precisely into place instead of bouncing around its final answer. Play with the three
-          dials below and watch the shape change.
-        </p>
+      <Section title={pick(lang, "Lab — the learning-rate schedule", "Lab — jadwal learning rate")}>
+        <Bi
+          en={
+            <p>
+              Remember the learning rate from lesson 1.7 -- the hiker's stride length? In big training runs
+              it isn't held constant; it follows a planned schedule, like a runner pacing a marathon. Start
+              gently (a "warmup" -- the model's numbers are random garbage at first, and big steps early on
+              cause chaos), ramp up to full speed, then ease off smoothly toward zero by the end so the model
+              settles precisely into place instead of bouncing around its final answer. Play with the three
+              dials below and watch the shape change.
+            </p>
+          }
+          id={
+            <p>
+              Ingat learning rate dari pelajaran 1.7 -- panjang langkah si pendaki? Di pelatihan besar ia
+              tidak dibiarkan konstan; ia mengikuti jadwal terencana, seperti pelari mengatur tempo maraton.
+              Mulai pelan ("warmup" -- angka-angka model masih sampah acak di awal, dan langkah besar terlalu
+              dini menimbulkan kekacauan), naikkan ke kecepatan penuh, lalu turunkan mulus menuju nol di
+              akhir supaya model mengendap tepat di tempatnya alih-alih memantul-mantul di sekitar jawaban
+              akhirnya. Mainkan ketiga kenop di bawah dan lihat bentuknya berubah.
+            </p>
+          }
+        />
         <ScopeScreen label="Learning rate schedule plot with linear warmup and cosine decay">
           <Slider label="WARMUP STEPS" value={warmup} min={0} max={5000} step={50} onChange={setWarmup} />
           <Slider label="MAX LEARNING RATE" value={maxLR} min={0.0001} max={0.005} step={0.0001} onChange={setMaxLR} format={(v) => v.toFixed(4)} />
@@ -171,18 +248,36 @@ export default function ScalingLawsOptimization() {
         </ScopeScreen>
       </Section>
 
-      <Section title="The rest of the optimization scaffolding">
-        <p>
-          Two more safety measures matter more than their simplicity suggests. <strong>Gradient
-          clipping</strong> puts a hard cap on how big any single update can be -- so one weird batch of
-          text can't shove the model violently in a wrong direction. <strong>Batch-size ramp-up</strong>{" "}
-          starts training on smaller batches of text and grows them over the early phase, when the model
-          is at its most fragile. And despite all of it, big runs still hit <strong>loss spikes</strong>:
-          the wrongness score suddenly jumps for no obvious reason. Teams handle these like a corrupted
-          save file in a video game -- rewind to the last good save-point, skip the batch that caused
-          trouble, maybe ease off the learning rate, and carry on. It's hard-won operating lore as much
-          as theory, and lesson 2.7 treats it as exactly that.
-        </p>
+      <Section title={pick(lang, "The rest of the optimization scaffolding", "Sisa perancah optimisasinya")}>
+        <Bi
+          en={
+            <p>
+              Two more safety measures matter more than their simplicity suggests. <strong>Gradient
+              clipping</strong> puts a hard cap on how big any single update can be -- so one weird batch of
+              text can't shove the model violently in a wrong direction. <strong>Batch-size ramp-up</strong>{" "}
+              starts training on smaller batches of text and grows them over the early phase, when the model
+              is at its most fragile. And despite all of it, big runs still hit <strong>loss spikes</strong>:
+              the wrongness score suddenly jumps for no obvious reason. Teams handle these like a corrupted
+              save file in a video game -- rewind to the last good save-point, skip the batch that caused
+              trouble, maybe ease off the learning rate, and carry on. It's hard-won operating lore as much
+              as theory, and lesson 2.7 treats it as exactly that.
+            </p>
+          }
+          id={
+            <p>
+              Dua pengaman lagi lebih penting daripada kesederhanaannya. <strong>Gradient clipping</strong>{" "}
+              memasang batas keras seberapa besar satu pembaruan boleh terjadi -- supaya satu batch teks yang
+              aneh tak bisa mendorong model dengan kasar ke arah yang salah.{" "}
+              <strong>Batch-size ramp-up</strong> memulai pelatihan dengan batch teks lebih kecil dan
+              menumbuhkannya di fase awal, saat model sedang paling rapuh. Dan meski semua itu, pelatihan
+              besar tetap menabrak <strong>loss spike</strong>: skor kesalahan tiba-tiba melonjak tanpa
+              alasan jelas. Tim menanganinya seperti berkas save yang rusak di gim video -- mundur ke
+              titik-simpan bagus terakhir, lewati batch pembuat masalah, mungkin kendurkan learning rate,
+              lalu lanjut. Itu ilmu operasional hasil jerih payah sekaligus teori, dan pelajaran 2.7
+              memperlakukannya persis begitu.
+            </p>
+          }
+        />
       </Section>
     </LessonLayout>
   );
