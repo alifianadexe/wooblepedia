@@ -65,7 +65,7 @@ export const UI = {
     calibration: "CALIBRATION",
     homeTitle: "LLM FUNDAMENTALS — SIGNAL LAB CURRICULUM",
     homeIntro:
-      "Twenty-two channels across three modules. Every lab on this site computes its numbers live from the real equations underneath — read the lecture, then turn the dials yourself.",
+      "Twenty-two stops across three modules, laid out as one continuous path. Every lab on this site computes its numbers live from the real equations underneath — follow the trail, then turn the dials yourself.",
     notFoundMsg: "That lesson channel doesn't exist.",
     backToDashboard: "BACK TO DASHBOARD",
     progressAria: "Overall course progress",
@@ -84,7 +84,7 @@ export const UI = {
     calibration: "KALIBRASI",
     homeTitle: "DASAR-DASAR LLM — KURIKULUM LAB SINYAL",
     homeIntro:
-      "Dua puluh dua kanal dalam tiga modul. Setiap lab di situs ini menghitung angkanya secara langsung dari persamaan aslinya — baca materinya, lalu putar sendiri kenop-kenopnya.",
+      "Dua puluh dua perhentian dalam tiga modul, ditata sebagai satu jalur bersambung. Setiap lab di situs ini menghitung angkanya secara langsung dari persamaan aslinya — ikuti jalannya, lalu putar sendiri kenop-kenopnya.",
     notFoundMsg: "Kanal pelajaran itu tidak ada.",
     backToDashboard: "KEMBALI KE DASBOR",
     progressAria: "Kemajuan kursus keseluruhan",

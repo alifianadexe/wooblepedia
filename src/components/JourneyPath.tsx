@@ -1,8 +1,9 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import type { LessonMeta } from "../lib/syllabus";
-import { lessonPath } from "../lib/syllabus";
+import { lessonPath, lessonShortTitle } from "../lib/syllabus";
 import { lessonKey } from "../lib/lessonKey";
+import { useLang } from "../lib/i18n";
 
 const NODE_D = 56;
 const SPACING_Y = 122;
@@ -32,6 +33,7 @@ export function JourneyPath({
   accent: string;
   completedKeys: Set<string>;
 }) {
+  const { lang } = useLang();
   const positions = lessons.map((_, i) => ({
     x: CENTER_X + AMPLITUDE * Math.sin(i * 0.85 + 0.4),
     y: TOP_PAD + i * SPACING_Y,
@@ -81,7 +83,7 @@ export function JourneyPath({
             <span className="journey-node__circle">
               {complete ? <CheckGlyph /> : <span className="journey-node__num">{lesson.chapter}</span>}
             </span>
-            <span className="journey-node__label">{lesson.shortTitle}</span>
+            <span className="journey-node__label">{lessonShortTitle(lesson, lang)}</span>
           </Link>
         );
       })}

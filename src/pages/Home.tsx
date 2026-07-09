@@ -1,7 +1,8 @@
-import { lessonsByModule, moduleTitle, type ModuleId } from "../lib/syllabus";
+import { lessonsByModule, moduleTitleFor, type ModuleId } from "../lib/syllabus";
 import { moduleAccent } from "../lib/theme";
 import { lessonKey } from "../lib/lessonKey";
 import { useCompletedSlugs } from "../lib/storage";
+import { useLang, useUI } from "../lib/i18n";
 import { JourneyPath } from "../components/JourneyPath";
 
 const MODULES: ModuleId[] = [1, 2, 3];
@@ -16,9 +17,7 @@ export function Home() {
     <div>
       <h1 style={{ fontSize: 20 }}>{ui.homeTitle}</h1>
       <p className="lesson-prose" style={{ maxWidth: "68ch", color: "var(--muted)" }}>
-        Twenty-two stops across three modules, laid out as one continuous path. Every lab on this
-        site computes its numbers live from the real equations underneath — follow the trail, then
-        turn the dials yourself.
+        {ui.homeIntro}
       </p>
 
       {MODULES.map((m) => {
