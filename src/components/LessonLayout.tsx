@@ -6,6 +6,7 @@ import { PrevNext } from "./PrevNext";
 import { StatusDot } from "./StatusDot";
 import { useCompletion } from "../lib/storage";
 import { lessonKey } from "../lib/lessonKey";
+import { useUI } from "../lib/i18n";
 import type { LessonMeta } from "../lib/syllabus";
 
 export function LessonLayout({
@@ -23,6 +24,7 @@ export function LessonLayout({
 }) {
   const key = lessonKey(lesson);
   const [complete, setComplete] = useCompletion(key);
+  const ui = useUI();
 
   return (
     <article>
@@ -39,7 +41,7 @@ export function LessonLayout({
           style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
         >
           <StatusDot complete={complete} />
-          {complete ? "MARKED COMPLETE" : "MARK LESSON COMPLETE"}
+          {complete ? ui.markedComplete : ui.markComplete}
         </button>
       </div>
       <PrevNext lesson={lesson} />

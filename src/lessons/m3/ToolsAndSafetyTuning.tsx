@@ -5,27 +5,52 @@ import { Toggle } from "../../components/Controls";
 import { getLessonMeta } from "../../lib/syllabus";
 import { useLabSetting } from "../../lib/storage";
 import { colors } from "../../lib/theme";
+import { Bi, pick, useLang, type Lang } from "../../lib/i18n";
 
 const lesson = getLessonMeta(3, "tools-and-safety-tuning")!;
 
 interface TraceStep {
   role: "user" | "assistant-call" | "tool-result" | "assistant-final";
   label: string;
+  labelId: string;
   content: string;
   trained: boolean;
 }
 
 const TRACE: TraceStep[] = [
-  { role: "user", label: "USER", content: "What's the weather in Tokyo right now?", trained: false },
+  {
+    role: "user",
+    label: "USER",
+    labelId: "PENGGUNA",
+    content: "What's the weather in Tokyo right now?",
+    trained: false,
+  },
   {
     role: "assistant-call",
     label: "ASSISTANT — FUNCTION CALL",
+    labelId: "ASISTEN — PANGGILAN FUNGSI",
     content: '{"tool_call": {"name": "get_weather", "arguments": {"location": "Tokyo"}}}',
     trained: true,
   },
-  { role: "tool-result", label: "TOOL RESULT (runtime-injected)", content: '{"temperature_c": 18, "condition": "cloudy"}', trained: false },
-  { role: "assistant-final", label: "ASSISTANT — GROUNDED ANSWER", content: "It's 18°C and cloudy in Tokyo right now.", trained: true },
+  {
+    role: "tool-result",
+    label: "TOOL RESULT (runtime-injected)",
+    labelId: "HASIL ALAT (disisipkan sistem)",
+    content: '{"temperature_c": 18, "condition": "cloudy"}',
+    trained: false,
+  },
+  {
+    role: "assistant-final",
+    label: "ASSISTANT — GROUNDED ANSWER",
+    labelId: "ASISTEN — JAWABAN BERDASAR DATA",
+    content: "It's 18°C and cloudy in Tokyo right now.",
+    trained: true,
+  },
 ];
+
+function traceLabel(t: TraceStep, lang: Lang): string {
+  return lang === "id" ? t.labelId : t.label;
+}
 
 const ROLE_COLOR: Record<TraceStep["role"], string> = {
   user: colors.text,
@@ -35,6 +60,7 @@ const ROLE_COLOR: Record<TraceStep["role"], string> = {
 };
 
 export default function ToolsAndSafetyTuning() {
+  const { lang } = useLang();
   const [stepIdx, setStepIdx] = useLabSetting("m3-tools-step", 3);
   const [grounded, setGrounded] = useLabSetting("m3-tools-grounded", true);
 
@@ -42,21 +68,44 @@ export default function ToolsAndSafetyTuning() {
     <LessonLayout
       lesson={lesson}
       intro={
-        <p>
-          How does a model learn to check the weather, run code, or refuse a dangerous request? Here's
-          the anticlimax: with the exact same training machinery from the last two lessons -- example
-          conversations and better-vs-worse comparisons. Nothing new gets bolted onto the model. What
-          changes is purely what the training conversations <em>contain</em> and what they're designed to
-          teach.
-        </p>
+        <Bi
+          en={
+            <p>
+              How does a model learn to check the weather, run code, or refuse a dangerous request? Here's
+              the anticlimax: with the exact same training machinery from the last two lessons -- example
+              conversations and better-vs-worse comparisons. Nothing new gets bolted onto the model. What
+              changes is purely what the training conversations <em>contain</em> and what they're designed to
+              teach.
+            </p>
+          }
+          id={
+            <p>
+              Bagaimana model belajar mengecek cuaca, menjalankan kode, atau menolak permintaan berbahaya?
+              Ini antiklimaksnya: dengan mesin latihan yang persis sama dari dua pelajaran terakhir --
+              percakapan contoh dan perbandingan lebih-baik-vs-lebih-buruk. Tidak ada yang baru dipasangkan
+              ke model. Yang berubah murni apa yang <em>dimuat</em> percakapan latihannya dan apa yang
+              dirancang untuk diajarkannya.
+            </p>
+          }
+        />
       }
-      takeaways={[
-        "A model can't actually fetch the weather -- it can only write a request in an agreed format. Separate software reads the request, does the real work, and pastes the result back into the conversation for the model to read. Tool use is trained by showing thousands of examples of this exchange. (An 'agent' is just this loop repeated.)",
-        "In those examples, the model is graded only on its own lines -- the request and the final answer. The pasted-in tool result is something it learns to read, never to invent.",
-        "Refusing harmful requests is taught through the same two stages as helpfulness -- example refusals, plus comparisons where the appropriate response beats both dangerous compliance and pointless over-refusal. Safety is not a separate system.",
-        "Constitutional AI has the model critique and revise its own answers against an explicit written list of principles, so AI-generated feedback can supplement expensive human labeling.",
-        "Jailbreaks work by dressing a harmful request up to look unlike anything the safety training covered -- which is why teams attack their own model continuously (red-teaming), not as a one-time check before launch.",
-      ]}
+      takeaways={pick(
+        lang,
+        [
+          "A model can't actually fetch the weather -- it can only write a request in an agreed format. Separate software reads the request, does the real work, and pastes the result back into the conversation for the model to read. Tool use is trained by showing thousands of examples of this exchange. (An 'agent' is just this loop repeated.)",
+          "In those examples, the model is graded only on its own lines -- the request and the final answer. The pasted-in tool result is something it learns to read, never to invent.",
+          "Refusing harmful requests is taught through the same two stages as helpfulness -- example refusals, plus comparisons where the appropriate response beats both dangerous compliance and pointless over-refusal. Safety is not a separate system.",
+          "Constitutional AI has the model critique and revise its own answers against an explicit written list of principles, so AI-generated feedback can supplement expensive human labeling.",
+          "Jailbreaks work by dressing a harmful request up to look unlike anything the safety training covered -- which is why teams attack their own model continuously (red-teaming), not as a one-time check before launch.",
+        ],
+        [
+          "Model tak bisa sungguhan mengambil data cuaca -- ia hanya bisa menulis permintaan dalam format yang disepakati. Perangkat lunak terpisah membaca permintaan itu, mengerjakan yang sesungguhnya, dan menempelkan hasilnya kembali ke percakapan untuk dibaca model. Pemakaian alat dilatih dengan memperlihatkan ribuan contoh pertukaran ini. ('Agent' hanyalah loop ini yang diulang.)",
+          "Di contoh-contoh itu, model hanya dinilai pada kalimatnya sendiri -- permintaan dan jawaban akhir. Hasil alat yang ditempelkan adalah sesuatu yang ia pelajari untuk dibaca, tak pernah untuk dikarang.",
+          "Menolak permintaan berbahaya diajarkan lewat dua tahap yang sama dengan sifat membantu -- contoh penolakan, plus perbandingan di mana tanggapan yang pantas mengalahkan baik kepatuhan berbahaya maupun penolakan berlebihan yang sia-sia. Keamanan bukan sistem terpisah.",
+          "Constitutional AI menyuruh model mengkritik dan merevisi jawabannya sendiri terhadap daftar prinsip tertulis yang gamblang, sehingga umpan balik buatan AI bisa melengkapi pelabelan manusia yang mahal.",
+          "Jailbreak bekerja dengan mendandani permintaan berbahaya supaya tampak tak mirip apa pun yang dicakup pelatihan keamanan -- itulah kenapa tim menyerang model mereka sendiri terus-menerus (red-teaming), bukan sekadar cek sekali sebelum rilis.",
+        ],
+      )}
       references={[
         {
           title: "Toolformer: Language Models Can Teach Themselves to Use Tools — Schick et al., 2023",
@@ -75,13 +124,25 @@ export default function ToolsAndSafetyTuning() {
         },
       ]}
     >
-      <Section title="Lab — a tool-call trace, step by step">
-        <p>
-          Step through a full exchange: the person asks, the model writes a weather request in the agreed
-          format, outside software actually fetches the data and pastes it in, and the model turns it
-          into a plain-language answer. Notice the labels -- the model is only trained on the turns it
-          authors itself.
-        </p>
+      <Section title={pick(lang, "Lab — a tool-call trace, step by step", "Lab — jejak panggilan alat, langkah demi langkah")}>
+        <Bi
+          en={
+            <p>
+              Step through a full exchange: the person asks, the model writes a weather request in the agreed
+              format, outside software actually fetches the data and pastes it in, and the model turns it
+              into a plain-language answer. Notice the labels -- the model is only trained on the turns it
+              authors itself.
+            </p>
+          }
+          id={
+            <p>
+              Telusuri satu pertukaran penuh: orangnya bertanya, model menulis permintaan cuaca dalam format
+              yang disepakati, perangkat lunak luar sungguhan mengambil datanya dan menempelkannya, dan model
+              mengubahnya menjadi jawaban bahasa sehari-hari. Perhatikan labelnya -- model hanya dilatih pada
+              giliran yang ia tulis sendiri.
+            </p>
+          }
+        />
         <ScopeScreen label="Step-through tool-call trace showing a user question, a function call, an injected tool result, and a grounded final answer">
           <div className="btn-row">
             <button type="button" className="btn" disabled={stepIdx <= 0} onClick={() => setStepIdx(Math.max(0, stepIdx - 1))}>← PREV TURN</button>
@@ -90,7 +151,10 @@ export default function ToolsAndSafetyTuning() {
           {TRACE.slice(0, stepIdx + 1).map((t, i) => (
             <div key={i} className="panel-2" style={{ padding: 10, marginTop: 8, borderLeft: `3px solid ${ROLE_COLOR[t.role]}` }}>
               <div className="mono" style={{ fontSize: 10, color: ROLE_COLOR[t.role] }}>
-                {t.label} {t.trained ? "— LOSS-RELEVANT" : "— NOT TRAINED"}
+                {traceLabel(t, lang)}{" "}
+                {t.trained
+                  ? pick(lang, "— LOSS-RELEVANT", "— DINILAI")
+                  : pick(lang, "— NOT TRAINED", "— TIDAK DILATIH")}
               </div>
               <div className="mono" style={{ fontSize: 12.5, marginTop: 4 }}>{t.content}</div>
             </div>
@@ -98,17 +162,30 @@ export default function ToolsAndSafetyTuning() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Lab — grounded vs. hallucinated">
-        <p>
-          Why bother with all this? Because without tools, the model still answers -- it just makes
-          something up. A language model always produces fluent, confident text; fluency is no guarantee
-          of truth. Flip the toggle to compare.
-        </p>
+      <Section title={pick(lang, "Lab — grounded vs. hallucinated", "Lab — berdasar data vs. mengarang")}>
+        <Bi
+          en={
+            <p>
+              Why bother with all this? Because without tools, the model still answers -- it just makes
+              something up. A language model always produces fluent, confident text; fluency is no guarantee
+              of truth. Flip the toggle to compare.
+            </p>
+          }
+          id={
+            <p>
+              Buat apa repot-repot semua ini? Karena tanpa alat, model tetap menjawab -- ia sekadar
+              mengarang. Language model selalu menghasilkan teks yang lancar dan percaya diri; kelancaran
+              bukan jaminan kebenaran. Balik sakelarnya untuk membandingkan.
+            </p>
+          }
+        />
         <ScopeScreen label="Toggle between a tool-grounded weather answer and an illustrative hallucinated guess with no tool access">
           <Toggle label="TOOL ACCESS ENABLED" checked={grounded} onChange={setGrounded} />
           <div className="panel-2" style={{ padding: 14, marginTop: 10, borderLeft: `3px solid ${grounded ? colors.green : colors.red}` }}>
             <div className="mono" style={{ fontSize: 11, color: grounded ? colors.green : colors.red, marginBottom: 6 }}>
-              {grounded ? "TOOL-GROUNDED ANSWER" : "NO TOOL ACCESS — ILLUSTRATIVE HALLUCINATION"}
+              {grounded
+                ? pick(lang, "TOOL-GROUNDED ANSWER", "JAWABAN BERDASAR DATA ALAT")
+                : pick(lang, "NO TOOL ACCESS — ILLUSTRATIVE HALLUCINATION", "TANPA AKSES ALAT — CONTOH KARANGAN")}
             </div>
             <p style={{ margin: 0 }}>
               {grounded
@@ -119,29 +196,65 @@ export default function ToolsAndSafetyTuning() {
         </ScopeScreen>
       </Section>
 
-      <Section title="Safety tuning: the same pipeline, different data">
-        <p>
-          Learning to decline genuinely harmful requests is trained exactly the way helpfulness is:
-          example conversations showing appropriate refusals, plus comparisons where the right response
-          -- a safe, helpful answer, or a polite refusal when warranted -- is chosen over both dangerous
-          compliance <em>and</em> pointless over-caution. That last part matters, because there's a real
-          tension here: push only on safety and the model starts refusing harmless questions ("how do I
-          kill a process on my computer?"); push only on helpfulness and it risks going along with
-          genuinely dangerous requests. Getting that balance right is an explicit goal teams work on
-          directly, not something that happens by accident.
-        </p>
-        <p>
-          Labeling enough safe-versus-unsafe comparisons by hand is expensive, and{" "}
-          <strong>Constitutional AI</strong> is one clever way around it: write out an explicit list of
-          principles (a "constitution"), then have the model critique and revise its own answers against
-          that list -- AI-generated feedback that supplements the human-labeled kind. And a note on{" "}
-          <strong>jailbreaks</strong>, the prompts people craft to trick models past their training: they
-          work by making a harmful request look unlike anything the safety examples covered -- wrapping it
-          in a costume, a fictional story, an elaborate roleplay. The lesson a model learned from its
-          training examples simply may not stretch to inputs that strange. That's why serious teams
-          attack their own models continuously ("red-teaming"), treating safety as an ongoing practice
-          rather than a box checked once before launch.
-        </p>
+      <Section title={pick(lang, "Safety tuning: the same pipeline, different data", "Tuning keamanan: jalur sama, data berbeda")}>
+        <Bi
+          en={
+            <p>
+              Learning to decline genuinely harmful requests is trained exactly the way helpfulness is:
+              example conversations showing appropriate refusals, plus comparisons where the right response
+              -- a safe, helpful answer, or a polite refusal when warranted -- is chosen over both dangerous
+              compliance <em>and</em> pointless over-caution. That last part matters, because there's a real
+              tension here: push only on safety and the model starts refusing harmless questions ("how do I
+              kill a process on my computer?"); push only on helpfulness and it risks going along with
+              genuinely dangerous requests. Getting that balance right is an explicit goal teams work on
+              directly, not something that happens by accident.
+            </p>
+          }
+          id={
+            <p>
+              Belajar menolak permintaan yang sungguh berbahaya dilatih persis seperti sifat membantu:
+              percakapan contoh yang memperlihatkan penolakan yang pantas, plus perbandingan di mana
+              tanggapan yang benar -- jawaban aman yang membantu, atau penolakan sopan bila memang perlu --
+              dipilih di atas kepatuhan berbahaya <em>maupun</em> kehati-hatian berlebihan yang sia-sia.
+              Bagian terakhir itu penting, karena ada ketegangan nyata di sini: dorong keamanan saja dan
+              model mulai menolak pertanyaan tak berbahaya ("bagaimana cara mematikan proses di
+              komputerku?"); dorong sifat membantu saja dan ia berisiko menuruti permintaan yang sungguh
+              berbahaya. Menyeimbangkannya dengan benar adalah tujuan eksplisit yang digarap tim secara
+              langsung, bukan sesuatu yang terjadi kebetulan.
+            </p>
+          }
+        />
+        <Bi
+          en={
+            <p>
+              Labeling enough safe-versus-unsafe comparisons by hand is expensive, and{" "}
+              <strong>Constitutional AI</strong> is one clever way around it: write out an explicit list of
+              principles (a "constitution"), then have the model critique and revise its own answers against
+              that list -- AI-generated feedback that supplements the human-labeled kind. And a note on{" "}
+              <strong>jailbreaks</strong>, the prompts people craft to trick models past their training: they
+              work by making a harmful request look unlike anything the safety examples covered -- wrapping it
+              in a costume, a fictional story, an elaborate roleplay. The lesson a model learned from its
+              training examples simply may not stretch to inputs that strange. That's why serious teams
+              attack their own models continuously ("red-teaming"), treating safety as an ongoing practice
+              rather than a box checked once before launch.
+            </p>
+          }
+          id={
+            <p>
+              Melabeli cukup banyak perbandingan aman-versus-tak-aman dengan tangan itu mahal, dan{" "}
+              <strong>Constitutional AI</strong> adalah satu jalan pintar mengakalinya: tuliskan daftar
+              prinsip yang gamblang (sebuah "konstitusi"), lalu suruh model mengkritik dan merevisi
+              jawaban-jawabannya sendiri terhadap daftar itu -- umpan balik buatan AI yang melengkapi yang
+              berlabel manusia. Dan catatan soal <strong>jailbreak</strong>, prompt yang dirancang orang
+              untuk mengecoh model melewati pelatihannya: ia bekerja dengan membuat permintaan berbahaya
+              tampak tak mirip apa pun yang dicakup contoh-contoh keamanan -- membungkusnya dengan kostum,
+              cerita fiksi, permainan peran yang berbelit. Pelajaran yang dipetik model dari contoh
+              latihannya bisa jadi memang tak sampai merentang ke masukan seaneh itu. Itulah kenapa tim yang
+              serius menyerang model mereka sendiri terus-menerus ("red-teaming"), memperlakukan keamanan
+              sebagai praktik berkelanjutan alih-alih kotak yang dicentang sekali sebelum rilis.
+            </p>
+          }
+        />
       </Section>
     </LessonLayout>
   );

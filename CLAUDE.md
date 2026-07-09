@@ -31,6 +31,8 @@ There is no test suite configured.
 
 ## Conventions to preserve
 
+- **Voice: explain everything for a total beginner (high-schooler level).** Assume no programming, math, or ML background. Use everyday analogies (codebooks, librarians, hikers in fog, assembly lines) — NOT backend-engineering analogies; the backend analogies suggested in MAIN-PROMPT.md are superseded by this rule. Define every technical term in plain words at first use (token, vector, parameter, gradient, loss, KV-cache, …) and reuse the same analogies across lessons so later lessons can build on earlier ones.
+- **Bilingual EN/ID.** English is the primary language; Indonesian is the secondary. The active language lives in `src/lib/i18n.tsx` (`LanguageProvider` + `useLang`, persisted under `llmfund:lang`; EN|ID switcher in `SiteHeader`). All lesson prose must ship in both languages: wrap JSX prose blocks in `<Bi en={…} id={…} />`, pick between parallel string arrays/objects with `pick(lang, en, id)`, give every `syllabus.ts` entry a `titleId`, and add chrome strings to the `UI` dictionary in `i18n.tsx`. References/citations stay in English in both languages.
 - No UI framework; styling is hand-rolled CSS (`src/styles/global.css`) plus inline styles. Visualizations are hand-built SVG (or `<canvas>` for large heatmaps), never a charting library.
 - Dark oscilloscope aesthetic: JetBrains Mono for instrument labels/numbers, Inter for prose, module accent colors from `moduleAccent` (cyan = Architecture, amber = Pre-Training, magenta = Post-Training).
 - Every `<svg>` needs an `aria-label`; respect `prefers-reduced-motion` (global CSS already disables animation durations under that media query — prefer relying on that over ad hoc JS checks).

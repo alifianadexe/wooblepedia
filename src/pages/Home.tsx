@@ -9,10 +9,12 @@ const MODULES: ModuleId[] = [1, 2, 3];
 export function Home() {
   const completed = useCompletedSlugs();
   const completedSet = new Set(completed);
+  const { lang } = useLang();
+  const ui = useUI();
 
   return (
     <div>
-      <h1 style={{ fontSize: 20 }}>LLM FUNDAMENTALS — SIGNAL LAB CURRICULUM</h1>
+      <h1 style={{ fontSize: 20 }}>{ui.homeTitle}</h1>
       <p className="lesson-prose" style={{ maxWidth: "68ch", color: "var(--muted)" }}>
         Twenty-two stops across three modules, laid out as one continuous path. Every lab on this
         site computes its numbers live from the real equations underneath — follow the trail, then
@@ -35,10 +37,10 @@ export function Home() {
           >
             <div className="module-card__header">
               <span className="module-card__title" style={{ color: accent }}>
-                MODULE {m} — {moduleTitle[m].toUpperCase()}
+                {ui.module} {m} — {moduleTitleFor(m, lang).toUpperCase()}
               </span>
               <span className="module-card__count">
-                {doneCount}/{topics.length} CALIBRATED
+                {doneCount}/{topics.length} {ui.calibrated}
               </span>
             </div>
             <div style={{ padding: "28px 16px 32px" }}>
