@@ -81,14 +81,14 @@ export default function Attention() {
           }
           id={
             <p>
-              Attention adalah satu-satunya tempat di seluruh model di mana kata-kata boleh saling melihat dan
-              berbagi informasi -- semua langkah lain memproses tiap kata sendirian. Cara kerjanya seperti
-              ruang kelas tempat semua orang bertanya ke sana kemari sekaligus. Setiap kata mengangkat{" "}
-              <strong>query</strong> ("ini yang sedang kucari"), setiap kata mengenakan <strong>key</strong>{" "}
-              ("ini yang kuketahui"), dan setiap kata membawa <strong>value</strong> ("ini yang akan kubagikan
-              kalau kamu memilihku"). Tetapi alih-alih memilih tepat satu teman sekelas, setiap kata mengambil
-              sedikit dari semua orang -- lebih banyak dari yang cocok, lebih sedikit dari yang tidak -- lalu
-              mencampur semuanya jadi satu.
+              Attention itu satu-satunya tempat di seluruh model di mana kata-kata boleh saling lihat dan
+              berbagi informasi -- semua step lain memproses tiap kata sendiri-sendiri. Cara kerjanya kayak
+              ruang kelas tempat semua orang tanya-tanya ke sana kemari sekaligus. Tiap kata ngangkat{" "}
+              <strong>query</strong> ("ini yang lagi kucari"), tiap kata makai <strong>key</strong> ("ini
+              yang kutahu"), dan tiap kata bawa <strong>value</strong> ("ini yang bakal kubagi kalau kamu
+              milih aku"). Tapi ketimbang milih tepat satu teman sekelas, tiap kata ngambil sedikit dari
+              semua orang -- lebih banyak dari yang cocok, lebih sedikit dari yang nggak -- lalu nyampur
+              semuanya jadi satu.
             </p>
           }
         />
@@ -102,10 +102,10 @@ export default function Attention() {
           "Once a word's key and value are computed, they never change -- so when generating text, models save them (the \"KV-cache\") instead of redoing the math for the whole text at every step. You'll compute what that cache costs in memory in lesson 2.2.",
         ],
         [
-          "Query, key, dan value tiap kata adalah tiga remix berbeda dari vektor kata yang sama, dibuat dengan mengalikannya terhadap tiga kisi angka hasil belajar. Masukan sama, tiga peran berbeda.",
-          "Query dan key dibandingkan dengan mengalikan entri yang bersesuaian lalu menjumlahkannya (\"dot product\") -- hasil besar berarti cocok. Hasilnya dibagi faktor koreksi ukuran (√d) supaya angkanya tidak meledak di model besar dan campurannya berubah jadi pemenang-ambil-semua.",
-          "\"Causal mask\" melarang setiap kata mengintip kata-kata setelahnya -- wajib ketika seluruh permainannya adalah menebak apa yang datang berikutnya. Satu aturan ini adalah beda utama antara pembangkit teks gaya GPT dan model yang membaca kalimat utuh sekaligus.",
-          "Begitu key dan value sebuah kata selesai dihitung, keduanya tak pernah berubah -- jadi saat menghasilkan teks, model menyimpannya (\"KV-cache\") alih-alih mengulang hitungan untuk seluruh teks di tiap langkah. Berapa memori yang dimakan cache itu akan kamu hitung di pelajaran 2.2.",
+          "Query, key, dan value tiap kata itu tiga remix beda dari vektor kata yang sama, dibikin dengan mengalikannya ke tiga grid angka hasil training. Input sama, tiga peran beda.",
+          "Query dan key dibandingkan dengan mengalikan entri yang bersesuaian lalu menjumlahkannya (\"dot product\") -- hasil besar berarti cocok. Hasilnya dibagi faktor koreksi ukuran (√d) biar angkanya nggak meledak di model besar dan campurannya berubah jadi pemenang-ambil-semua.",
+          "\"Causal mask\" ngelarang tiap kata ngintip kata-kata setelahnya -- wajib pas seluruh permainannya adalah menebak apa yang datang berikutnya. Satu aturan ini beda utama antara text generator gaya GPT dan model yang baca kalimat utuh sekaligus.",
+          "Begitu key dan value sebuah kata kelar dihitung, keduanya nggak pernah berubah -- jadi pas menghasilkan teks, model menyimpannya (\"KV-cache\") ketimbang ngulang hitungan buat seluruh teks di tiap step. Berapa memori yang dimakan cache itu bakal kamu hitung di pelajaran 2.2.",
         ],
       )}
       references={[
@@ -126,7 +126,7 @@ export default function Attention() {
         },
       ]}
     >
-      <Section title={pick(lang, "A lookup that never says 'not found'", "Pencarian yang tak pernah bilang 'tidak ketemu'")}>
+      <Section title={pick(lang, "A lookup that never says 'not found'", "Pencarian yang nggak pernah bilang 'nggak ketemu'")}>
         <Bi
           en={
             <p>
@@ -140,19 +140,18 @@ export default function Attention() {
           }
           id={
             <p>
-              Bayangkan katalog perpustakaan yang kaku: kamu meminta satu judul persis dan mendapat buku itu
-              atau tidak sama sekali. Attention justru seperti pustakawan yang ramah. Kamu menggambarkan apa
-              yang kamu cari, dan alih-alih menuntut kecocokan persis, ia mencocokkan gambaranmu dengan sampul
-              setiap buku, lalu menyerahkan campuran -- kebanyakan dari yang paling cocok, sejumput dari
-              sisanya. Keburaman itu fitur, bukan keteledoran: artinya "kucing itu duduk" dan "anjing itu
-              duduk" bisa ditangani mesin yang nyaris sama, karena hal-hal yang mirip-tapi-tak-identik tetap
-              saling menemukan.
+              Bayangin katalog perpustakaan yang kaku: kamu minta satu judul persis dan dapat buku itu atau
+              nggak sama sekali. Attention justru kayak pustakawan yang ramah. Kamu jelasin apa yang kamu
+              cari, dan ketimbang nuntut kecocokan persis, ia mencocokkan deskripsimu dengan sampul tiap buku,
+              lalu ngasih campuran -- kebanyakan dari yang paling cocok, sedikit dari sisanya. Keburaman itu
+              justru fitur, bukan keteledoran: artinya "kucing itu duduk" dan "anjing itu duduk" bisa ditangani
+              mesin yang nyaris sama, karena hal-hal yang mirip-tapi-nggak-identik tetap saling menemukan.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Scores, scaling, and softmax", "Skor, penskalaan, dan softmax")}>
+      <Section title={pick(lang, "Scores, scaling, and softmax", "Skor, scaling, dan softmax")}>
         <Bi
           en={
             <p>
@@ -171,17 +170,17 @@ export default function Attention() {
           }
           id={
             <p>
-              Bagaimana kecocokan sebenarnya dinilai? Query dan key sama-sama cuma deretan angka, jadi kamu
-              mengalikan keduanya entri demi entri lalu menjumlahkan hasilnya -- operasi bernama{" "}
-              <strong>dot product</strong>. Ketika dua deretan menunjuk ke arah yang mirip, jumlahnya keluar
-              besar; ketika tak berkaitan, mendekati nol. Satu kerutan: makin panjang deretannya, makin banyak
-              suku yang dijumlahkan, sehingga skor mentah membengkak secara alami di model besar. Itulah
-              kenapa setiap skor dibagi <code>√d</code> (akar kuadrat panjang deretan) -- murni koreksi
-              ukuran. Lewati itu dan satu skor cenderung menjulang di atas sisanya, campuran runtuh menjadi
-              "dengarkan tepat satu kata dan abaikan yang lain", dan model jadi jauh lebih sulit belajar.
-              Terakhir, skor yang sudah dikoreksi melewati <strong>softmax</strong>, rumus yang mengubah
-              sekumpulan skor apa pun menjadi persentase positif yang totalnya 100%. Persentase itulah resep
-              campurannya: keluaran tiap kata adalah campuran berbobot dari value semua kata.
+              Gimana kecocokan sebenarnya dinilai? Query dan key sama-sama cuma deretan angka, jadi kamu
+              ngaliin keduanya entri demi entri lalu menjumlahkan hasilnya -- operasi bernama{" "}
+              <strong>dot product</strong>. Pas dua deretan nunjuk ke arah yang mirip, jumlahnya keluar besar;
+              pas nggak nyambung, mendekati nol. Satu catatan: makin panjang deretannya, makin banyak suku
+              yang dijumlah, jadi skor mentah otomatis membengkak di model besar. Makanya tiap skor dibagi{" "}
+              <code>√d</code> (akar kuadrat panjang deretan) -- murni koreksi ukuran. Lewati langkah itu dan
+              satu skor cenderung menjulang di atas sisanya, campurannya runtuh jadi "dengerin tepat satu kata
+              dan abaikan yang lain", dan model jadi jauh lebih susah belajar. Terakhir, skor yang udah
+              dikoreksi lewat <strong>softmax</strong>, rumus yang mengubah sekumpulan skor apa pun jadi
+              persentase positif yang totalnya 100%. Persentase itulah resep campurannya: output tiap kata
+              adalah campuran berbobot dari value semua kata.
             </p>
           }
         />
@@ -200,11 +199,11 @@ export default function Attention() {
           }
           id={
             <p>
-              Enam token sungguhan, masing-masing dengan deretan query, key, dan value yang benar-benar
-              dihitung, dijalankan lewat matematika attention asli -- tidak ada yang direkayasa. Klik sebuah
-              token untuk menjadikannya yang "melihat", dan amati busur-busurnya: makin tebal berarti kata itu
-              menyumbang lebih banyak ke campuran. Balik sakelar causal-mask untuk melihat beda antara model
-              yang dilarang mengintip ke depan (cara kerja pembangkit teks) dan yang boleh melihat dua arah.
+              Enam token beneran, masing-masing dengan deretan query, key, dan value yang benar-benar
+              dihitung, dijalankan lewat matematika attention asli -- nggak ada yang direkayasa. Klik sebuah
+              token buat menjadikannya yang "melihat", dan amati busur-busurnya: makin tebal berarti kata itu
+              nyumbang lebih banyak ke campuran. Balik toggle causal-mask buat lihat beda antara model yang
+              dilarang ngintip ke depan (cara kerja text generator) dan yang boleh lihat dua arah.
             </p>
           }
         />
@@ -291,11 +290,11 @@ export default function Attention() {
           }
           id={
             <p>
-              Model sungguhan tidak menangani satu kata "pelihat" pada satu waktu -- ia menghitung persentase
-              campuran semua kata serentak dalam satu tumpukan aritmetika besar. Ini kisi lengkap untuk
-              kalimat di atas: tiap baris adalah satu kata yang melihat, tiap kolom adalah kata yang dilihat,
-              dan tiap sel menunjukkan persentasenya. Dengan causal mask menyala, separuh kanan-atas persis
-              nol -- sel-sel itu berarti kata mengintip masa depan.
+              Model beneran nggak menangani satu kata "pelihat" satu per satu -- ia menghitung persentase
+              campuran semua kata sekaligus dalam satu tumpukan aritmetika besar. Ini grid lengkap buat
+              kalimat di atas: tiap baris itu satu kata yang lagi melihat, tiap kolom itu kata yang dilihat,
+              dan tiap sel menunjukkan persentasenya. Dengan causal mask nyala, separuh kanan-atas persis
+              nol -- sel-sel itu berarti kata ngintip masa depan.
             </p>
           }
         />
@@ -331,14 +330,14 @@ export default function Attention() {
           }
           id={
             <p>
-              Ini pengamatan penghemat biaya: begitu key dan value sebuah kata selesai dihitung, keduanya tak
-              pernah berubah -- kisi-kisi yang menghasilkannya dibekukan setelah pelatihan, dan katanya
-              sendiri tak ke mana-mana. Jadi saat model menghasilkan teks satu token demi satu token, ia
-              tidak mengulang hitungan untuk seluruh teks di tiap langkah. Ia menghitung query, key, dan
-              value token terbaru saja, lalu tinggal membaca ulang milik semua yang lain dari salinan
-              tersimpan bernama <strong>KV-cache</strong>. Ini bedanya antara membaca ulang seluruh buku
-              setiap kali menambah satu kalimat versus menyimpan catatanmu. Tangkapannya: catatan itu memakan
-              memori -- dan berapa persisnya adalah hitungan yang akan kamu kerjakan sendiri di pelajaran 2.2.
+              Ini pengamatan yang ngirit biaya: begitu key dan value sebuah kata kelar dihitung, keduanya
+              nggak pernah berubah -- grid yang menghasilkannya udah dibekukan setelah training, dan katanya
+              sendiri nggak ke mana-mana. Jadi pas model menghasilkan teks satu token demi satu token, ia
+              nggak ngulang hitungan buat seluruh teks di tiap step. Ia cuma menghitung query, key, dan value
+              token terbaru, lalu tinggal baca ulang punya semua yang lain dari salinan tersimpan bernama{" "}
+              <strong>KV-cache</strong>. Ini bedanya antara baca ulang seluruh buku tiap kali nambah satu
+              kalimat versus nyimpen catatanmu. Tangkapannya: catatan itu makan memori -- dan berapa
+              persisnya, itu hitungan yang bakal kamu kerjakan sendiri di pelajaran 2.2.
             </p>
           }
         />
