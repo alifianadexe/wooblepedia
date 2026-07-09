@@ -244,7 +244,7 @@ export default function Introduction() {
               <li><strong>+Position</strong> — the attention step coming up can't tell which token came first on its own, so each token's numbers get a "position stamp" mixed in (lesson 1.4).</li>
               <li><strong>Attention</strong> — the step where tokens look at each other and pass information around (lesson 1.5). "It" can find out that it refers to "the cat." This is the only step where tokens communicate.</li>
               <li><strong>MLP</strong> — each token, entirely on its own, gets pushed through a small number-crunching layer that reshapes its vector (lesson 1.6). No looking at neighbors here.</li>
-              <li><strong>LM head</strong> — the final vector gets converted into one raw score (called a <em>logit</em>) for every possible next token.</li>
+              <li><strong>LM head</strong> (Language Model head) — the final vector gets converted into one raw score (called a <em>logit</em>) for every possible next token.</li>
               <li><strong>Softmax → sample</strong> — the raw scores are turned into percentages that add up to 100%, and one token is drawn, like a raffle where likelier tokens hold more tickets. It's added to the text, and the whole pipeline runs again.</li>
             </ol>
           }
@@ -256,7 +256,7 @@ export default function Introduction() {
               <li><strong>+Posisi</strong> — langkah attention yang akan datang tidak bisa tahu sendiri token mana yang lebih dulu, jadi angka tiap token dicampuri "stempel posisi" (pelajaran 1.4).</li>
               <li><strong>Attention</strong> — langkah tempat token saling melihat dan bertukar informasi (pelajaran 1.5). Kata "dia" bisa mengetahui bahwa yang dimaksud adalah "si kucing". Ini satu-satunya langkah tempat token berkomunikasi.</li>
               <li><strong>MLP</strong> — setiap token, sendirian sepenuhnya, didorong melewati lapisan penghitung kecil yang membentuk ulang vektornya (pelajaran 1.6). Tidak ada lirik-lirikan ke tetangga di sini.</li>
-              <li><strong>LM head</strong> — vektor terakhir diubah menjadi satu skor mentah (disebut <em>logit</em>) untuk setiap kemungkinan token berikutnya.</li>
+              <li><strong>LM head</strong> (Language Model head) — vektor terakhir diubah menjadi satu skor mentah (disebut <em>logit</em>) untuk setiap kemungkinan token berikutnya.</li>
               <li><strong>Softmax → sampel</strong> — skor mentah diubah menjadi persentase yang totalnya 100%, lalu satu token diundi, seperti arisan berhadiah di mana token yang lebih mungkin memegang lebih banyak kupon. Token itu ditambahkan ke teks, dan seluruh jalur berjalan lagi.</li>
             </ol>
           }

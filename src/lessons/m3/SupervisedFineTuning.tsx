@@ -90,14 +90,14 @@ export default function SupervisedFineTuning() {
           "A chat template wraps each speaker's turn in special marker tokens (like <|user|> and <|assistant|>) -- stage directions in a script -- so the model can tell who's talking.",
           "The loss mask means the model is only graded on the assistant's lines. It reads the user's messages but isn't trained to imitate them -- you want it to learn the answering role, not both sides of the conversation.",
           "A famous result called LIMA showed that about a thousand truly excellent example conversations beat hundreds of thousands of mediocre ones. For SFT, quality beats quantity, decisively.",
-          "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
+          "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA (Quantized LoRA) also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
         ],
         [
           "SFT adalah latihan tebak-lalu-nilai biasa dari pelajaran 1.7 yang diterapkan pada percakapan contoh -- tanpa matematika baru, hanya bahan bacaan baru.",
           "Templat obrolan membungkus giliran tiap pembicara dengan token penanda khusus (seperti <|user|> dan <|assistant|>) -- petunjuk panggung dalam naskah -- supaya model tahu siapa yang bicara.",
           "Loss mask berarti model hanya dinilai pada kalimat-kalimat si asisten. Ia membaca pesan pengguna tetapi tak dilatih menirunya -- kamu ingin ia mempelajari peran menjawab, bukan kedua sisi percakapan.",
           "Temuan terkenal bernama LIMA menunjukkan sekitar seribu percakapan contoh yang benar-benar unggul mengalahkan ratusan ribu yang biasa-biasa saja. Untuk SFT, kualitas mengalahkan kuantitas, telak.",
-          "LoRA adalah trik yang membuat fine-tuning terjangkau: bekukan seluruh model dan latih hanya kepingan tempelan kecil. QLoRA juga memampatkan model beku ke memori lebih hemat -- bersama-sama keduanya memuatkan fine-tune 8 miliar parameter di kartu grafis biasa.",
+          "LoRA adalah trik yang membuat fine-tuning terjangkau: bekukan seluruh model dan latih hanya kepingan tempelan kecil. QLoRA (Quantized LoRA) juga memampatkan model beku ke memori lebih hemat -- bersama-sama keduanya memuatkan fine-tune 8 miliar parameter di kartu grafis biasa.",
         ],
       )}
       references={[
