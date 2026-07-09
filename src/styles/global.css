@@ -767,3 +767,147 @@ table.data-table th {
   font-size: 10px;
   letter-spacing: 0.06em;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Glossary hint button + modal                                          */
+/* ---------------------------------------------------------------------- */
+
+.hint-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hint-btn__glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.glossary-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 72px 16px 24px;
+  background: rgba(2, 4, 9, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.glossary-modal {
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-2);
+  padding: 22px 22px 18px;
+}
+
+.glossary-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.glossary-modal__title {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--cyan);
+}
+
+.glossary-modal__intro {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.glossary-modal__close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.glossary-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.glossary-category__label {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.glossary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.glossary-table__term {
+  width: 42%;
+  padding: 6px 10px 6px 0;
+  color: var(--text);
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.glossary-table__expansion {
+  padding: 6px 0;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.glossary-table tr:last-child .glossary-table__expansion,
+.glossary-table tr:last-child .glossary-table__term {
+  border-bottom: none;
+}
+
+.glossary-modal__footer {
+  padding-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .glossary-overlay {
+    padding: 56px 10px 16px;
+  }
+
+  .glossary-modal {
+    padding: 18px 16px 14px;
+    max-height: calc(100vh - 72px);
+  }
+
+  .glossary-table__term {
+    white-space: normal;
+  }
+}

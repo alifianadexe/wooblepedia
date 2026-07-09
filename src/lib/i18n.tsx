@@ -71,6 +71,12 @@ export const UI = {
     progressAria: "Overall course progress",
     lessonNavAria: "Lesson navigation",
     languageAria: "Site language",
+    hintButton: "HINT",
+    hintAria: "Show acronym glossary",
+    glossaryTitle: "ACRONYM GLOSSARY",
+    glossaryIntro: "Every short term used across the lessons, spelled out in full.",
+    glossaryClose: "Close",
+    glossaryCloseAria: "Close glossary",
   },
   id: {
     keyTakeaways: "POIN-POIN KUNCI",
@@ -90,6 +96,12 @@ export const UI = {
     progressAria: "Kemajuan kursus keseluruhan",
     lessonNavAria: "Navigasi pelajaran",
     languageAria: "Bahasa situs",
+    hintButton: "PETUNJUK",
+    hintAria: "Tampilkan daftar istilah singkatan",
+    glossaryTitle: "DAFTAR ISTILAH SINGKATAN",
+    glossaryIntro: "Setiap istilah singkat yang dipakai di seluruh pelajaran, dieja lengkap.",
+    glossaryClose: "Tutup",
+    glossaryCloseAria: "Tutup daftar istilah",
   },
 } as const;
 
