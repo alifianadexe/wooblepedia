@@ -64,13 +64,13 @@ export default function GPT2FromScratch() {
           }
           id={
             <p>
-              Semua ide dari modul ini -- token, embedding, stempel posisi, attention, pelatihan -- terjumlah
-              menjadi satu hal konkret: GPT-2 sungguhan, model yang dirilis OpenAI pada 2019. Sebelum
-              membangun sesuatu yang besar, cerdas untuk melakukan apa yang dilakukan arsitek sebelum
-              konstruksi: menghitung ukurannya. Berapa banyak angka hasil belajar yang akan dimiliki model
-              ini? Berapa memori untuk menjalankannya? Untuk melatihnya? Apakah semua itu muat di kartu
-              grafis biasa? Pelajaran ini menjawab pertanyaan-pertanyaan itu dengan aritmetika persis, lalu
-              menunjukkan betapa sedikitnya kode yang sebenarnya dibutuhkan.
+              Semua ide dari modul ini -- token, embedding, stempel posisi, attention, training -- terjumlah
+              jadi satu hal konkret: GPT-2 beneran, model yang dirilis OpenAI pada 2019. Sebelum membangun
+              sesuatu yang besar, pinter kalau kita ngelakuin apa yang dilakuin arsitek sebelum konstruksi:
+              ngitung dulu ukurannya. Berapa banyak angka hasil training yang bakal dimiliki model ini?
+              Berapa memori buat menjalankannya? Buat nge-training-nya? Apakah semua itu muat di kartu grafis
+              biasa? Pelajaran ini menjawab pertanyaan-pertanyaan itu dengan aritmetika yang persis, lalu
+              nunjukin betapa sedikitnya kode yang sebenarnya dibutuhkan.
             </p>
           }
         />
@@ -85,10 +85,10 @@ export default function GPT2FromScratch() {
           "A complete, working GPT-2 fits in about 300 lines of code. The ideas in this module, not the volume of code, are the hard part.",
         ],
         [
-          "Jumlah total parameter sebuah model bukan angka misterius -- itu aritmetika sederhana yang bisa kamu kerjakan sendiri: tabel-tabel embedding plus rumus tetap per lapisan, dan semuanya terjumlah persis.",
+          "Jumlah total parameter sebuah model itu bukan angka misterius -- itu aritmetika sederhana yang bisa kamu kerjain sendiri: tabel-tabel embedding plus rumus tetap per layer, dan semuanya terjumlah persis.",
           "Aritmetika itu mereproduksi empat ukuran GPT-2 yang dipublikasikan dengan tepat: 124 juta, 355 juta, 774 juta, dan 1,56 miliar parameter. Tanpa sulap.",
-          "Menjalankan model memakan sekitar 2 byte memori per parameter. Melatihnya sekitar 16 byte per parameter -- delapan kali lipat -- karena pelatihan menyimpan beberapa angka pembukuan ekstra untuk setiap satunya.",
-          "Di kartu grafis 8GB, GPT-2 terkecil bisa dilatih dengan nyaman; jejak pelatihan yang terbesar (~25GB) sama sekali tak muat tanpa trik khusus atau model yang lebih kecil.",
+          "Menjalankan model makan sekitar 2 byte memori per parameter. Nge-training-nya sekitar 16 byte per parameter -- delapan kali lipat -- karena training nyimpen beberapa angka pembukuan ekstra buat tiap satunya.",
+          "Di kartu grafis 8GB, GPT-2 terkecil bisa di-training dengan nyaman; jejak training yang terbesar (~25GB) sama sekali nggak muat tanpa trik khusus atau model yang lebih kecil.",
           "GPT-2 yang lengkap dan berfungsi muat dalam sekitar 300 baris kode. Ide-ide di modul ini, bukan banyaknya kode, itulah bagian sulitnya.",
         ],
       )}
@@ -117,11 +117,11 @@ export default function GPT2FromScratch() {
           }
           id={
             <p>
-              Dua kenop mengendalikan ukuran GPT-2: <strong>d_model</strong>, berapa banyak angka yang
-              menggambarkan tiap token ("lebar"), dan <strong>n_layers</strong>, berapa banyak lapisan
+              Dua kenop yang ngontrol ukuran GPT-2: <strong>d_model</strong>, berapa banyak angka yang
+              menggambarkan tiap token ("lebar"), dan <strong>n_layers</strong>, berapa banyak layer
               transformer yang ditumpuk ("kedalaman"). Atur langsung, atau lompat ke salah satu dari empat
-              ukuran yang benar-benar dipublikasikan OpenAI. Setiap angka di bawah dihitung langsung dari
-              rumus asli -- tidak ada yang ditulis mati.
+              ukuran yang benar-benar dipublikasikan OpenAI. Tiap angka di bawah dihitung secara langsung
+              dari rumus asli -- nggak ada yang di-hardcode.
             </p>
           }
         />
@@ -181,7 +181,7 @@ export default function GPT2FromScratch() {
             {pick(
               lang,
               'These figures leave out activations -- the temporary numbers from lesson 1.1 -- which pile on top depending on how much text you process at once. A model that "fits" here can still run out of memory mid-answer on a very long text.',
-              'Angka-angka ini belum menghitung aktivasi -- angka sementara dari pelajaran 1.1 -- yang menumpuk di atasnya tergantung banyaknya teks yang diproses sekaligus. Model yang "muat" di sini tetap bisa kehabisan memori di tengah jawaban pada teks yang sangat panjang.',
+              'Angka-angka ini belum ngitung aktivasi -- angka sementara dari pelajaran 1.1 -- yang numpuk di atasnya tergantung seberapa banyak teks yang diproses sekaligus. Model yang "muat" di sini tetap bisa kehabisan memori di tengah jawaban pada teks yang sangat panjang.',
             )}
           </p>
         </ScopeScreen>
@@ -202,13 +202,13 @@ export default function GPT2FromScratch() {
           }
           id={
             <p>
-              Atur preset ke SMALL: lebar 768, 12 lapisan, kosakata asli GPT-2 (50.257 token) dan jendela
-              konteks (1.024 token). Konsol menunjukkan persis 124,4 juta parameter -- si "GPT-2 124M" yang
-              banyak dikutip. Klik MEDIUM, LARGE, dan XL dan kamu mendarat di 355 juta, 774 juta, dan 1,56
+              Atur preset ke SMALL: lebar 768, 12 layer, vocab asli GPT-2 (50.257 token) dan context window
+              (1.024 token). Konsolnya nunjukin persis 124,4 juta parameter -- si "GPT-2 124M" yang banyak
+              dikutip. Klik MEDIUM, LARGE, dan XL dan kamu bakal mendarat di 355 juta, 774 juta, dan 1,56
               miliar, cocok persis dengan angka publikasi OpenAI. Itu bukan kebetulan yang ditanam di demo
-              ini -- itu aritmetika yang sama (tabel-tabel embedding, plus rumus tetap untuk tiap lapisan)
-              yang menghasilkan angka-angka terkenal itu sejak awal. Ukuran model yang kamu baca di berita
-              hanyalah penjumlahan semacam ini.
+              ini -- itu aritmetika yang sama (tabel-tabel embedding, plus rumus tetap buat tiap layer) yang
+              menghasilkan angka-angka terkenal itu sejak awal. Ukuran model yang kamu baca di berita ya cuma
+              penjumlahan kayak gini.
             </p>
           }
         />
@@ -225,10 +225,10 @@ export default function GPT2FromScratch() {
           }
           id={
             <p>
-              Kalau suatu saat kamu ingin membaca implementasi sungguhan, nanoGPT (basis kode GPT-2 terkenal
-              yang sengaja dibuat minimal oleh Andrej Karpathy) mencerminkan pelajaran-pelajaran modul ini
-              hampir satu-satu. Kamu tidak perlu membaca kode untuk menamatkan kursus ini -- tetapi
-              menenangkan melihat betapa pendeknya barang aslinya:
+              Kalau suatu saat kamu pengin baca implementasi beneran, nanoGPT (codebase GPT-2 terkenal yang
+              sengaja dibikin minimal sama Andrej Karpathy) mencerminkan pelajaran-pelajaran modul ini hampir
+              satu-satu. Kamu nggak perlu baca kode buat namatin kursus ini -- tapi lumayan nenangin lihat
+              betapa pendeknya barang aslinya:
             </p>
           }
         />
@@ -248,7 +248,7 @@ train.py                  — lesson 1.7: the forward/loss/backward/optimizer-st
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "Your first run, on your 8GB card", "Latihan pertamamu, di kartu 8GB-mu")}>
+      <Section title={pick(lang, "Your first run, on your 8GB card", "Training pertamamu, di kartu 8GB-mu")}>
         <Bi
           en={
             <p>
@@ -260,9 +260,9 @@ train.py                  — lesson 1.7: the forward/loss/backward/optimizer-st
           }
           id={
             <p>
-              Kalau kamu memang ingin mencoba melatih sesuatu sendiri, eksperimen pertama yang klasik adalah
-              mengajari model mungil menulis Shakespeare palsu, satu huruf demi satu huruf -- beberapa
-              megabyte teks, abjad sekitar 65 karakter, dan model yang cukup kecil untuk dilatih dari nol
+              Kalau kamu emang pengin nyoba nge-training sesuatu sendiri, eksperimen pertama yang klasik itu
+              ngajarin model mungil buat nulis Shakespeare palsu, satu huruf demi satu huruf -- beberapa
+              megabyte teks, abjad sekitar 65 karakter, dan model yang cukup kecil buat di-training dari nol
               dalam hitungan menit, bukan hari:
             </p>
           }
@@ -290,10 +290,10 @@ python train.py config/train_shakespeare_char.py \\
           }
           id={
             <p>
-              Konfigurasi itu -- 6 lapisan, lebar 384, konteks 256 token -- mendarat di hanya beberapa juta
-              parameter: nyaman di dalam kartu grafis 8GB bahkan selama pelatihan, dengan ruang tersisa. Ia
-              cukup kecil untuk membuat kesalahan yang bisa kamu pelajari dan cukup cepat untuk dicoba lagi
-              lima menit kemudian -- persis seperti seharusnya latihan dari-nol yang pertama.
+              Konfigurasi itu -- 6 layer, lebar 384, context 256 token -- mendarat di cuma beberapa juta
+              parameter: nyaman di dalam kartu grafis 8GB bahkan selama training, dengan ruang tersisa. Ia
+              cukup kecil buat bikin kesalahan yang bisa kamu pelajari dan cukup cepat buat dicoba lagi lima
+              menit kemudian -- persis seperti seharusnya training dari-nol yang pertama.
             </p>
           }
         />

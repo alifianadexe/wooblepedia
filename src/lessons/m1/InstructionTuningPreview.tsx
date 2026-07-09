@@ -26,31 +26,31 @@ const STAGES: { label: string; desc: string; descId: string; link: string | null
   {
     label: "BASE MODEL",
     desc: "raw autocomplete engine, no idea that questions deserve answers",
-    descId: "mesin autocomplete mentah, tak tahu bahwa pertanyaan layak dijawab",
+    descId: "mesin autocomplete mentah, nggak tahu kalau pertanyaan itu harusnya dijawab",
     link: null,
   },
   {
     label: "SFT",
     desc: "shown thousands of examples of good answers",
-    descId: "diperlihatkan ribuan contoh jawaban yang baik",
+    descId: "diperlihatin ribuan contoh jawaban yang bagus",
     link: "/m3/supervised-fine-tuning",
   },
   {
     label: "PREFERENCE OPT.",
     desc: "taught to prefer better answers over worse ones",
-    descId: "diajari memilih jawaban yang lebih baik ketimbang yang lebih buruk",
+    descId: "diajarin milih jawaban yang lebih bagus ketimbang yang lebih jelek",
     link: "/m3/preference-optimization",
   },
   {
     label: "RL / TOOLS / SAFETY",
     desc: "checkable rewards, tool practice, learning to decline harm",
-    descId: "hadiah yang bisa dicek, latihan memakai alat, belajar menolak yang berbahaya",
+    descId: "reward yang bisa dicek, latihan pakai tool, belajar nolak yang berbahaya",
     link: "/m3/tools-and-safety-tuning",
   },
   {
     label: "DEPLOYED ASSISTANT",
     desc: "the model you actually talk to",
-    descId: "model yang benar-benar kamu ajak bicara",
+    descId: "model yang beneran kamu ajak ngobrol",
     link: null,
   },
 ];
@@ -81,13 +81,13 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              Semua materi sejauh ini membangun satu hal: model yang melanjutkan teks sebagaimana internet
-              akan melanjutkannya. Dan di situlah jebakannya. Tanyai model itu "Jelaskan apa fungsi
-              for-loop." dan ia mungkin tak menjawab sama sekali -- ia bisa saja menambah{" "}
-              <em>pertanyaan lain</em>, karena di internet, pertanyaan seperti itu sering muncul dalam daftar
-              soal buku pelajaran, dan soal tambahan adalah lanjutan yang sangat masuk akal. Mengubah "melanjutkan
-              teks secara masuk akal" menjadi "benar-benar menjawabmu" adalah satu fase pelatihan ekstra yang
-              utuh. Pelajaran ini cuplikannya; Modul 3 membahasnya tuntas.
+              Semua materi sejauh ini membangun satu hal: model yang melanjutkan teks kayak cara internet
+              bakal melanjutkannya. Dan di situlah jebakannya. Coba tanya model itu "Jelaskan apa fungsi
+              for-loop." dan ia mungkin nggak menjawab sama sekali -- ia bisa aja malah nambah{" "}
+              <em>pertanyaan lain</em>, karena di internet, pertanyaan kayak gitu sering muncul di daftar
+              soal buku pelajaran, dan soal tambahan itu lanjutan yang sangat masuk akal. Mengubah
+              "melanjutkan teks secara masuk akal" jadi "beneran menjawabmu" itu satu fase training ekstra
+              yang utuh. Pelajaran ini cuplikannya; Modul 3 bahas tuntas.
             </p>
           }
         />
@@ -101,10 +101,10 @@ export default function InstructionTuningPreview() {
           "Each stage below gets a full lesson with real, computed labs in Module 3 -- this lesson is intentionally just the map.",
         ],
         [
-          "Model yang baru selesai dilatih ('base') adalah mesin autocomplete mentah: ia melanjutkan teks secara masuk akal, tanpa gagasan bawaan bahwa pertanyaan layak dijawab.",
-          "Perbaikan standarnya punya tiga tahap: pertama perlihatkan ribuan contoh jawaban yang baik, lalu ajari ia memilih jawaban lebih baik ketimbang yang lebih buruk, lalu poles dengan hadiah, pemakaian alat, dan pelatihan keamanan.",
-          "Mesinnya sendiri tak pernah berubah di sepanjang semua ini -- setiap beda perilaku antara autocomplete mentah dan asisten yang membantu hidup sepenuhnya di angka-angka hasil belajar.",
-          "Setiap tahap di bawah mendapat pelajaran penuh dengan lab yang benar-benar dihitung di Modul 3 -- pelajaran ini sengaja hanya petanya.",
+          "Model yang baru kelar di-training ('base') itu mesin autocomplete mentah: ia melanjutkan teks secara masuk akal, tanpa gagasan bawaan bahwa pertanyaan itu harusnya dijawab.",
+          "Perbaikan standarnya punya tiga tahap: pertama perlihatin ribuan contoh jawaban yang bagus, lalu ajarin ia milih jawaban lebih bagus ketimbang yang lebih jelek, lalu poles dengan reward, pemakaian tool, dan training keamanan.",
+          "Mesinnya sendiri nggak pernah berubah di sepanjang semua ini -- tiap beda perilaku antara autocomplete mentah dan asisten yang membantu itu hidup sepenuhnya di angka-angka hasil training.",
+          "Tiap tahap di bawah dapat pelajaran penuh dengan lab yang beneran dihitung di Modul 3 -- pelajaran ini sengaja cuma petanya.",
         ],
       )}
       references={[
@@ -140,13 +140,13 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              Tidak ada apa pun di fase pelatihan besar (Modul 2) yang pernah memperlihatkan pola "orang
-              bertanya, asisten menjawab dengan membantu lalu berhenti." Ia memperlihatkan seluruh internet,
+              Nggak ada apa pun di fase training besar (Modul 2) yang pernah nunjukin pola "orang nanya,
+              asisten jawab dengan membantu lalu berhenti." Yang diperlihatkan ke model itu seluruh internet,
               tempat sebuah pertanyaan diikuti segala macam hal: pertanyaan lain, daftar isi, balasan forum
-              yang berdebat bahwa pertanyaannya bodoh, atau -- kadang-kadang -- jawaban yang sungguh bagus.
-              Model base dengan senang hati meniru <em>yang mana pun</em>. Tugas pasca-pelatihan adalah
-              memusatkan perilakunya ke irisan "jawaban yang sungguh bagus, lalu berhenti", tanpa mengubah
-              mesinnya sama sekali.
+              yang ngotot bilang pertanyaannya bodoh, atau -- kadang-kadang -- jawaban yang beneran bagus.
+              Model base dengan senang hati niru <em>yang mana pun</em>. Tugas pasca-training itu mengarahkan
+              perilakunya ke irisan "jawaban yang beneran bagus, lalu berhenti", tanpa ngubah mesinnya sama
+              sekali.
             </p>
           }
         />
@@ -164,10 +164,10 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              Balik sakelar antara bagaimana model base mungkin melanjutkan prompt ini dan bagaimana model
-              yang sudah di-instruction-tune akan menanggapinya. Keduanya ilustrasi khas yang ditulis untuk
-              pelajaran ini, bukan keluaran langsung dari model yang berjalan -- mesin yang menghasilkan
-              perbedaan inilah isi sesungguhnya Modul 3.
+              Balik toggle-nya antara gimana model base mungkin melanjutkan prompt ini dan gimana model yang
+              udah di-instruction-tune bakal menanggapinya. Keduanya ilustrasi khas yang ditulis buat
+              pelajaran ini, bukan output langsung dari model yang jalan -- mesin yang menghasilkan perbedaan
+              inilah isi sesungguhnya Modul 3.
             </p>
           }
         />
@@ -190,12 +190,12 @@ export default function InstructionTuningPreview() {
               ? pick(
                   lang,
                   "SFT taught the model that a question-shaped prompt gets a direct, bounded answer, and preference optimization rewarded the more helpful, more concise version of that answer over rambling alternatives.",
-                  "SFT mengajari model bahwa prompt berbentuk pertanyaan mendapat jawaban langsung dan terukur, dan optimisasi preferensi mengganjar versi jawaban yang lebih membantu dan ringkas dibanding alternatif yang bertele-tele.",
+                  "SFT ngajarin model bahwa prompt berbentuk pertanyaan dapat jawaban langsung dan terukur, dan preference optimization ngasih reward ke versi jawaban yang lebih membantu dan ringkas dibanding alternatif yang bertele-tele.",
                 )
               : pick(
                   lang,
                   "The base model treats the prompt as the start of a document that looks like a programming tutorial's table of contents, and keeps generating whatever is most statistically plausible next -- which is often more questions, not an answer.",
-                  "Model base memperlakukan prompt sebagai awal dokumen yang mirip daftar isi tutorial pemrograman, dan terus menghasilkan apa pun yang paling masuk akal secara statistik berikutnya -- yang sering kali pertanyaan lain, bukan jawaban.",
+                  "Model base memperlakukan prompt sebagai awal dokumen yang mirip daftar isi tutorial pemrograman, dan terus ngeluarin apa pun yang paling masuk akal secara statistik berikutnya -- yang sering kali malah pertanyaan lain, bukan jawaban.",
                 )}
           </p>
         </ScopeScreen>
@@ -219,16 +219,16 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              <strong>Supervised fine-tuning (SFT)</strong> melanjutkan pelatihan model -- loop
-              tebak-lalu-nilai yang sama dari pelajaran 1.7 -- tetapi kini pada koleksi pasangan
-              pertanyaan-dan-jawaban-ideal yang ditulis cermat, langsung mengajarkan bentuk jawaban yang
-              baik. <strong>Optimisasi preferensi</strong> menangani kualitas yang lebih mudah dinilai
-              daripada dituliskan: diperlihatkan dua tanggapan untuk pertanyaan yang sama, mana yang lebih
-              membantu? Lebih jujur? Model belajar dari ribuan pilihan yang-ini-bukan-yang-itu seperti ini.{" "}
-              <strong>Pelatihan hadiah dan keamanan</strong> menambahkan hadiah yang bisa dicek (apakah
-              kodenya benar-benar jalan? apakah matematikanya benar-benar cocok?), latihan memakai alat, dan
-              belajar menolak permintaan yang sungguh berbahaya. Klik jalurnya di bawah -- tiap tahap
-              tertaut ke pelajaran penuhnya di Modul 3.
+              <strong>Supervised fine-tuning (SFT)</strong> nerusin training model -- loop tebak-lalu-nilai
+              yang sama dari pelajaran 1.7 -- tapi sekarang di koleksi pasangan pertanyaan-dan-jawaban-ideal
+              yang ditulis cermat, langsung ngajarin bentuk jawaban yang bagus. <strong>Preference
+              optimization</strong> menangani kualitas yang lebih gampang dinilai daripada dituliskan:
+              diperlihatin dua respons buat pertanyaan yang sama, mana yang lebih membantu? Lebih jujur?
+              Model belajar dari ribuan pilihan yang-ini-bukan-yang-itu kayak gini.{" "}
+              <strong>Training reward dan keamanan</strong> nambahin reward yang bisa dicek (kodenya beneran
+              jalan nggak? matematikanya beneran cocok nggak?), latihan pakai tool, dan belajar nolak
+              permintaan yang beneran berbahaya. Klik jalurnya di bawah -- tiap tahap tertaut ke pelajaran
+              penuhnya di Modul 3.
             </p>
           }
         />
@@ -277,14 +277,14 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              Tidak ada apa pun di mesinnya -- bukan lapisan, bukan attention, bukan jumlah parameter -- yang
-              berubah antara model base dan asisten yang dibangun darinya. Arsitektur sama, jalur delapan
-              tahap yang sama dari pelajaran 1.1. Seluruh transplantasi kepribadiannya hidup di apa yang
-              dituliskan pelatihan ke angka-angka hasil belajar selama tahap-tahap belakangan ini. Fakta itu
-              punya akibat yang menyenangkan: karena pasca-pelatihan kecil dibanding pra-pelatihan, inilah
-              bagian di mana satu orang dengan anggaran sederhana bisa mengerjakan sesuatu yang nyata dan
-              terukur. Modul 3 menunjukkan teknik-teknik yang muat di perangkat sewaan dalam satu akhir
-              pekan, bukan armada pusat data.
+              Nggak ada apa pun di mesinnya -- bukan layer, bukan attention, bukan jumlah parameter -- yang
+              berubah antara model base dan asisten yang dibangun darinya. Arsitektur sama, pipeline delapan
+              step yang sama dari pelajaran 1.1. Seluruh "transplantasi kepribadian"-nya hidup di apa yang
+              dituliskan training ke angka-angka hasil training selama tahap-tahap belakangan ini. Fakta itu
+              punya akibat yang menyenangkan: karena pasca-training itu kecil dibanding pra-training, inilah
+              bagian di mana satu orang dengan budget sederhana bisa ngerjain sesuatu yang nyata dan terukur.
+              Modul 3 nunjukin teknik-teknik yang muat di perangkat sewaan dalam satu akhir pekan, bukan
+              armada data center.
             </p>
           }
         />
