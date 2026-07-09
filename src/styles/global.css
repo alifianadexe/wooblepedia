@@ -29,6 +29,10 @@
   --glass-blur: blur(18px);
   --card-shadow: 0 16px 44px -18px rgba(0, 0, 0, 0.6);
 
+  /* Reader-adjustable text scale (see lib/fontScale.ts). Multiplies the
+     lesson reading surfaces only; instrument chrome stays fixed. */
+  --reading-scale: 1;
+
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -454,7 +458,7 @@ button {
 /* ---------------------------------------------------------------------- */
 
 .lesson-intro {
-  font-size: 16px;
+  font-size: calc(16px * var(--reading-scale));
   color: var(--text);
   max-width: 68ch;
 }
@@ -464,14 +468,16 @@ button {
 }
 
 .lesson-section h2 {
-  font-size: 16px;
+  font-size: calc(16px * var(--reading-scale));
   color: var(--text);
   border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
   margin-bottom: 16px;
 }
 
-.lesson-prose p {
+.lesson-prose p,
+.lesson-prose li {
+  font-size: calc(15px * var(--reading-scale));
   max-width: 72ch;
 }
 
@@ -502,7 +508,7 @@ button {
   margin: 0;
   padding-left: 1.2em;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: calc(13px * var(--reading-scale));
   color: var(--text);
 }
 
@@ -547,7 +553,7 @@ button {
 }
 
 .ref-item__title {
-  font-size: 14px;
+  font-size: calc(14px * var(--reading-scale));
 }
 
 .ref-item__meta {
@@ -707,6 +713,34 @@ input[type="range"]::-moz-range-thumb {
   border-color: var(--cyan);
   color: var(--cyan);
   box-shadow: 0 0 18px -6px var(--cyan);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--border);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.font-size-control {
+  display: flex;
+  gap: 4px;
+}
+
+.font-size-control__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  line-height: 1;
+}
+
+.font-size-control__btn span {
+  font-family: var(--sans);
+  font-weight: 600;
 }
 
 .btn--primary {

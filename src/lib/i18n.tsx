@@ -77,6 +77,9 @@ export const UI = {
     glossaryIntro: "Every short term used across the lessons, spelled out in full.",
     glossaryClose: "Close",
     glossaryCloseAria: "Close glossary",
+    fontSizeAria: "Reading text size",
+    fontSmaller: "Decrease text size",
+    fontLarger: "Increase text size",
   },
   id: {
     keyTakeaways: "POIN-POIN KUNCI",
@@ -102,6 +105,9 @@ export const UI = {
     glossaryIntro: "Setiap istilah singkat yang dipakai di seluruh pelajaran, dieja lengkap.",
     glossaryClose: "Tutup",
     glossaryCloseAria: "Tutup daftar istilah",
+    fontSizeAria: "Ukuran teks bacaan",
+    fontSmaller: "Perkecil ukuran teks",
+    fontLarger: "Perbesar ukuran teks",
   },
 } as const;
 

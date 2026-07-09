@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { HeaderProgress } from "./HeaderProgress";
 import { GlossaryHint } from "./GlossaryHint";
+import { FontSizeControl } from "./FontSizeControl";
 import { useLang, useUI, type Lang } from "../lib/i18n";
 import { colors } from "../lib/theme";
 
@@ -19,6 +20,7 @@ export function SiteHeader() {
           WOOBLEPEDIA
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <FontSizeControl />
           <GlossaryHint />
           <div role="group" aria-label={ui.languageAria} style={{ display: "flex", gap: 4 }}>
             {LANGS.map((l) => (
