@@ -62,12 +62,12 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Model hanya bisa berhitung dengan angka, jadi sebelum apa pun terjadi, teksmu harus menjadi
-              deretan angka. Itulah seluruh tugas tokenizer: memotong teks menjadi kepingan
-              (<strong>token</strong>) dan mengganti tiap kepingan dengan nomor ID-nya, dengan cara yang sama
-              setiap saat -- seperti buku kode telegraf zaman dulu di mana setiap kata atau penggalan kata
-              umum punya kodenya sendiri. Tidak ada yang dipelajari atau pintar di sini: seluruh
-              "kosakatanya" hanyalah daftar biasa yang bisa kamu buka dan baca di editor teks.
+              Model cuma bisa berhitung pakai angka, jadi sebelum apa pun terjadi, teksmu harus diubah dulu
+              jadi deretan angka. Itulah seluruh tugas tokenizer: memotong teks jadi potongan-potongan
+              (<strong>token</strong>) dan mengganti tiap potongan dengan nomor ID-nya, dengan cara yang sama
+              tiap saat -- mirip buku kode telegraf zaman dulu, di mana tiap kata atau penggalan kata yang
+              umum punya kodenya sendiri. Nggak ada yang dipelajari atau pintar di sini: seluruh "vocab"-nya
+              cuma daftar biasa yang bisa kamu buka dan baca di text editor.
             </p>
           }
         />
@@ -82,11 +82,11 @@ export default function Tokenization() {
           "The tokenizer's codebook, the embedding table, and a vector database are three totally different things that people mix up constantly -- keep them separate in your head.",
         ],
         [
-          "Byte-pair encoding (BPE) mulai dari huruf-huruf tunggal lalu berulang kali merekatkan pasangan tetangga mana pun yang paling sering muncul di teks latihan -- itu seluruh algoritme pelatihannya, cuma menghitung.",
-          "Hasilnya hanyalah daftar aturan rekat plus nomor ID untuk tiap kepingan. Tanpa pembelajaran, tanpa bobot -- sama sekali berbeda dari tabel embedding (pelajaran berikutnya), yang dipelajari.",
-          "Ukuran kosakata adalah tarik-ulur: makin banyak token di buku kode, makin sedikit kepingan yang dihasilkan sebuah kalimat, tetapi tabel-tabel model harus membesar untuk memuat satu baris bagi setiap token.",
-          "Spasi, angka yang terpecah tidak konsisten (\"2024\" vs. \"202\"+\"4\"), dan bahasa non-Inggris adalah tempat kejutan tokenizer sungguhan terjadi -- bukan kasus langka.",
-          "Buku kode tokenizer, tabel embedding, dan vector database adalah tiga hal yang benar-benar berbeda dan terus-menerus tertukar -- jaga agar tetap terpisah di kepalamu.",
+          "Byte-pair encoding (BPE) mulai dari huruf-huruf tunggal, lalu berulang kali merekatkan pasangan tetangga mana pun yang paling sering muncul di teks training -- ya itu seluruh algoritma training-nya, cuma menghitung.",
+          "Hasilnya cuma daftar aturan rekat plus nomor ID buat tiap potongan. Tanpa learning, tanpa weight -- beda banget dari tabel embedding (pelajaran berikutnya) yang memang hasil belajar.",
+          "Ukuran vocab itu trade-off: makin banyak token di buku kode, makin sedikit potongan yang dihasilkan sebuah kalimat, tapi tabel-tabel model harus membesar buat nampung satu baris per token.",
+          "Spasi, angka yang kepecah nggak konsisten (\"2024\" vs. \"202\"+\"4\"), dan bahasa non-Inggris itulah tempat kejutan tokenizer beneran muncul -- bukan kasus langka.",
+          "Buku kode tokenizer, tabel embedding, dan vector database itu tiga hal yang benar-benar beda tapi terus-menerus ketuker -- jaga biar tetap terpisah di kepalamu.",
         ],
       )}
       references={[
@@ -122,13 +122,13 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Kamu bisa saja memotong teks satu huruf demi satu huruf. Daftar simbolnya tetap mungil, tetapi
-              setiap kalimat menjadi luar biasa panjang, dan barisan panjang membuat semua proses setelahnya
-              lebih lambat dan lebih mahal -- ditambah lagi model harus menyimpulkan ulang bahwa "t", "h",
-              "e" mengeja kata yang umum, setiap saat. Atau kamu bisa ke arah sebaliknya: jadikan setiap kata
-              utuh token tersendiri. Kalimat memang jadi pendek, tetapi kata apa pun yang tak ada di kamus --
-              istilah gaul baru, salah ketik, sebuah nama -- sama sekali tak bisa dituliskan, dan mencakup
-              semua bentuk kata ("lari", "berlari", "pelari", "larinya"...) membuat kamusnya meledak.
+              Kamu bisa aja memotong teks satu huruf per huruf. Daftar simbolnya tetap mungil, tapi tiap
+              kalimat jadi panjang banget, dan sequence yang panjang bikin semua proses setelahnya lebih
+              lambat dan lebih mahal -- belum lagi model harus nyimpulin ulang bahwa "t", "h", "e" mengeja
+              satu kata umum, tiap saat. Atau kamu bisa ke arah sebaliknya: jadikan tiap kata utuh sebagai
+              token sendiri. Kalimat memang jadi pendek, tapi kata apa pun yang nggak ada di kamus -- istilah
+              gaul baru, typo, sebuah nama -- sama sekali nggak bisa dituliskan, dan buat mencakup semua
+              bentuk kata ("lari", "berlari", "pelari", "larinya"...) kamusnya bakal meledak.
             </p>
           }
         />
@@ -143,17 +143,17 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Byte-pair encoding adalah jalan tengah yang praktis: mulai dari huruf tunggal (sehingga{" "}
-              <em>tidak ada</em> yang mustahil dituliskan), lalu biarkan teks latihan sendiri yang memilih
-              penggalan huruf mana yang cukup sering muncul untuk pantas mendapat token sendiri. Kata umum
-              seperti "the" berakhir sebagai satu token; kata langka atau karangan tinggal mundur ke kepingan
-              lebih kecil, seperti "wooble" menjadi "woo" + "ble".
+              Byte-pair encoding adalah jalan tengah yang praktis: mulai dari huruf tunggal (jadi{" "}
+              <em>nggak ada</em> yang mustahil dituliskan), lalu biarkan teks training sendiri yang memilih
+              penggalan huruf mana yang cukup sering muncul sampai pantas dapat token sendiri. Kata umum
+              seperti "the" jadi satu token; kata langka atau karangan tinggal mundur ke potongan lebih
+              kecil, seperti "wooble" jadi "woo" + "ble".
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "The algorithm, exactly", "Algoritmenya, persis")}>
+      <Section title={pick(lang, "The algorithm, exactly", "Algoritmanya, persisnya")}>
         <Bi
           en={
             <p>
@@ -167,12 +167,12 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Begini cara tokenizer BPE dibuat. Tulis setiap kata di teks latihan sebagai untaian huruf
-              tunggal. Lalu periksa semua kata dan hitung setiap pasangan tetangga: berapa kali "l" duduk di
-              sebelah "o"? Bagaimana dengan "e" di sebelah "s"? Ambil satu pasangan yang paling sering,
-              rekatkan menjadi satu simbol baru di semua tempat ia muncul, dan catat aturan rekat itu.
-              Ulangi terus, sebanyak aturan yang kamu mau. Itu saja -- tanpa kecerdasan, tanpa pembelajaran
-              ala jaringan saraf, hanya menghitung dan merekatkan.
+              Begini cara tokenizer BPE dibikin. Tulis tiap kata di teks training sebagai untaian huruf
+              tunggal. Lalu periksa semua kata dan hitung tiap pasangan tetangga: berapa kali "l" nempel di
+              sebelah "o"? Gimana dengan "e" di sebelah "s"? Ambil satu pasangan yang paling sering, rekatkan
+              jadi satu simbol baru di semua tempat ia muncul, dan catat aturan rekat itu. Ulangi terus,
+              sebanyak aturan yang kamu mau. Cuma gitu aja -- nggak ada kecerdasan, nggak ada learning ala
+              neural network, cuma menghitung dan merekatkan.
             </p>
           }
         />
@@ -187,16 +187,17 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Untuk melakukan tokenization pada teks <em>baru</em> nantinya, kamu memutar ulang aturan-aturan rekat itu
-              sesuai urutan pencatatannya: pecah menjadi huruf tunggal, lalu terus terapkan aturan yang
-              paling awal dipelajari, sampai tidak ada aturan yang cocok lagi. Lab di bawah menjalankan
-              algoritme ini persis, langsung di browsermu -- tidak ada yang disiapkan diam-diam atau dipalsukan.
+              Buat melakukan tokenization pada teks <em>baru</em> nantinya, kamu tinggal memutar ulang
+              aturan-aturan rekat itu sesuai urutan pencatatannya: pecah jadi huruf tunggal, lalu terus
+              terapkan aturan yang paling awal dipelajari, sampai nggak ada aturan yang cocok lagi. Lab di
+              bawah menjalankan algoritma ini persis, langsung di browser-mu -- nggak ada yang disiapkan
+              diam-diam atau dipalsukan.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Lab — train a real tokenizer, then use it", "Lab — latih tokenizer sungguhan, lalu pakai")}>
+      <Section title={pick(lang, "Lab — train a real tokenizer, then use it", "Lab — latih tokenizer beneran, lalu pakai")}>
         <Bi
           en={
             <p>
@@ -208,10 +209,10 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Teks latihan di bawah sengaja dibuat mungil -- hanya keluarga kata seperti{" "}
+              Teks training di bawah sengaja dibikin mungil -- cuma keluarga kata seperti{" "}
               <em>low/lower/lowest</em> dan <em>new/newer/newest</em> (contoh klasik di buku teks). Klik
-              "train next merge" dan saksikan aturan muncul satu per satu; kolom frekuensi menunjukkan persis
-              kenapa tiap pasangan memenangkan rondenya.
+              "train next merge" dan lihat aturannya muncul satu per satu; kolom frekuensi menunjukkan persis
+              kenapa tiap pasangan menang di rondenya.
             </p>
           }
         />
@@ -251,7 +252,7 @@ export default function Tokenization() {
           </table>
 
           <div className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
-            {pick(lang, "VOCAB SIZE SO FAR", "UKURAN KOSAKATA SEJAUH INI")}: {vocab.length}{" "}
+            {pick(lang, "VOCAB SIZE SO FAR", "UKURAN VOCAB SEJAUH INI")}: {vocab.length}{" "}
             {pick(lang, "symbols", "simbol")} ({vocab.length - activeSteps.length}{" "}
             {pick(lang, "base", "dasar")} + {activeSteps.length} {pick(lang, "merged", "hasil merge")})
           </div>
@@ -266,8 +267,8 @@ export default function Tokenization() {
           }
           id={
             <p style={{ marginTop: 20 }}>
-              Sekarang ketik apa saja -- termasuk kata-kata yang tak pernah dilihat teks latihan mungil di
-              atas -- dan saksikan teksmu dipotong-potong memakai aturan rekat apa pun yang sudah kamu latih.
+              Sekarang ketik apa aja -- termasuk kata-kata yang nggak pernah dilihat teks training mungil di
+              atas -- dan lihat teksmu dipotong-potong pakai aturan rekat apa pun yang sudah kamu latih.
             </p>
           }
         />
@@ -296,13 +297,13 @@ export default function Tokenization() {
             {pick(
               lang,
               `${charCount} characters → ${visibleTokens.length} tokens (ratio ${ratio} chars/token). At 0 merges this is character-level; watch the ratio climb as you train more merges.`,
-              `${charCount} karakter → ${visibleTokens.length} token (rasio ${ratio} karakter/token). Pada 0 merge ini setara per huruf; lihat rasionya naik saat kamu melatih lebih banyak merge.`,
+              `${charCount} karakter → ${visibleTokens.length} token (rasio ${ratio} karakter/token). Di 0 merge ini setara per huruf; lihat rasionya naik seiring kamu melatih lebih banyak merge.`,
             )}
           </div>
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "Three storage systems, never to be confused", "Tiga sistem penyimpanan yang jangan sampai tertukar")}>
+      <Section title={pick(lang, "Three storage systems, never to be confused", "Tiga sistem penyimpanan yang jangan sampai ketuker")}>
         <Bi
           en={
             <p>
@@ -317,14 +318,14 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Aturan rekat dan nomor ID yang barusan kamu latih adalah <strong>berkas tetap</strong> -- buku
-              kode yang tak pernah berubah setelah ditulis, seberapa pun lamanya model berlatih setelahnya.{" "}
-              <strong>Tabel embedding</strong> (pelajaran berikutnya) adalah kebalikannya: kisi raksasa berisi
-              angka hasil belajar yang terus disetel oleh pelatihan. Dan <strong>vector database</strong>{" "}
-              (alat yang akan kamu temui jauh nanti, dipakai untuk membantu model mencari informasi) adalah
-              hal ketiga yang sepenuhnya terpisah dan hidup di luar model sama sekali. Ketiganya "menyimpan
-              sesuatu tentang teks", dan justru itulah kenapa orang terus-menerus menukarnya. Merapikannya
-              sekarang akan menyelamatkanmu dari kebingungan sungguhan nanti.
+              Aturan rekat dan nomor ID yang barusan kamu latih itu <strong>file tetap</strong> -- buku kode
+              yang nggak pernah berubah setelah ditulis, seberapa lama pun model di-training setelahnya.{" "}
+              <strong>Tabel embedding</strong> (pelajaran berikutnya) itu kebalikannya: grid raksasa berisi
+              angka hasil training yang terus disetel selama training. Dan <strong>vector database</strong>{" "}
+              (tool yang bakal kamu temui jauh nanti, dipakai buat bantu model mencari informasi) itu hal
+              ketiga yang sepenuhnya terpisah dan hidup di luar model. Ketiganya sama-sama "menyimpan sesuatu
+              tentang teks", dan justru itulah kenapa orang terus-menerus menukarnya. Merapikannya sekarang
+              bakal menyelamatkanmu dari kebingungan beneran nanti.
             </p>
           }
         />
@@ -334,7 +335,7 @@ export default function Tokenization() {
         title={pick(
           lang,
           "The vocabulary-size trade-off, and real bugs it causes",
-          "Tarik-ulur ukuran kosakata, dan bug nyata akibatnya",
+          "Trade-off ukuran vocab, dan bug nyata yang ditimbulkannya",
         )}
       >
         <Bi
@@ -354,17 +355,17 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Buku kode yang lebih besar berarti kalimat mana pun terpecah menjadi token yang lebih sedikit
-              dan lebih gemuk -- membuat model lebih cepat dan lebih murah dijalankan, karena biaya tumbuh
-              mengikuti jumlah token. Tetapi setiap token di buku kode butuh barisnya sendiri di tabel-tabel
-              model, sehingga tabel itu ikut membesar (kamu akan menghitung persisnya di pelajaran 1.9).
-              GPT-2 dirilis dengan sekitar 50.000 token; model multibahasa modern sering memakai lebih dari
-              128.000 agar bahasa seperti Thai atau Burma diperlakukan adil -- dengan buku kode yang
-              Inggris-sentris, kalimat yang sama di bahasa-bahasa itu bisa memakan 3-5 kali lebih banyak
-              token, yang diam-diam membuat model lebih lambat dan lebih mahal bagi pengguna itu. Dan
-              keanehan sehari-hari akibatnya nyata: spasi sebelum sebuah kata bisa mengubah token-tokennya
-              sama sekali, "2024" bisa terpecah jadi "202" + "4", dan "Halo" vs. "halo" adalah token yang
-              berbeda. Ketika model bertingkah aneh soal ejaan atau angka, tokenizer sering kali biang keroknya.
+              Buku kode yang lebih besar berarti kalimat mana pun kepecah jadi token yang lebih sedikit dan
+              lebih "gemuk" -- bikin model lebih cepat dan lebih murah dijalankan, karena biaya tumbuh
+              mengikuti jumlah token. Tapi tiap token di buku kode butuh barisnya sendiri di tabel-tabel
+              model, jadi tabel itu ikut membesar (kamu bakal menghitung persisnya di pelajaran 1.9). GPT-2
+              rilis dengan sekitar 50.000 token; model multibahasa modern sering pakai lebih dari 128.000
+              biar bahasa seperti Thai atau Burma dapat perlakuan yang adil -- dengan buku kode yang
+              Inggris-sentris, kalimat yang sama di bahasa-bahasa itu bisa makan 3-5 kali lebih banyak token,
+              yang diam-diam bikin model lebih lambat dan lebih mahal buat pengguna tersebut. Dan keanehan
+              sehari-hari yang muncul juga nyata: spasi sebelum sebuah kata bisa mengubah token-tokennya total,
+              "2024" bisa kepecah jadi "202" + "4", dan "Halo" vs. "halo" itu token yang beda. Kalau model
+              bertingkah aneh soal ejaan atau angka, tokenizer sering jadi biang keroknya.
             </p>
           }
         />

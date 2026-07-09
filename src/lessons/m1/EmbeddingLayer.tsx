@@ -85,12 +85,12 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Keluaran tokenizer hanyalah nomor ID, dan angka seperti 4.082 tidak membawa makna apa pun
-              sendirian. Lapisan embedding adalah tempat makna masuk ke sistem. Ia satu tabel raksasa dengan
-              satu baris untuk setiap token di kosakata, dan tiap baris memuat deretan angka panjang --
-              koordinat token itu dalam semacam "ruang makna", tempat kata-kata yang dipakai dengan cara
-              serupa duduk berdekatan. Cara memakainya tak bisa lebih sederhana lagi: diberi token nomor
-              4.082, ambil baris ke-4.082. Selesai.
+              Output tokenizer cuma nomor ID, dan angka seperti 4.082 nggak punya makna apa-apa kalau
+              sendirian. Layer embedding-lah tempat makna masuk ke sistem. Ia satu tabel raksasa dengan satu
+              baris buat tiap token di vocab, dan tiap baris berisi deretan angka panjang -- koordinat token
+              itu di semacam "ruang makna", tempat kata-kata yang dipakai dengan cara mirip duduk berdekatan.
+              Cara pakainya sesederhana mungkin: dikasih token nomor 4.082, ambil baris ke-4.082. Ya udah,
+              gitu aja.
             </p>
           }
         />
@@ -104,10 +104,10 @@ export default function EmbeddingLayer() {
           "Many models reuse this same table at the very end of the pipeline too (turning final vectors back into token scores), roughly halving that cost -- you'll use this fact in lesson 1.9's accounting.",
         ],
         [
-          "Tabel embedding itu dipelajari: pelatihan terus-menerus menggeser setiap barisnya -- berbeda dari buku kode tokenizer yang tetap dan tak pernah berubah.",
-          "Embedding sebuah token adalah posisinya di ruang makna. Seberapa berkaitan dua kata diukur dari sudut antara panah keduanya (cosine similarity), bukan dari panjang panahnya.",
-          "Buku kode tokenizer (berkas tetap), tabel embedding (angka hasil belajar di dalam model), dan vector database (alat terpisah di luar model) adalah tiga hal berbeda -- jangan dilebur jadi satu.",
-          "Banyak model memakai ulang tabel yang sama ini di ujung akhir jalur (mengubah vektor akhir kembali menjadi skor token), memangkas biayanya kira-kira separuh -- fakta ini akan kamu pakai di perhitungan pelajaran 1.9.",
+          "Tabel embedding itu hasil training: proses training terus-menerus menggeser tiap barisnya -- beda dari buku kode tokenizer yang tetap dan nggak pernah berubah.",
+          "Embedding sebuah token itu posisinya di ruang makna. Seberapa nyambung dua kata diukur dari sudut antara panah keduanya (cosine similarity), bukan dari panjang panahnya.",
+          "Buku kode tokenizer (file tetap), tabel embedding (angka hasil training di dalam model), dan vector database (tool terpisah di luar model) itu tiga hal beda -- jangan dilebur jadi satu.",
+          "Banyak model pakai ulang tabel yang sama ini di ujung pipeline juga (mengubah vektor akhir balik jadi skor token), memangkas biayanya kira-kira separuh -- fakta ini bakal kamu pakai di perhitungan pelajaran 1.9.",
         ],
       )}
       references={[
@@ -128,7 +128,7 @@ export default function EmbeddingLayer() {
         },
       ]}
     >
-      <Section title={pick(lang, "A table lookup, not a calculation", "Sekadar mencari di tabel, bukan menghitung")}>
+      <Section title={pick(lang, "A table lookup, not a calculation", "Cuma cari di tabel, bukan menghitung")}>
         <Bi
           en={
             <p>
@@ -143,14 +143,14 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Semua yang datang setelah lapisan ini -- attention, MLP -- bekerja pada vektor (deretan angka itu),
-              tak pernah pada nomor ID mentah. Jadi seluruh tugas lapisan embedding hanyalah penukaran: nomor
-              token masuk, baris tabel keluar. Tidak ada matematika sama sekali di sini saat model berjalan --
-              seperti membuka halaman tertentu di sebuah buku. Yang membuat baris-barisnya <em>bermakna</em>{" "}
-              adalah apa yang terjadi selama pelatihan. Setiap kali model berlatih menebak teks, proses
-              pelatihan menggeser baris-baris ini sedikit demi sedikit, dan setelah triliunan geseran,
-              kata-kata yang muncul di kalimat serupa ("kucing" dan "anjing", "raja" dan "ratu") berakhir
-              dengan baris yang serupa. Tidak ada yang merancang tata letak itu -- ia muncul sendiri.
+              Semua yang datang setelah layer ini -- attention, MLP -- bekerja di atas vektor (deretan angka
+              tadi), nggak pernah di nomor ID mentah. Jadi seluruh tugas layer embedding cuma penukaran:
+              nomor token masuk, baris tabel keluar. Nggak ada matematika sama sekali di sini pas model
+              jalan -- mirip membuka halaman tertentu di sebuah buku. Yang bikin baris-barisnya{" "}
+              <em>bermakna</em> itu apa yang terjadi selama training. Tiap kali model latihan menebak teks,
+              proses training menggeser baris-baris ini sedikit demi sedikit, dan setelah triliunan geseran,
+              kata-kata yang muncul di kalimat mirip ("kucing" dan "anjing", "raja" dan "ratu") berakhir
+              dengan baris yang mirip juga. Nggak ada yang merancang layout itu -- ia muncul sendiri.
             </p>
           }
         />
@@ -171,13 +171,12 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Klik dua kata mana pun di bawah. Ruang makna mainan ini hanya memakai 2 angka per kata agar
-              benar-benar bisa kamu lihat sebagai peta -- model sungguhan memakai ratusan atau ribuan angka
-              per kata, yang bekerja dengan cara sama tetapi tak bisa digambar. Setiap kata adalah panah dari
-              pusat peta ke titiknya. "Cosine similarity" yang dihitung di bawahnya mengukur <em>sudut</em>{" "}
-              antara kedua panah: menunjuk ke arah yang sama nilainya mendekati 1 (sangat berkaitan), tegak
-              lurus mendekati 0 (tak berkaitan), dan berlawanan arah bernilai negatif. Arah yang penting,
-              bukan panjang panahnya.
+              Klik dua kata mana pun di bawah. Ruang makna mainan ini cuma pakai 2 angka per kata biar
+              beneran bisa kamu lihat sebagai peta -- model beneran pakai ratusan atau ribuan angka per kata,
+              yang jalannya sama tapi nggak bisa digambar. Tiap kata itu panah dari pusat peta ke titiknya.
+              "Cosine similarity" yang dihitung di bawahnya mengukur <em>sudut</em> antara kedua panah:
+              nunjuk ke arah yang sama nilainya mendekati 1 (sangat nyambung), tegak lurus mendekati 0 (nggak
+              nyambung), dan berlawanan arah nilainya negatif. Yang penting arahnya, bukan panjang panahnya.
             </p>
           }
         />
@@ -241,13 +240,13 @@ export default function EmbeddingLayer() {
             {pick(
               lang,
               "Try cat vs. dog (same cluster, high similarity), cat vs. run (unrelated, near zero), or king vs. queen (royalty cluster, high similarity despite king/queen being far from the animal cluster).",
-              "Coba cat vs. dog (satu kelompok, kemiripan tinggi), cat vs. run (tak berkaitan, mendekati nol), atau king vs. queen (kelompok kerajaan, kemiripan tinggi walau jauh dari kelompok hewan).",
+              "Coba cat vs. dog (satu cluster, kemiripan tinggi), cat vs. run (nggak nyambung, mendekati nol), atau king vs. queen (cluster kerajaan, kemiripan tinggi walau jauh dari cluster hewan).",
             )}
           </p>
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "The lookup, made literal", "Pencarian barisnya, dibuat harfiah")}>
+      <Section title={pick(lang, "The lookup, made literal", "Proses ambil barisnya, secara harfiah")}>
         <Bi
           en={
             <p>
@@ -257,8 +256,8 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Klik sebuah token di bawah dan lihat barisnya diambil. Sungguh, inilah seluruh pekerjaan
-              lapisan embedding saat model berjalan: nomor masuk, baris keluar.
+              Klik sebuah token di bawah dan lihat barisnya diambil. Serius, cuma inilah seluruh kerjaan
+              layer embedding pas model jalan: nomor masuk, baris keluar.
             </p>
           }
         />
@@ -312,15 +311,15 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Tabel di pelajaran ini, aturan rekat tokenizer dari pelajaran 1.2, dan vector database mudah
-              melebur di kepala karena ketiganya "menyimpan sesuatu tentang teks". Padahal mereka sama sekali
-              tak tumpang tindih. Buku kode tokenizer adalah berkas tetap yang tak pernah belajar apa pun.
-              Tabel embedding di sini terbuat dari angka hasil belajar di dalam model, disetel sepanjang
-              pelatihan. Vector database adalah perangkat lunak terpisah di luar model sepenuhnya -- lemari
-              arsip yang bisa dicari, tempat menyimpan gambaran dokumen-dokumen utuh supaya model bisa mencari
-              informasi nanti (dibahas jauh di belakang kursus ini). Menukar "tabel embedding" dengan "vector
-              database" adalah salah satu kekeliruan paling umum para pemula; keduanya menyelesaikan masalah
-              yang sama sekali berbeda.
+              Tabel di pelajaran ini, aturan rekat tokenizer dari pelajaran 1.2, dan vector database gampang
+              melebur di kepala karena ketiganya "menyimpan sesuatu tentang teks". Padahal ketiganya sama
+              sekali nggak tumpang tindih. Buku kode tokenizer itu file tetap yang nggak pernah belajar
+              apa-apa. Tabel embedding di sini terbuat dari angka hasil training di dalam model, disetel
+              sepanjang training. Vector database itu software terpisah yang sepenuhnya di luar model --
+              lemari arsip yang bisa dicari, tempat menyimpan gambaran dokumen-dokumen utuh supaya model bisa
+              mencari informasi nanti (dibahas jauh di belakang kursus ini). Ketuker antara "tabel embedding"
+              dan "vector database" itu salah satu kesalahan paling umum para pemula; keduanya menyelesaikan
+              masalah yang benar-benar beda.
             </p>
           }
         />
@@ -340,12 +339,12 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Ini trik rapi untuk disimpan. Di ujung paling akhir model, sebuah lapisan terakhir harus
-              mengubah vektor kembali menjadi skor untuk setiap token di kosakata -- artinya ia butuh tabel
-              berukuran persis sama dengan yang ini, hanya dipakai ke arah sebaliknya. Banyak model, termasuk
-              GPT-2, memilih memakai ulang tabel yang sama untuk kedua tugas alih-alih menyimpan dua. Namanya
-              "weight tying", ia menghemat porsi berarti dari ukuran total model, dan akan kamu pakai langsung
-              saat menjumlahkan parameter model sungguhan di pelajaran 1.9.
+              Ini trik keren buat diinget. Di ujung paling akhir model, sebuah layer terakhir harus mengubah
+              vektor balik jadi skor buat tiap token di vocab -- artinya ia butuh tabel berukuran persis sama
+              dengan yang ini, cuma dipakai ke arah sebaliknya. Banyak model, termasuk GPT-2, milih pakai
+              ulang tabel yang sama buat kedua tugas ketimbang nyimpen dua. Namanya "weight tying", ia
+              menghemat porsi yang lumayan dari ukuran total model, dan bakal kamu pakai langsung pas
+              menjumlahkan parameter model beneran di pelajaran 1.9.
             </p>
           }
         />
