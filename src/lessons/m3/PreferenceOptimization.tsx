@@ -234,10 +234,12 @@ export default function PreferenceOptimization() {
               RLHF is a student who writes fresh practice essays and gets them graded -- exploring new
               territory as it learns. DPO can never discover an answer better than anything in its stack of
               comparisons. Since DPO's debut, a family of variants has tinkered with the recipe, and you'll
-              see their names around: <strong>IPO</strong> tames DPO's tendency to over-learn lopsided
-              comparisons; <strong>KTO</strong> works from simple thumbs-up/thumbs-down labels instead of
-              matched pairs (much easier data to collect); <strong>GRPO</strong> brings back live practice
-              but grades each answer against the average of a batch of the model's own attempts -- the method
+              see their names around: <strong>IPO</strong> (Identity Preference Optimization) tames DPO's
+              tendency to over-learn lopsided comparisons; <strong>KTO</strong> (Kahneman-Tversky
+              Optimization) works from simple thumbs-up/thumbs-down labels instead of matched pairs (much
+              easier data to collect); <strong>GRPO</strong> (Group Relative Policy Optimization) brings
+              back live practice but grades each answer against the average of a batch of the model's own
+              attempts -- the method
               behind several recent reasoning-focused models. None of them wins outright; each picks a
               different spot on the same simplicity-versus-flexibility trade.
             </p>
@@ -248,10 +250,12 @@ export default function PreferenceOptimization() {
               sementara RLHF adalah murid yang menulis esai latihan segar dan mendapat nilai -- menjelajahi
               wilayah baru sambil belajar. DPO tak akan pernah menemukan jawaban yang lebih baik dari apa pun
               di tumpukan perbandingannya. Sejak debut DPO, sekeluarga varian mengutak-atik resepnya, dan
-              nama-nama mereka akan kamu jumpai: <strong>IPO</strong> menjinakkan kecenderungan DPO
-              belajar-berlebihan pada perbandingan yang timpang; <strong>KTO</strong> bekerja dari label
+              nama-nama mereka akan kamu jumpai: <strong>IPO</strong> (Identity Preference Optimization)
+              menjinakkan kecenderungan DPO belajar-berlebihan pada perbandingan yang timpang;{" "}
+              <strong>KTO</strong> (Kahneman-Tversky Optimization) bekerja dari label
               jempol-naik/jempol-turun sederhana alih-alih pasangan berjodoh (data yang jauh lebih mudah
-              dikumpulkan); <strong>GRPO</strong> menghidupkan lagi latihan langsung tetapi menilai tiap
+              dikumpulkan); <strong>GRPO</strong> (Group Relative Policy Optimization) menghidupkan lagi
+              latihan langsung tetapi menilai tiap
               jawaban terhadap rata-rata satu kelompok percobaan si model sendiri -- metode di balik beberapa
               model fokus-penalaran mutakhir. Tak ada yang menang mutlak; masing-masing memilih titik berbeda
               pada pertukaran kesederhanaan-versus-keluwesan yang sama.

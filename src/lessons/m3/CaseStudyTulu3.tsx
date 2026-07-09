@@ -124,13 +124,13 @@ export default function CaseStudyTulu3() {
         lang,
         [
           "Tulu 3 runs this module's exact three-stage pipeline -- example answers (SFT), then answer comparisons (DPO), then reward-based practice -- on public Llama 3.1 base models, with every stage's data and code released.",
-          "Its reward stage uses RLVR ('verifiable rewards'): instead of a trained judge model guessing what people like, a plain computer program checks the answer -- did the math come out right? was the rule followed? An answer key, not a judge's opinion.",
+          "Its reward stage uses RLVR (Reinforcement Learning with Verifiable Rewards): instead of a trained judge model guessing what people like, a plain computer program checks the answer -- did the math come out right? was the rule followed? An answer key, not a judge's opinion.",
           "Throughout, the team kept scrubbing their training data of anything overlapping the standard tests -- the same keep-the-exam-honest discipline from lesson 2.7.",
           "Because everything is public, reproducing a slice of the Tulu 3 recipe on rented hardware is a realistic, well-specified capstone project for this course.",
         ],
         [
           "Tulu 3 menjalankan persis jalur tiga tahap modul ini -- contoh jawaban (SFT), lalu perbandingan jawaban (DPO), lalu latihan berbasis hadiah -- pada model base Llama 3.1 yang publik, dengan data dan kode tiap tahap dirilis.",
-          "Tahap hadiahnya memakai RLVR ('verifiable rewards'): alih-alih model juri terlatih menebak apa yang disukai orang, program komputer polos mengecek jawabannya -- apakah matematikanya keluar benar? apakah aturannya dipatuhi? Kunci jawaban, bukan opini juri.",
+          "Tahap hadiahnya memakai RLVR (Reinforcement Learning with Verifiable Rewards): alih-alih model juri terlatih menebak apa yang disukai orang, program komputer polos mengecek jawabannya -- apakah matematikanya keluar benar? apakah aturannya dipatuhi? Kunci jawaban, bukan opini juri.",
           "Sepanjang jalan, tim terus membersihkan data latihannya dari apa pun yang beririsan dengan tes standar -- disiplin jaga-ujian-tetap-jujur yang sama dari pelajaran 2.7.",
           "Karena semuanya publik, mereproduksi seiris resep Tulu 3 di perangkat sewaan adalah proyek puncak yang realistis dan terspesifikasi baik untuk kursus ini.",
         ],
