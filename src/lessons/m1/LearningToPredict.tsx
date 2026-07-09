@@ -86,7 +86,7 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              Semua yang kamu bangun sejauh ini -- tokenizer, embedding, stempel posisi, atensi, MLP --
+              Semua yang kamu bangun sejauh ini -- tokenizer, embedding, stempel posisi, attention, MLP --
               berujung pada satu keluaran: untuk tiap titik di teks, sekumpulan persentase tentang "token apa
               yang berikutnya". Model yang baru dibuat menghasilkan persentase sampah, karena semua angka
               hasil belajarnya berawal acak. Pelatihan adalah loop yang memperbaikinya: buat tebakan, ukur

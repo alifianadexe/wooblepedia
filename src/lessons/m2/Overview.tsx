@@ -84,7 +84,7 @@ export default function Overview() {
         [
           "Pra-pelatihan tetaplah loop tebak-lalu-nilai dari pelajaran 1.7, dijalankan pada teks berjumlah raksasa. Resep intinya tak berubah mendasar sejak GPT-2.",
           "Tiga mata uang mengatur setiap pelatihan: komputasi (C, hitungan mentah yang kamu bayar), parameter (N, ukuran model), dan data (D, berapa token yang ia baca). Ketiganya terikat satu rumus: C ≈ 6·N·D.",
-          "Pelatihan sungguhan punya empat fase -- siapkan data, tokenisasi dan kemas, latih dengan titik-simpan rutin, dan evaluasi terus-menerus -- dan masing-masing mendapat pelajarannya sendiri di modul ini.",
+          "Pelatihan sungguhan punya empat fase -- siapkan data, tokenization dan kemas, latih dengan titik-simpan rutin, dan evaluasi terus-menerus -- dan masing-masing mendapat pelajarannya sendiri di modul ini.",
           "Dari GPT-2 ke model terdepan hari ini, anggaran komputasi tumbuh sekitar 500.000 kali lipat. Mesinnya nyaris tak berubah; skalanyalah yang berubah.",
           "Hampir semua yang sulit di modul ini -- jalur data, menjaga ribuan komputer tetap serempak, pulih dari crash -- adalah rekayasa dan logistik, bukan matematika baru.",
         ],
@@ -221,7 +221,7 @@ export default function Overview() {
             <p>
               Konkretnya, sebuah pelatihan bergerak melalui empat fase, masing-masing dengan pelajarannya
               sendiri di sini. <strong>Persiapan data</strong>: kumpulkan potongan raksasa internet, saring
-              sampahnya, dan buang duplikatnya (pelajaran 2.4). <strong>Tokenisasi dan pengemasan</strong>:
+              sampahnya, dan buang duplikatnya (pelajaran 2.4). <strong>Tokenization dan pengemasan</strong>:
               jalankan semua teks itu lewat tokenizer dan pecah hasilnya menjadi potongan berukuran rata yang
               disebar ke banyak mesin penyimpanan. <strong>Pelatihan</strong> itu sendiri: loop
               tebak-lalu-nilai berjalan di sampai ribuan GPU (prosesor khusus, aslinya dibuat untuk grafis

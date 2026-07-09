@@ -64,7 +64,7 @@ export default function GPT2FromScratch() {
           }
           id={
             <p>
-              Semua ide dari modul ini -- token, embedding, stempel posisi, atensi, pelatihan -- terjumlah
+              Semua ide dari modul ini -- token, embedding, stempel posisi, attention, pelatihan -- terjumlah
               menjadi satu hal konkret: GPT-2 sungguhan, model yang dirilis OpenAI pada 2019. Sebelum
               membangun sesuatu yang besar, cerdas untuk melakukan apa yang dilakukan arsitek sebelum
               konstruksi: menghitung ukurannya. Berapa banyak angka hasil belajar yang akan dimiliki model

@@ -277,7 +277,7 @@ export default function InstructionTuningPreview() {
           }
           id={
             <p>
-              Tidak ada apa pun di mesinnya -- bukan lapisan, bukan atensi, bukan jumlah parameter -- yang
+              Tidak ada apa pun di mesinnya -- bukan lapisan, bukan attention, bukan jumlah parameter -- yang
               berubah antara model base dan asisten yang dibangun darinya. Arsitektur sama, jalur delapan
               tahap yang sama dari pelajaran 1.1. Seluruh transplantasi kepribadiannya hidup di apa yang
               dituliskan pelatihan ke angka-angka hasil belajar selama tahap-tahap belakangan ini. Fakta itu

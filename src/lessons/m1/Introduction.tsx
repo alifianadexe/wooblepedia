@@ -145,7 +145,7 @@ export default function Introduction() {
           "Tidak ada yang mengajari model tata bahasa atau fakta secara langsung. Ia tetap menguasainya, karena ternyata itulah satu-satunya cara untuk menjadi sangat jago menebak token berikutnya.",
           "Parameter adalah angka hasil belajar yang tersimpan di model -- terkunci begitu pelatihan selesai. Aktivasi adalah angka sementara yang dibuat saat menjawab satu prompt, lalu dibuang.",
           "Model kecil muat dengan mudah di memori kartu grafis biasa. Pelatihanlah yang lebih dulu jadi mahal, karena butuh beberapa angka pembukuan ekstra untuk setiap parameter.",
-          "Semua materi selanjutnya di kursus ini -- tokenizer, embedding, posisi, atensi, MLP, pelatihan, alignment -- adalah tinjauan lebih dekat atas salah satu dari delapan langkah yang baru saja kamu klik.",
+          "Semua materi selanjutnya di kursus ini -- tokenizer, embedding, posisi, attention, MLP, pelatihan, alignment -- adalah tinjauan lebih dekat atas salah satu dari delapan langkah yang baru saja kamu klik.",
         ],
       )}
       references={[
@@ -253,8 +253,8 @@ export default function Introduction() {
               <li><strong>Teks mentah</strong> — sekadar karakter, seperti kalimat di pesan singkat. Belum ada token sama sekali.</li>
               <li><strong>Tokenizer</strong> — seperangkat aturan tetap (pelajaran 1.2) memotong teks menjadi token dan memberi masing-masing nomor ID, seperti setiap kata di kamus punya nomor halamannya sendiri. Tidak ada yang dipelajari di sini.</li>
               <li><strong>Embedding</strong> — setiap nomor ID ditukar dengan deretan angka panjang miliknya sendiri (disebut <em>vektor</em>) dengan mencari satu baris di tabel besar (pelajaran 1.3). Kata-kata yang maknanya mirip berakhir dengan deretan yang mirip.</li>
-              <li><strong>+Posisi</strong> — langkah atensi yang akan datang tidak bisa tahu sendiri token mana yang lebih dulu, jadi angka tiap token dicampuri "stempel posisi" (pelajaran 1.4).</li>
-              <li><strong>Atensi</strong> — langkah tempat token saling melihat dan bertukar informasi (pelajaran 1.5). Kata "dia" bisa mengetahui bahwa yang dimaksud adalah "si kucing". Ini satu-satunya langkah tempat token berkomunikasi.</li>
+              <li><strong>+Posisi</strong> — langkah attention yang akan datang tidak bisa tahu sendiri token mana yang lebih dulu, jadi angka tiap token dicampuri "stempel posisi" (pelajaran 1.4).</li>
+              <li><strong>Attention</strong> — langkah tempat token saling melihat dan bertukar informasi (pelajaran 1.5). Kata "dia" bisa mengetahui bahwa yang dimaksud adalah "si kucing". Ini satu-satunya langkah tempat token berkomunikasi.</li>
               <li><strong>MLP</strong> — setiap token, sendirian sepenuhnya, didorong melewati lapisan penghitung kecil yang membentuk ulang vektornya (pelajaran 1.6). Tidak ada lirik-lirikan ke tetangga di sini.</li>
               <li><strong>LM head</strong> — vektor terakhir diubah menjadi satu skor mentah (disebut <em>logit</em>) untuk setiap kemungkinan token berikutnya.</li>
               <li><strong>Softmax → sampel</strong> — skor mentah diubah menjadi persentase yang totalnya 100%, lalu satu token diundi, seperti arisan berhadiah di mana token yang lebih mungkin memegang lebih banyak kupon. Token itu ditambahkan ke teks, dan seluruh jalur berjalan lagi.</li>
@@ -525,7 +525,7 @@ export default function Introduction() {
             <p>
               Ada dua jenis angka di dalam model yang sedang berjalan, dan penting untuk tidak menukarnya.{" "}
               <strong>Parameter</strong> (disebut juga <em>bobot</em>) adalah angka hasil belajar model --
-              tabel besar itu, semua angka atensi dan MLP -- terkunci begitu pelatihan selesai dan disimpan
+              tabel besar itu, semua angka attention dan MLP -- terkunci begitu pelatihan selesai dan disimpan
               ke disk. <strong>Aktivasi</strong> adalah angka sementara yang dibuat baru untuk setiap prompt
               -- semua vektor antara yang barusan kamu lihat mengalir melewati delapan tahap. Bayangkan buku
               resep versus meja dapur yang berantakan: resep (parameter) tidak pernah berubah selama kamu
@@ -575,7 +575,7 @@ export default function Introduction() {
           }
           id={
             <p>
-              Modul 1 membedah setiap tahap yang barusan kamu klik -- tokenizer, embedding, posisi, atensi,
+              Modul 1 membedah setiap tahap yang barusan kamu klik -- tokenizer, embedding, posisi, attention,
               pelatihan -- dan ditutup dengan kamu menghitung ukuran GPT-2 sungguhan. Modul 2 membahas fase
               besar dan mahal tempat pengetahuan dituliskan ke dalam parameter: data apa yang dipakai, berapa
               banyak, dan rekayasa yang dibutuhkan untuk melatih dalam skala besar. Modul 3 membahas fase

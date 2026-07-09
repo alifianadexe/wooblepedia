@@ -202,7 +202,7 @@ export default function Overview() {
           id={
             <p>
               Layak ditegaskan gamblang karena mudah terlupa: tidak ada apa pun di mesin model -- bukan
-              lapisan, bukan atensi, bukan jumlah parameter -- yang berubah di tahap mana pun di atas. Model
+              lapisan, bukan attention, bukan jumlah parameter -- yang berubah di tahap mana pun di atas. Model
               base dan asisten yang diluncurkan adalah mesin identik dari Modul 1. Setiap perbedaan perilaku
               -- sifat membantu, menolak permintaan berbahaya, memakai alat, nada bicara -- datang dari apa
               yang dituliskan pelatihan ke angka-angka hasil belajar selama tahap-tahap belakangan ini.

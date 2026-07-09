@@ -67,7 +67,7 @@ export default function AdvancedPretrainingObjectives() {
         [
           "Fill-in-the-middle (FIM): gunting sepotong dari dokumen, pindahkan ke ujung, dan tandai kepingannya dengan token khusus. Penebak kiri-ke-kanan yang ketat dengan begitu belajar mengisi lubang -- wajib untuk editor kode yang melengkapi bagian tengah berkasmu.",
           "Multi-token prediction: alih-alih hanya menebak token persis berikutnya, head penebak ekstra juga menebak dua, tiga, dan empat langkah ke depan -- lebih banyak belajar dari tiap posisi, dan trik kecepatan saat menghasilkan teks nanti.",
-          "Teks panjang ditangani dua fase: latih kebanyakan pada teks lebih pendek (lebih murah), lalu regangkan pengodean posisinya dan lanjutkan pelatihan sebentar pada panjang baru yang lebih besar.",
+          "Teks panjang ditangani dua fase: latih kebanyakan pada teks lebih pendek (lebih murah), lalu regangkan positional encoding-nya dan lanjutkan pelatihan sebentar pada panjang baru yang lebih besar.",
           "Kurikulum: simpan bahan bacaan kualitas terbaik untuk akhir pelatihan, saat model paling siap memanfaatkannya -- seperti kursus menyimpan proyek puncaknya untuk terakhir.",
           "Keluarga serumpun bernama span corruption juga mengajarkan isi-lubang tetapi mengubah cara model membaca; pesona FIM adalah ia tak pernah menyentuh mesinnya -- hanya menyusun ulang teksnya.",
         ],
@@ -218,7 +218,7 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              Berlatih pada teks yang sangat panjang sejak hari pertama itu mahal -- biaya langkah atensi
+              Berlatih pada teks yang sangat panjang sejak hari pertama itu mahal -- biaya langkah attention
               tumbuh cepat mengikuti panjang teks. Maka kebanyakan pelatihan mengerjakan porsi besarnya pada
               teks lebih pendek (beberapa ribu token) dan meregang setelahnya. Ingat RoPE dari pelajaran 1.4,
               yang mengodekan posisi dengan memutar angka-angka tiap kata? Meregang kebanyakan berarti

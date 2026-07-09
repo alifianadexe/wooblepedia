@@ -73,7 +73,7 @@ export default function EvaluationDuringPretraining() {
         ],
         [
           "Pengukur utamanya adalah skor kesalahan yang diukur pada teks sisihan yang tak pernah dilatihkan ke model -- cukup murah untuk dicek terus-menerus, seperti kuis dadakan yang tak pernah bisa dipelajari model sebelumnya.",
-          "Kurva hukum penskalaan dari pelajaran 2.3 merangkap rencana penerbangan: kalau skor terukur melenceng parah dari jalur prediksi, ada yang salah -- tertangkap jauh sebelum tes lain menyadarinya.",
+          "Kurva scaling law dari pelajaran 2.3 merangkap rencana penerbangan: kalau skor terukur melenceng parah dari jalur prediksi, ada yang salah -- tertangkap jauh sebelum tes lain menyadarinya.",
           "Paket tes standar (trivia, akal sehat, soal koding) hanya dijalankan sesekali dan menilai lulus/gagal -- yang bisa membuat perbaikan mulus di baliknya tampak seperti lompatan ajaib mendadak.",
           "Skor tes itu hanya bermakna berkat tahap pembersihan dari pelajaran 2.4 yang membuang soal-soal tes dari data latihan -- kalau tidak, model sekadar sudah melihat jawabannya.",
           "Saat skor kesalahan tiba-tiba melonjak, perbaikannya membosankan: mundur ke titik-simpan terakhir, lewati batch penyebabnya, mungkin kendurkan kecepatan belajar, lalu lanjutkan.",

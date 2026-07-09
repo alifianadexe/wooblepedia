@@ -65,7 +65,7 @@ const DETAILS_ID: Record<DetailKey, Detail> = {
     title: "PENGODEAN POSISI",
     gpt2: "Tabel stempel posisi hasil belajar, ditambahkan ke tiap kata di awal",
     llama: "RoPE — memutar angka tiap kata dengan sudut berdasarkan posisinya",
-    why: "RoPE membuat atensi peduli pada seberapa jauh dua kata terpisah, alih-alih titik mutlak tiap kata di teks. 'Terpisah lima kata' bekerja sama di mana pun, jadi model jauh lebih tahan pada teks yang lebih panjang dari apa pun yang pernah ia latih (pelajaran 1.4).",
+    why: "RoPE membuat attention peduli pada seberapa jauh dua kata terpisah, alih-alih titik mutlak tiap kata di teks. 'Terpisah lima kata' bekerja sama di mana pun, jadi model jauh lebih tahan pada teks yang lebih panjang dari apa pun yang pernah ia latih (pelajaran 1.4).",
   },
   mlp: {
     title: "MLP (langkah berpikir)",
@@ -136,7 +136,7 @@ export default function TrainingObjectivesArchitecture() {
         [
           "Yang dilatih model tak berubah sejak GPT-2: menebak token berikutnya di teks berjumlah masif.",
           "Tukar 1: langkah 'kenop volume' (layer norm) disederhanakan menjadi versi lebih murah bernama RMSNorm yang melewati satu langkah yang tak ada yang merindukannya. Tukar 2: stempel posisi digantikan RoPE, yang mengodekan seberapa jauh kata-kata terpisah dan jauh lebih tahan teks panjang (pelajaran 1.4).",
-          "Tukar 3: MLP mendapat gerbang hasil belajar (SwiGLU) yang membuatnya bisa memilih apa yang lolos. Tukar 4: head atensi kini berbagi catatan key/value dalam kelompok (GQA), alih-alih tiap head menyimpan miliknya sendiri.",
+          "Tukar 3: MLP mendapat gerbang hasil belajar (SwiGLU) yang membuatnya bisa memilih apa yang lolos. Tukar 4: head attention kini berbagi catatan key/value dalam kelompok (GQA), alih-alih tiap head menyimpan miliknya sendiri.",
           "Pertukaran terakhir itu sepenuhnya soal memori: makin sedikit set catatan terpisah, makin kecil KV-cache secara sebanding -- kalkulator di bawah menghitung persis seberapa kecil.",
           "Model modern juga membuang banyak angka tambahan kecil ('bias') dari lapisannya -- penghematan minor yang nyaris tanpa kerugian.",
         ],

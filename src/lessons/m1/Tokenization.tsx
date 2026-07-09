@@ -187,7 +187,7 @@ export default function Tokenization() {
           }
           id={
             <p>
-              Untuk men-tokenisasi teks <em>baru</em> nantinya, kamu memutar ulang aturan-aturan rekat itu
+              Untuk melakukan tokenization pada teks <em>baru</em> nantinya, kamu memutar ulang aturan-aturan rekat itu
               sesuai urutan pencatatannya: pecah menjadi huruf tunggal, lalu terus terapkan aturan yang
               paling awal dipelajari, sampai tidak ada aturan yang cocok lagi. Lab di bawah menjalankan
               algoritme ini persis, langsung di browsermu -- tidak ada yang disiapkan diam-diam atau dipalsukan.

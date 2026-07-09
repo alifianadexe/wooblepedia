@@ -15,10 +15,10 @@ export interface LessonMeta {
 
 export const syllabus: LessonMeta[] = [
   { module: 1, chapter: 1, slug: "introduction", title: "Introduction", titleId: "Pengantar", shortTitle: "Introduction" },
-  { module: 1, chapter: 2, slug: "tokenization", title: "Tokenization", titleId: "Tokenisasi", shortTitle: "Tokenization" },
+  { module: 1, chapter: 2, slug: "tokenization", title: "Tokenization", titleId: "Tokenization", shortTitle: "Tokenization" },
   { module: 1, chapter: 3, slug: "embedding-layer", title: "The Embedding Layer", titleId: "Lapisan Embedding", shortTitle: "Embedding Layer" },
-  { module: 1, chapter: 4, slug: "positional-encoding", title: "Positional Encoding", titleId: "Pengodean Posisi", shortTitle: "Positional Encoding" },
-  { module: 1, chapter: 5, slug: "attention", title: "Attention", titleId: "Atensi", shortTitle: "Attention" },
+  { module: 1, chapter: 4, slug: "positional-encoding", title: "Positional Encoding", titleId: "Positional Encoding", shortTitle: "Positional Encoding" },
+  { module: 1, chapter: 5, slug: "attention", title: "Attention", titleId: "Attention", shortTitle: "Attention" },
   { module: 1, chapter: 6, slug: "layers-of-understanding", title: "Layers of Understanding", titleId: "Lapisan-Lapisan Pemahaman", shortTitle: "Layers of Understanding" },
   { module: 1, chapter: 7, slug: "learning-to-predict", title: "Learning to Predict", titleId: "Belajar Memprediksi", shortTitle: "Learning to Predict" },
   { module: 1, chapter: 8, slug: "instruction-tuning-rlhf-preview", title: "Instruction Tuning and RLHF (preview)", titleId: "Instruction Tuning dan RLHF (pratinjau)", shortTitle: "Instruct + RLHF Preview" },
@@ -26,7 +26,7 @@ export const syllabus: LessonMeta[] = [
 
   { module: 2, chapter: 1, slug: "overview", title: "Overview", titleId: "Ikhtisar", shortTitle: "Overview" },
   { module: 2, chapter: 2, slug: "training-objectives-architecture", title: "Training Objectives and Architectural Details", titleId: "Tujuan Pelatihan dan Detail Arsitektur", shortTitle: "Objectives & Architecture" },
-  { module: 2, chapter: 3, slug: "scaling-laws-optimization", title: "Scaling Laws and Optimization", titleId: "Hukum Penskalaan dan Optimisasi", shortTitle: "Scaling Laws" },
+  { module: 2, chapter: 3, slug: "scaling-laws-optimization", title: "Scaling Laws and Optimization", titleId: "Scaling Laws dan Optimisasi", shortTitle: "Scaling Laws" },
   { module: 2, chapter: 4, slug: "training-data-engineering", title: "Training Data Engineering", titleId: "Rekayasa Data Pelatihan", shortTitle: "Data Engineering" },
   { module: 2, chapter: 5, slug: "training-infrastructure-systems", title: "Training Infrastructure and Systems", titleId: "Infrastruktur dan Sistem Pelatihan", shortTitle: "Infra & Systems" },
   { module: 2, chapter: 6, slug: "advanced-pretraining-objectives", title: "Advanced Pretraining Objectives", titleId: "Tujuan Pra-Pelatihan Lanjutan", shortTitle: "Advanced Objectives" },

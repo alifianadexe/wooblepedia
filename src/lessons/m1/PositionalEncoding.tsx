@@ -83,11 +83,11 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Ada fakta aneh tentang langkah atensi yang akan datang di pelajaran berikutnya: sendirian, ia
+              Ada fakta aneh tentang langkah attention yang akan datang di pelajaran berikutnya: sendirian, ia
               tak bisa tahu urutan kedatangan token. Ia memperlakukan kalimat seperti sekantong kata --
               "kucing itu duduk" dan "duduk itu kucing" terlihat identik baginya. Padahal urutan kata jelas
               penting ("anjing menggigit orang" bukanlah "orang menggigit anjing"), jadi urutan harus
-              diselundupkan sebagai bagian dari datanya sendiri. Pengodean posisi adalah caranya: sebelum apa
+              diselundupkan sebagai bagian dari datanya sendiri. Positional encoding adalah caranya: sebelum apa
               pun terjadi, vektor tiap token dicampuri "stempel posisi" -- pola angka unik yang berkata "aku
               kata ke-1", "aku kata ke-2", dan seterusnya.
             </p>
@@ -104,7 +104,7 @@ export default function PositionalEncoding() {
           "Most modern models use a newer scheme called RoPE, which encodes how far apart two words are rather than each word's absolute spot -- and that handles longer texts much more gracefully.",
         ],
         [
-          "Atensi sendirian buta urutan: tanpa informasi posisi, \"kucing itu duduk\" dan \"duduk itu kucing\" keluar persis sama.",
+          "Attention sendirian buta urutan: tanpa informasi posisi, \"kucing itu duduk\" dan \"duduk itu kucing\" keluar persis sama.",
           "Perbaikan klasiknya menambahkan pola gelombang tetap (dari sinus dan kosinus) ke vektor tiap token -- tanpa pembelajaran, murni rumus.",
           "Polanya mencampur gelombang cepat dan lambat, seperti jarum detik dan jarum jam: yang cepat membedakan posisi bertetangga, yang lambat menunjukkan kira-kira di mana kamu berada, dan bersama-sama setiap posisi mendapat stempel unik.",
           "Kata yang sama di dua posisi berbeda sungguh menjadi dua vektor berbeda -- lab di bawah menghitungnya langsung, bukan sekadar mengklaim.",
@@ -146,10 +146,10 @@ export default function PositionalEncoding() {
             <p>
               Bayangkan seseorang menyerahkan setumpuk foto liburan tanpa tanggal tertulis, dan tumpukannya
               sudah teracak. Sekuat apa pun menatapnya, kamu tak akan bisa memulihkan foto mana yang lebih
-              dulu -- informasi urutannya memang tidak ada. Atensi menerima token persis dalam kondisi itu:
-              sebuah kumpulan, bukan barisan. Pengodean posisi adalah perbaikannya, dan cara kerjanya seperti
+              dulu -- informasi urutannya memang tidak ada. Attention menerima token persis dalam kondisi itu:
+              sebuah kumpulan, bukan barisan. Positional encoding adalah perbaikannya, dan cara kerjanya seperti
               menuliskan tanggal di belakang tiap foto sebelum diacak: pola yang bergantung posisi ditambahkan
-              langsung ke vektor tiap token sebelum lapisan atensi pertama berjalan, sehingga "urutan" ikut
+              langsung ke vektor tiap token sebelum lapisan attention pertama berjalan, sehingga "urutan" ikut
               bepergian bersama datanya sendiri, bukan sesuatu yang harus dilacak mesin secara terpisah.
             </p>
           }
@@ -267,7 +267,7 @@ export default function PositionalEncoding() {
               Balik sakelarnya: kata "the" berangkat dari baris tabel yang identik di kedua kesempatan
               (pencarian di pelajaran 1.3 tak pernah berubah). Satu-satunya perbedaan adalah stempel posisi
               mana yang ditambahkan -- milik posisi 0 atau posisi 4 -- dan itu saja sudah cukup membuat kedua
-              vektor akhirnya sungguh berbeda saat tiba di lapisan atensi.
+              vektor akhirnya sungguh berbeda saat tiba di lapisan attention.
             </p>
           }
         />
@@ -338,7 +338,7 @@ export default function PositionalEncoding() {
               Kebanyakan model masa kini justru memakai <strong>RoPE</strong> ("rotary position embedding").
               Alih-alih menambahkan stempel ke tiap token, RoPE memutar pelan panah tiap token dengan sudut
               yang bergantung pada posisinya -- token ke-10 diputar sedikit, token ke-100 diputar banyak.
-              Akibat cerdiknya: saat dua panah yang sudah diputar dibandingkan di langkah atensi, yang penting
+              Akibat cerdiknya: saat dua panah yang sudah diputar dibandingkan di langkah attention, yang penting
               ternyata adalah <em>selisih</em> sudut keduanya -- dengan kata lain, seberapa jauh kedua kata
               terpisah, bukan di mana masing-masing duduk secara mutlak. "Terpisah lima kata" berperilaku sama
               di mana pun dalam teks, dan justru itulah kenapa RoPE menangani teks yang lebih panjang dari apa

@@ -59,7 +59,7 @@ export default function CaseStudyLlama3() {
           }
           id={
             <p>
-              Setiap ide di modul ini -- tiga mata uang, pertukaran komponen, hukum penskalaan, pembersihan
+              Setiap ide di modul ini -- tiga mata uang, pertukaran komponen, scaling laws, pembersihan
               data, gudang GPU, instrumen-instrumennya -- muncul dalam satu model nyata yang
               terdokumentasi penuh: LLaMA 3 405B, dibangun Meta pada 2024. Kebanyakan perusahaan
               merahasiakan detail berantakan pelatihan besar. Tim Meta menuliskan milik mereka dengan
@@ -81,7 +81,7 @@ export default function CaseStudyLlama3() {
         [
           "405 miliar parameter, semuanya aktif untuk tiap token -- Meta sengaja memilih desain sederhana, bertaruh bahwa data bersih dan skala mentah mengalahkan kecerdikan arsitektur.",
           "Ia membaca 15,6 triliun token -- sekitar 38 per parameter, hampir dua kali lipat angka optimal buku teks yaitu 20. Itulah pertukaran sengaja 'latih lebih lama, layani lebih murah' dari pelajaran 2.3.",
-          "Head atensinya berbagi catatan key/value dalam kelompok (8 set catatan untuk 128 head) -- persis trik hemat memori dari kalkulator pelajaran 2.2, wajib untuk menangani teks panjang.",
+          "Head attention-nya berbagi catatan key/value dalam kelompok (8 set catatan untuk 128 head) -- persis trik hemat memori dari kalkulator pelajaran 2.2, wajib untuk menangani teks panjang.",
           "Pelatihannya memakai sampai 16.000 GPU -- bukan terutama karena modelnya butuh ruang, melainkan karena dengan mesin lebih sedikit pelatihan yang sama memakan bertahun-tahun, bukan berbulan-bulan.",
           "Makalahnya terbuka melaporkan seberapa sering perangkat keras gagal dan bagaimana tim memulihkan -- persis kenyataan simpan-dan-mulai-ulang yang digambarkan pelajaran 2.5.",
         ],
@@ -205,7 +205,7 @@ export default function CaseStudyLlama3() {
             <p>
               Kebanyakan lab terdepan menjaga rapat detail pelatihannya. Makalah LLaMA 3 justru
               mendokumentasikan seluruh buku panduan yang baru kamu pelajari: berlatih kebanyakan pada teks
-              lebih pendek dan meregang ke yang panjang belakangan (trik pengodean posisi pelajaran 2.6),
+              lebih pendek dan meregang ke yang panjang belakangan (trik positional encoding pelajaran 2.6),
               hitung-hitungan jujur seberapa sering perangkat keras mati di skala 16.000 GPU dan bagaimana
               rutinitas simpan-dan-mulai-ulang menanganinya, serta fase akhir yang memusatkan bahan bacaan
               kualitas terbaik di ujung pelatihan. Gabungan skala dan kejujuran itulah kenapa satu makalah

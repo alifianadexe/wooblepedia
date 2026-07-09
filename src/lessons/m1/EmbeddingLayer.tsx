@@ -143,7 +143,7 @@ export default function EmbeddingLayer() {
           }
           id={
             <p>
-              Semua yang datang setelah lapisan ini -- atensi, MLP -- bekerja pada vektor (deretan angka itu),
+              Semua yang datang setelah lapisan ini -- attention, MLP -- bekerja pada vektor (deretan angka itu),
               tak pernah pada nomor ID mentah. Jadi seluruh tugas lapisan embedding hanyalah penukaran: nomor
               token masuk, baris tabel keluar. Tidak ada matematika sama sekali di sini saat model berjalan --
               seperti membuka halaman tertentu di sebuah buku. Yang membuat baris-barisnya <em>bermakna</em>{" "}

@@ -85,7 +85,7 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Satu operasi atensi saja sudah berguna. Model sungguhan menjalankan beberapa sekaligus
+              Satu operasi attention saja sudah berguna. Model sungguhan menjalankan beberapa sekaligus
               berdampingan -- disebut <strong>head</strong> -- lalu menumpuk lusinan lapisan seperti ini.
               Pelajaran ini membahas apa yang kamu dapat dari semua itu: head-head berbeda yang
               masing-masing belajar mengawasi jenis hubungan antarkata yang berbeda, dan desain "jumlah
@@ -105,10 +105,10 @@ export default function LayersOfUnderstanding() {
           "Early layers tend to notice surface-level things (which word is next door, exact repeats); deeper layers combine those clues into more abstract understanding.",
         ],
         [
-          "Multi-head attention menjalankan beberapa operasi atensi lebih kecil berdampingan, masing-masing dengan lensa hasil belajarnya sendiri, lalu menjahit jawaban mereka kembali jadi satu -- dan tiap head cenderung berspesialisasi memperhatikan satu jenis hubungan.",
+          "Multi-head attention menjalankan beberapa operasi attention lebih kecil berdampingan, masing-masing dengan lensa hasil belajarnya sendiri, lalu menjahit jawaban mereka kembali jadi satu -- dan tiap head cenderung berspesialisasi memperhatikan satu jenis hubungan.",
           "Residual stream adalah jumlah berjalan: tiap lapisan membaca angka saat ini dan menambahkan sumbangan kecilnya di atasnya, bukan mengganti semuanya. Desain penjumlahan itulah kenapa model yang sangat dalam tetap bisa belajar -- sinyal pelatihan punya jalan lurus kembali melewati semua tanda tambah.",
           "Layer norm hanyalah kenop volume yang menjaga jumlah berjalan itu tidak melantur terlalu besar atau kecil saat lusinan lapisan terus menambah. Ia menyumbang kestabilan, bukan kecerdasan.",
-          "Atensi adalah satu-satunya langkah tempat kata bertukar informasi; MLP setelahnya menggarap tiap kata sendirian -- dan ia memegang kira-kira dua pertiga angka hasil belajar sebuah lapisan, berperilaku sangat mirip gudang fakta-dan-pola milik model.",
+          "Attention adalah satu-satunya langkah tempat kata bertukar informasi; MLP setelahnya menggarap tiap kata sendirian -- dan ia memegang kira-kira dua pertiga angka hasil belajar sebuah lapisan, berperilaku sangat mirip gudang fakta-dan-pola milik model.",
           "Lapisan awal cenderung memperhatikan hal-hal di permukaan (kata mana yang bersebelahan, pengulangan persis); lapisan lebih dalam menggabungkan petunjuk itu menjadi pemahaman yang lebih abstrak.",
         ],
       )}
@@ -153,12 +153,12 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Alih-alih menjalankan satu operasi atensi besar, tiap lapisan membagi pekerjaan ke beberapa{" "}
+              Alih-alih menjalankan satu operasi attention besar, tiap lapisan membagi pekerjaan ke beberapa{" "}
               <strong>head</strong> yang lebih kecil. Tiap head mendapat lensa hasil belajarnya sendiri untuk
-              membuat query, key, dan value, menjalankan matematika atensi dari pelajaran lalu secara mandiri,
+              membuat query, key, dan value, menjalankan matematika attention dari pelajaran lalu secara mandiri,
               lalu jawaban semua head dijahit kembali dan dicampur. Bayangkan sekelompok teman menonton film
               yang sama: satu mengikuti alur, satu memperhatikan kostum, satu menangkap lelucon di latar.
-              Tidak ada yang membagi tugas itu -- dan tidak ada pula yang membagi tugas ke head atensi --
+              Tidak ada yang membagi tugas itu -- dan tidak ada pula yang membagi tugas ke head attention --
               tetapi spesialisasi muncul dengan andal selama pelatihan: sebagian head akhirnya mengawasi
               posisi kata, sebagian melacak kata yang berulang, sebagian mengikuti hubungan tata bahasa
               seperti kata benda mana milik sebuah kata kerja. Lab di bawah menghitung tiga head yang
@@ -232,7 +232,7 @@ export default function LayersOfUnderstanding() {
             <p>
               Dari lapisan embedding sampai ujung akhir, tiap kata membawa satu vektor -- si{" "}
               <strong>residual stream</strong> -- dan inilah pilihan desain krusialnya: tidak ada lapisan yang
-              pernah menggantinya. Tiap langkah atensi dan MLP membaca vektor saat ini, menghitung
+              pernah menggantinya. Tiap langkah attention dan MLP membaca vektor saat ini, menghitung
               sumbangannya, lalu <em>menambahkannya</em> di atas:{" "}
               <code>stream = stream + sumbangan lapisan ini</code>. Bayangkan dokumen bersama yang
               dioper menyusuri barisan panjang editor, di mana tiap editor hanya boleh menempelkan catatan di
@@ -270,7 +270,7 @@ export default function LayersOfUnderstanding() {
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "Attention talks, the MLP thinks", "Atensi bicara, MLP berpikir")}>
+      <Section title={pick(lang, "Attention talks, the MLP thinks", "Attention bicara, MLP berpikir")}>
         <Bi
           en={
             <p>
@@ -285,7 +285,7 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Cara berguna mengingat pembagian kerjanya: atensi adalah langkah bicara -- satu-satunya momen
+              Cara berguna mengingat pembagian kerjanya: attention adalah langkah bicara -- satu-satunya momen
               vektor sebuah kata bisa dipengaruhi kata lain. <strong>MLP</strong> (singkatan "multi-layer
               perceptron", tumpukan kecil operasi pengolah angka) adalah langkah berpikir: ia mengambil
               vektor satu kata, sendirian, dan mengubahnya, tanpa bisa melihat kata lain sama sekali.

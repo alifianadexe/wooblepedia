@@ -81,7 +81,7 @@ export default function Attention() {
           }
           id={
             <p>
-              Atensi adalah satu-satunya tempat di seluruh model di mana kata-kata boleh saling melihat dan
+              Attention adalah satu-satunya tempat di seluruh model di mana kata-kata boleh saling melihat dan
               berbagi informasi -- semua langkah lain memproses tiap kata sendirian. Cara kerjanya seperti
               ruang kelas tempat semua orang bertanya ke sana kemari sekaligus. Setiap kata mengangkat{" "}
               <strong>query</strong> ("ini yang sedang kucari"), setiap kata mengenakan <strong>key</strong>{" "}
@@ -141,7 +141,7 @@ export default function Attention() {
           id={
             <p>
               Bayangkan katalog perpustakaan yang kaku: kamu meminta satu judul persis dan mendapat buku itu
-              atau tidak sama sekali. Atensi justru seperti pustakawan yang ramah. Kamu menggambarkan apa
+              atau tidak sama sekali. Attention justru seperti pustakawan yang ramah. Kamu menggambarkan apa
               yang kamu cari, dan alih-alih menuntut kecocokan persis, ia mencocokkan gambaranmu dengan sampul
               setiap buku, lalu menyerahkan campuran -- kebanyakan dari yang paling cocok, sejumput dari
               sisanya. Keburaman itu fitur, bukan keteledoran: artinya "kucing itu duduk" dan "anjing itu
@@ -201,7 +201,7 @@ export default function Attention() {
           id={
             <p>
               Enam token sungguhan, masing-masing dengan deretan query, key, dan value yang benar-benar
-              dihitung, dijalankan lewat matematika atensi asli -- tidak ada yang direkayasa. Klik sebuah
+              dihitung, dijalankan lewat matematika attention asli -- tidak ada yang direkayasa. Klik sebuah
               token untuk menjadikannya yang "melihat", dan amati busur-busurnya: makin tebal berarti kata itu
               menyumbang lebih banyak ke campuran. Balik sakelar causal-mask untuk melihat beda antara model
               yang dilarang mengintip ke depan (cara kerja pembangkit teks) dan yang boleh melihat dua arah.
