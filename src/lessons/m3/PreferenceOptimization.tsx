@@ -45,12 +45,12 @@ export default function PreferenceOptimization() {
           }
           id={
             <p>
-              Coba tuliskan jawaban sempurna untuk "hibur aku dong, hariku kacau banget." Susah, kan? Tetapi
-              diperlihatkan dua percobaan, kamu langsung tahu mana yang lebih baik. Banyak kualitas -- sifat
-              membantu, kejujuran, humor -- seperti itu: jauh lebih mudah dinilai lewat perbandingan daripada
-              dicontohkan dari nol. Begitu kamu menerimanya, sinyal pengajaran yang alami bukan "ini jawaban
-              yang benar" melainkan "yang ini, bukan yang itu" -- pasangan terpilih-versus-tertolak.
-              Pelajaran ini tentang cara berlatih persis pada data jenis itu.
+              Coba tulis jawaban sempurna buat "hibur aku dong, hariku kacau banget." Susah, kan? Tapi
+              diperlihatin dua percobaan, kamu langsung tau mana yang lebih bagus. Banyak kualitas -- sifat
+              membantu, kejujuran, humor -- kayak gitu: jauh lebih gampang dinilai lewat perbandingan daripada
+              dicontohin dari nol. Begitu kamu nerima itu, sinyal pengajaran yang alami bukan "ini jawaban yang
+              bener" tapi "yang ini, bukan yang itu" -- pasangan terpilih-versus-tertolak. Pelajaran ini soal
+              cara nge-training persis di data jenis itu.
             </p>
           }
         />
@@ -65,11 +65,11 @@ export default function PreferenceOptimization() {
           "The trade: DPO is simpler and more stable but only learns from the comparisons it's handed, while RLHF explores fresh answers as it trains. Newer variants each adjust a different corner of that trade.",
         ],
         [
-          "Rumus Bradley-Terry mengubah dua skor kualitas menjadi probabilitas jawaban mana yang bakal dipilih orang -- matematika yang sama di balik rating catur, di mana rating dua pemain memprediksi siapa menang.",
-          "Pendekatan klasiknya (bernama RLHF) punya dua tahap: pertama latih model juri terpisah untuk memprediksi preferensi manusia, lalu latih si asisten mengejar skor tinggi di mata juri itu -- sementara sebuah 'tali kekang' menahannya agar tak melantur jauh dari titik awalnya.",
-          "Temuan DPO: semua itu runtuh menjadi satu latihan sederhana pada si asisten sendiri -- langsung dorong jawaban terpilih dan tekan jawaban tertolak. Tanpa model juri, tanpa kerumitan dua tahap.",
-          "Kenop β milik DPO mengatur kencangnya tali kekang: seberapa keras latihan menyentak saat model masih memilih jawaban yang tertolak.",
-          "Pertukarannya: DPO lebih sederhana dan stabil tetapi hanya belajar dari perbandingan yang disodorkan, sementara RLHF menjelajahi jawaban segar sambil berlatih. Varian-varian lebih baru masing-masing menyetel sudut berbeda dari pertukaran itu.",
+          "Rumus Bradley-Terry ngubah dua skor kualitas jadi probabilitas jawaban mana yang bakal dipilih orang -- matematika yang sama di balik rating catur, di mana rating dua pemain nge-prediksi siapa menang.",
+          "Pendekatan klasiknya (namanya RLHF) punya dua tahap: pertama training model juri terpisah buat nge-prediksi preferensi manusia, terus training si asisten ngejar skor tinggi di mata juri itu -- sementara sebuah 'tali kekang' nahan dia biar nggak melantur jauh dari titik awalnya.",
+          "Temuan DPO: semua itu runtuh jadi satu latihan sederhana di si asisten sendiri -- langsung dorong jawaban terpilih dan tekan jawaban tertolak. Tanpa model juri, tanpa kerumitan dua tahap.",
+          "Kenop β punya DPO ngatur kencangnya tali kekang: seberapa keras training nyentak pas model masih milih jawaban yang tertolak.",
+          "Pertukarannya: DPO lebih sederhana dan stabil tapi cuma belajar dari perbandingan yang disodorin, sementara RLHF ngejelajah jawaban segar sambil latihan. Varian-varian lebih baru masing-masing nyetel sudut beda dari pertukaran itu.",
         ],
       )}
       references={[
@@ -107,10 +107,10 @@ export default function PreferenceOptimization() {
           }
           id={
             <p>
-              Beri dua jawaban masing-masing skor kualitas dan lihat rumusnya mengubah <em>selisihnya</em>{" "}
-              menjadi probabilitas menang. Skor seri berarti lempar koin; selisih besar berarti kemenangan
-              yang nyaris pasti. Persis cara kerja rating catur: hanya selisih antara dua pemain yang
-              penting, tak pernah angka mentahnya.
+              Kasih dua jawaban masing-masing skor kualitas dan lihat rumusnya ngubah <em>selisihnya</em>{" "}
+              jadi probabilitas menang. Skor seri berarti lempar koin; selisih gede berarti kemenangan yang
+              nyaris pasti. Persis cara kerja rating catur: cuma selisih antara dua pemain yang penting, nggak
+              pernah angka mentahnya.
             </p>
           }
         />
@@ -141,13 +141,13 @@ export default function PreferenceOptimization() {
           id={
             <p>
               Pendekatan klasiknya, <strong>RLHF</strong> (reinforcement learning from human feedback),
-              bekerja dua tahap. Pertama, latih model "juri" terpisah pada ribuan pilihan
-              yang-ini-bukan-yang-itu dari manusia sampai ia bisa memprediksi jawaban mana dari dua yang
-              bakal dipilih orang. Lalu biarkan si asisten berlatih: ia menulis jawaban, si juri menilainya,
-              dan si asisten belajar mengejar nilai lebih tinggi -- dengan tali kekang yang menahannya agar
-              tak mengembara jauh dari titik awal (model yang memburu restu juri kalau tidak akan menemukan
-              jalan pintas aneh, seperti menjilat atau mengulur-ulur). Berhasil, tetapi menjalankan dua model
-              saling berhadapan dalam loop latihan langsung itu rumit dan terkenal rewel.
+              jalannya dua tahap. Pertama, training model "juri" terpisah di ribuan pilihan
+              yang-ini-bukan-yang-itu dari manusia sampai dia bisa nge-prediksi jawaban mana dari dua yang
+              bakal dipilih orang. Terus biarin si asisten latihan: dia nulis jawaban, si juri nilainya, dan si
+              asisten belajar ngejar nilai lebih tinggi -- dengan tali kekang yang nahan dia biar nggak
+              ngembara jauh dari titik awal (model yang mburu restu juri kalau nggak bakal nemuin jalan pintas
+              aneh, kayak njilat atau ngulur-ngulur). Berhasil, tapi njalanin dua model saling berhadapan dalam
+              loop training langsung itu rumit dan terkenal rewel.
             </p>
           }
         />
@@ -164,12 +164,12 @@ export default function PreferenceOptimization() {
           }
           id={
             <p>
-              Lalu datanglah <strong>DPO</strong> (direct preference optimization), dengan temuan matematis
-              yang sungguh mengejutkan: di bawah asumsi yang sama, seluruh perkakas dua tahap itu persis
-              setara dengan satu latihan sederhana yang diterapkan langsung pada si asisten -- untuk tiap
-              pasangan, geser model agar jawaban terpilih makin mungkin dan jawaban tertolak makin tidak,
-              dengan tali kekang terpasang langsung di dalam rumusnya. Tanpa model juri, tanpa loop latihan
-              langsung. Lebih murah, lebih sederhana, dan jauh lebih stabil.
+              Terus datanglah <strong>DPO</strong> (direct preference optimization), dengan temuan matematis
+              yang beneran ngagetin: di bawah asumsi yang sama, seluruh perkakas dua tahap itu persis setara
+              dengan satu latihan sederhana yang diterapin langsung ke si asisten -- buat tiap pasangan, geser
+              model biar jawaban terpilih makin mungkin dan jawaban tertolak makin nggak, dengan tali kekang
+              terpasang langsung di dalam rumusnya. Tanpa model juri, tanpa loop training langsung. Lebih
+              murah, lebih sederhana, dan jauh lebih stabil.
             </p>
           }
         />
@@ -188,12 +188,11 @@ export default function PreferenceOptimization() {
           }
           id={
             <p>
-              Kurva di bawah adalah aturan penilaian DPO. Si "margin" mengukur seberapa lebih condong model
-              saat ini ke jawaban terpilih dibanding yang tertolak (diperbandingkan terhadap titik awalnya).
-              Di kiri nol, model masih memilih jawaban yang <em>salah</em> -- dan hukumannya curam, menuntut
-              koreksi. Di kanan nol, ia sudah memilih yang benar -- dan kurvanya mendatar: tak ada gunanya
-              mendorong pelajaran yang sudah dikuasai model. Coba slider β untuk mengencangkan atau
-              mengendurkan tali kekangnya.
+              Kurva di bawah itu aturan penilaian DPO. Si "margin" ngukur seberapa lebih condong model saat
+              ini ke jawaban terpilih dibanding yang tertolak (diperbandingin terhadap titik awalnya). Di kiri
+              nol, model masih milih jawaban yang <em>salah</em> -- dan hukumannya curam, nuntut koreksi. Di
+              kanan nol, dia udah milih yang bener -- dan kurvanya mendatar: nggak ada gunanya ndorong pelajaran
+              yang udah dikuasai model. Coba slider β buat ngencengin atau ngendurin tali kekangnya.
             </p>
           }
         />
@@ -220,7 +219,7 @@ export default function PreferenceOptimization() {
             {pick(
               lang,
               'The correction is strongest near zero (the model is still torn) and fades to nothing at high positive margin (already confidently right) -- the same "confidently wrong hurts most" shape as lesson 1.7\'s grading curve.',
-              'Koreksinya paling kuat dekat nol (model masih bimbang) dan memudar habis di margin positif tinggi (sudah yakin benar) -- bentuk "salah dengan percaya diri paling sakit" yang sama dengan kurva penilaian pelajaran 1.7.',
+              'Koreksinya paling kuat dekat nol (model masih bimbang) dan memudar habis di margin positif tinggi (udah yakin bener) -- bentuk "salah dengan percaya diri paling sakit" yang sama dengan kurva penilaian pelajaran 1.7.',
             )}
           </p>
         </ScopeScreen>
@@ -246,19 +245,18 @@ export default function PreferenceOptimization() {
           }
           id={
             <p>
-              Kesederhanaan DPO ada harganya: ia murid yang hanya mempelajari kartu hafalan yang disodorkan,
-              sementara RLHF adalah murid yang menulis esai latihan segar dan mendapat nilai -- menjelajahi
-              wilayah baru sambil belajar. DPO tak akan pernah menemukan jawaban yang lebih baik dari apa pun
-              di tumpukan perbandingannya. Sejak debut DPO, sekeluarga varian mengutak-atik resepnya, dan
-              nama-nama mereka akan kamu jumpai: <strong>IPO</strong> (Identity Preference Optimization)
-              menjinakkan kecenderungan DPO belajar-berlebihan pada perbandingan yang timpang;{" "}
-              <strong>KTO</strong> (Kahneman-Tversky Optimization) bekerja dari label
-              jempol-naik/jempol-turun sederhana alih-alih pasangan berjodoh (data yang jauh lebih mudah
-              dikumpulkan); <strong>GRPO</strong> (Group Relative Policy Optimization) menghidupkan lagi
-              latihan langsung tetapi menilai tiap
-              jawaban terhadap rata-rata satu kelompok percobaan si model sendiri -- metode di balik beberapa
-              model fokus-penalaran mutakhir. Tak ada yang menang mutlak; masing-masing memilih titik berbeda
-              pada pertukaran kesederhanaan-versus-keluwesan yang sama.
+              Kesederhanaan DPO ada harganya: dia murid yang cuma mempelajari kartu hafalan yang disodorin,
+              sementara RLHF itu murid yang nulis esai latihan segar dan dapet nilai -- ngejelajah wilayah baru
+              sambil belajar. DPO nggak bakal pernah nemuin jawaban yang lebih bagus dari apa pun di tumpukan
+              perbandingannya. Sejak debut DPO, sekeluarga varian ngutak-atik resepnya, dan nama-nama mereka
+              bakal kamu jumpai: <strong>IPO</strong> (Identity Preference Optimization) njinakin kecenderungan
+              DPO belajar-berlebihan di perbandingan yang timpang; <strong>KTO</strong> (Kahneman-Tversky
+              Optimization) jalannya dari label jempol-naik/jempol-turun sederhana daripada pasangan berjodoh
+              (data yang jauh lebih gampang dikumpulin); <strong>GRPO</strong> (Group Relative Policy
+              Optimization) ngidupin lagi latihan langsung tapi nilai tiap jawaban terhadap rata-rata satu
+              kelompok percobaan si model sendiri -- metode di balik beberapa model fokus-penalaran mutakhir.
+              Nggak ada yang menang mutlak; masing-masing milih titik beda di pertukaran
+              kesederhanaan-versus-keluwesan yang sama.
             </p>
           }
         />

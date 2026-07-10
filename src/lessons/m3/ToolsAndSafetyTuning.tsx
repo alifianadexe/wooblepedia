@@ -21,21 +21,21 @@ const TRACE: TraceStep[] = [
   {
     role: "user",
     label: "USER",
-    labelId: "PENGGUNA",
+    labelId: "USER",
     content: "What's the weather in Tokyo right now?",
     trained: false,
   },
   {
     role: "assistant-call",
     label: "ASSISTANT — FUNCTION CALL",
-    labelId: "ASISTEN — PANGGILAN FUNGSI",
+    labelId: "ASISTEN — FUNCTION CALL",
     content: '{"tool_call": {"name": "get_weather", "arguments": {"location": "Tokyo"}}}',
     trained: true,
   },
   {
     role: "tool-result",
     label: "TOOL RESULT (runtime-injected)",
-    labelId: "HASIL ALAT (disisipkan sistem)",
+    labelId: "TOOL RESULT (disisipin sistem)",
     content: '{"temperature_c": 18, "condition": "cloudy"}',
     trained: false,
   },
@@ -80,11 +80,11 @@ export default function ToolsAndSafetyTuning() {
           }
           id={
             <p>
-              Bagaimana model belajar mengecek cuaca, menjalankan kode, atau menolak permintaan berbahaya?
-              Ini antiklimaksnya: dengan mesin latihan yang persis sama dari dua pelajaran terakhir --
-              percakapan contoh dan perbandingan lebih-baik-vs-lebih-buruk. Tidak ada yang baru dipasangkan
-              ke model. Yang berubah murni apa yang <em>dimuat</em> percakapan latihannya dan apa yang
-              dirancang untuk diajarkannya.
+              Gimana model belajar ngecek cuaca, njalanin kode, atau nolak permintaan berbahaya? Ini
+              antiklimaksnya: dengan mesin training yang persis sama dari dua pelajaran terakhir -- percakapan
+              contoh dan perbandingan lebih-bagus-vs-lebih-jelek. Nggak ada yang baru dipasangin ke model. Yang
+              berubah murni apa yang <em>dimuat</em> percakapan training-nya dan apa yang dirancang buat
+              diajarinnya.
             </p>
           }
         />
@@ -99,11 +99,11 @@ export default function ToolsAndSafetyTuning() {
           "Jailbreaks work by dressing a harmful request up to look unlike anything the safety training covered -- which is why teams attack their own model continuously (red-teaming), not as a one-time check before launch.",
         ],
         [
-          "Model tak bisa sungguhan mengambil data cuaca -- ia hanya bisa menulis permintaan dalam format yang disepakati. Perangkat lunak terpisah membaca permintaan itu, mengerjakan yang sesungguhnya, dan menempelkan hasilnya kembali ke percakapan untuk dibaca model. Pemakaian alat dilatih dengan memperlihatkan ribuan contoh pertukaran ini. ('Agent' hanyalah loop ini yang diulang.)",
-          "Di contoh-contoh itu, model hanya dinilai pada kalimatnya sendiri -- permintaan dan jawaban akhir. Hasil alat yang ditempelkan adalah sesuatu yang ia pelajari untuk dibaca, tak pernah untuk dikarang.",
-          "Menolak permintaan berbahaya diajarkan lewat dua tahap yang sama dengan sifat membantu -- contoh penolakan, plus perbandingan di mana tanggapan yang pantas mengalahkan baik kepatuhan berbahaya maupun penolakan berlebihan yang sia-sia. Keamanan bukan sistem terpisah.",
-          "Constitutional AI menyuruh model mengkritik dan merevisi jawabannya sendiri terhadap daftar prinsip tertulis yang gamblang, sehingga umpan balik buatan AI bisa melengkapi pelabelan manusia yang mahal.",
-          "Jailbreak bekerja dengan mendandani permintaan berbahaya supaya tampak tak mirip apa pun yang dicakup pelatihan keamanan -- itulah kenapa tim menyerang model mereka sendiri terus-menerus (red-teaming), bukan sekadar cek sekali sebelum rilis.",
+          "Model nggak bisa beneran ngambil data cuaca -- dia cuma bisa nulis permintaan dalam format yang disepakati. Software terpisah baca permintaan itu, ngerjain yang sesungguhnya, dan nempelin hasilnya balik ke percakapan buat dibaca model. Pemakaian tool di-training dengan nunjukin ribuan contoh pertukaran ini. ('Agent' cuma loop ini yang diulang.)",
+          "Di contoh-contoh itu, model cuma dinilai di kalimatnya sendiri -- permintaan dan jawaban akhir. Tool result yang ditempel itu sesuatu yang dia pelajari buat dibaca, nggak pernah buat dikarang.",
+          "Nolak permintaan berbahaya diajarin lewat dua tahap yang sama dengan sifat membantu -- contoh penolakan, plus perbandingan di mana respons yang pantas ngalahin baik kepatuhan berbahaya maupun penolakan berlebihan yang sia-sia. Keamanan bukan sistem terpisah.",
+          "Constitutional AI nyuruh model ngritik dan ngerevisi jawabannya sendiri terhadap daftar prinsip tertulis yang gamblang, jadi feedback buatan AI bisa ngelengkapin pelabelan manusia yang mahal.",
+          "Jailbreak jalannya dengan ndandanin permintaan berbahaya biar keliatan nggak mirip apa pun yang dicakup training keamanan -- itulah kenapa tim nyerang model mereka sendiri terus-terusan (red-teaming), bukan sekadar cek sekali sebelum rilis.",
         ],
       )}
       references={[
@@ -124,7 +124,7 @@ export default function ToolsAndSafetyTuning() {
         },
       ]}
     >
-      <Section title={pick(lang, "Lab — a tool-call trace, step by step", "Lab — jejak panggilan alat, langkah demi langkah")}>
+      <Section title={pick(lang, "Lab — a tool-call trace, step by step", "Lab — jejak tool-call, langkah demi langkah")}>
         <Bi
           en={
             <p>
@@ -136,10 +136,10 @@ export default function ToolsAndSafetyTuning() {
           }
           id={
             <p>
-              Telusuri satu pertukaran penuh: orangnya bertanya, model menulis permintaan cuaca dalam format
-              yang disepakati, perangkat lunak luar sungguhan mengambil datanya dan menempelkannya, dan model
-              mengubahnya menjadi jawaban bahasa sehari-hari. Perhatikan labelnya -- model hanya dilatih pada
-              giliran yang ia tulis sendiri.
+              Telusurin satu pertukaran penuh: orangnya nanya, model nulis permintaan cuaca dalam format yang
+              disepakati, software luar beneran ngambil datanya dan nempelinnya, dan model ngubahnya jadi
+              jawaban bahasa sehari-hari. Perhatiin labelnya -- model cuma di-training di giliran yang dia
+              tulis sendiri.
             </p>
           }
         />
@@ -154,7 +154,7 @@ export default function ToolsAndSafetyTuning() {
                 {traceLabel(t, lang)}{" "}
                 {t.trained
                   ? pick(lang, "— LOSS-RELEVANT", "— DINILAI")
-                  : pick(lang, "— NOT TRAINED", "— TIDAK DILATIH")}
+                  : pick(lang, "— NOT TRAINED", "— NGGAK DI-TRAINING")}
               </div>
               <div className="mono" style={{ fontSize: 12.5, marginTop: 4 }}>{t.content}</div>
             </div>
@@ -162,7 +162,7 @@ export default function ToolsAndSafetyTuning() {
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "Lab — grounded vs. hallucinated", "Lab — berdasar data vs. mengarang")}>
+      <Section title={pick(lang, "Lab — grounded vs. hallucinated", "Lab — berdasar data vs. ngarang")}>
         <Bi
           en={
             <p>
@@ -173,9 +173,9 @@ export default function ToolsAndSafetyTuning() {
           }
           id={
             <p>
-              Buat apa repot-repot semua ini? Karena tanpa alat, model tetap menjawab -- ia sekadar
-              mengarang. Language model selalu menghasilkan teks yang lancar dan percaya diri; kelancaran
-              bukan jaminan kebenaran. Balik sakelarnya untuk membandingkan.
+              Buat apa repot-repot semua ini? Karena tanpa tool, model tetap njawab -- dia cuma ngarang.
+              Language model selalu ngehasilin teks yang lancar dan percaya diri; kelancaran bukan jaminan
+              kebenaran. Balik sakelarnya buat ngebandingin.
             </p>
           }
         />
@@ -184,8 +184,8 @@ export default function ToolsAndSafetyTuning() {
           <div className="panel-2" style={{ padding: 14, marginTop: 10, borderLeft: `3px solid ${grounded ? colors.green : colors.red}` }}>
             <div className="mono" style={{ fontSize: 11, color: grounded ? colors.green : colors.red, marginBottom: 6 }}>
               {grounded
-                ? pick(lang, "TOOL-GROUNDED ANSWER", "JAWABAN BERDASAR DATA ALAT")
-                : pick(lang, "NO TOOL ACCESS — ILLUSTRATIVE HALLUCINATION", "TANPA AKSES ALAT — CONTOH KARANGAN")}
+                ? pick(lang, "TOOL-GROUNDED ANSWER", "JAWABAN BERDASAR DATA TOOL")
+                : pick(lang, "NO TOOL ACCESS — ILLUSTRATIVE HALLUCINATION", "TANPA AKSES TOOL — CONTOH KARANGAN")}
             </div>
             <p style={{ margin: 0 }}>
               {grounded
@@ -196,7 +196,7 @@ export default function ToolsAndSafetyTuning() {
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "Safety tuning: the same pipeline, different data", "Tuning keamanan: jalur sama, data berbeda")}>
+      <Section title={pick(lang, "Safety tuning: the same pipeline, different data", "Tuning keamanan: pipeline sama, data beda")}>
         <Bi
           en={
             <p>
@@ -212,15 +212,14 @@ export default function ToolsAndSafetyTuning() {
           }
           id={
             <p>
-              Belajar menolak permintaan yang sungguh berbahaya dilatih persis seperti sifat membantu:
-              percakapan contoh yang memperlihatkan penolakan yang pantas, plus perbandingan di mana
-              tanggapan yang benar -- jawaban aman yang membantu, atau penolakan sopan bila memang perlu --
-              dipilih di atas kepatuhan berbahaya <em>maupun</em> kehati-hatian berlebihan yang sia-sia.
-              Bagian terakhir itu penting, karena ada ketegangan nyata di sini: dorong keamanan saja dan
-              model mulai menolak pertanyaan tak berbahaya ("bagaimana cara mematikan proses di
-              komputerku?"); dorong sifat membantu saja dan ia berisiko menuruti permintaan yang sungguh
-              berbahaya. Menyeimbangkannya dengan benar adalah tujuan eksplisit yang digarap tim secara
-              langsung, bukan sesuatu yang terjadi kebetulan.
+              Belajar nolak permintaan yang beneran berbahaya di-training persis kayak sifat membantu:
+              percakapan contoh yang nunjukin penolakan yang pantas, plus perbandingan di mana respons yang
+              bener -- jawaban aman yang membantu, atau penolakan sopan kalau memang perlu -- dipilih di atas
+              kepatuhan berbahaya <em>maupun</em> kehati-hatian berlebihan yang sia-sia. Bagian terakhir itu
+              penting, karena ada ketegangan nyata di sini: dorong keamanan doang dan model mulai nolak
+              pertanyaan nggak berbahaya ("gimana cara matiin proses di komputerku?"); dorong sifat membantu
+              doang dan dia berisiko nurutin permintaan yang beneran berbahaya. Nyeimbanginnya dengan bener itu
+              tujuan eksplisit yang digarap tim secara langsung, bukan sesuatu yang terjadi kebetulan.
             </p>
           }
         />
@@ -241,17 +240,17 @@ export default function ToolsAndSafetyTuning() {
           }
           id={
             <p>
-              Melabeli cukup banyak perbandingan aman-versus-tak-aman dengan tangan itu mahal, dan{" "}
-              <strong>Constitutional AI</strong> adalah satu jalan pintar mengakalinya: tuliskan daftar
-              prinsip yang gamblang (sebuah "konstitusi"), lalu suruh model mengkritik dan merevisi
-              jawaban-jawabannya sendiri terhadap daftar itu -- umpan balik buatan AI yang melengkapi yang
-              berlabel manusia. Dan catatan soal <strong>jailbreak</strong>, prompt yang dirancang orang
-              untuk mengecoh model melewati pelatihannya: ia bekerja dengan membuat permintaan berbahaya
-              tampak tak mirip apa pun yang dicakup contoh-contoh keamanan -- membungkusnya dengan kostum,
-              cerita fiksi, permainan peran yang berbelit. Pelajaran yang dipetik model dari contoh
-              latihannya bisa jadi memang tak sampai merentang ke masukan seaneh itu. Itulah kenapa tim yang
-              serius menyerang model mereka sendiri terus-menerus ("red-teaming"), memperlakukan keamanan
-              sebagai praktik berkelanjutan alih-alih kotak yang dicentang sekali sebelum rilis.
+              Ngelabelin cukup banyak perbandingan aman-versus-nggak-aman pakai tangan itu mahal, dan{" "}
+              <strong>Constitutional AI</strong> itu satu jalan pintar ngakalinnya: tulis daftar prinsip yang
+              gamblang (sebuah "konstitusi"), terus suruh model ngritik dan ngerevisi jawaban-jawabannya
+              sendiri terhadap daftar itu -- feedback buatan AI yang ngelengkapin yang berlabel manusia. Dan
+              catatan soal <strong>jailbreak</strong>, prompt yang dirancang orang buat ngecoh model ngelewatin
+              training-nya: dia jalannya dengan bikin permintaan berbahaya keliatan nggak mirip apa pun yang
+              dicakup contoh-contoh keamanan -- mbungkusnya dengan kostum, cerita fiksi, roleplay yang berbelit.
+              Pelajaran yang dipetik model dari contoh training-nya bisa jadi memang nggak sampai merentang ke
+              input seaneh itu. Itulah kenapa tim yang serius nyerang model mereka sendiri terus-terusan
+              ("red-teaming"), nganggep keamanan sebagai praktik berkelanjutan daripada kotak yang dicentang
+              sekali sebelum rilis.
             </p>
           }
         />

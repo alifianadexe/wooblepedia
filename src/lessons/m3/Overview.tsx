@@ -28,7 +28,7 @@ const STAGES: Stage[] = [
     label: "BASE MODEL",
     link: null,
     detail: "A raw next-token guesser straight out of Module 2's training. No idea that questions deserve answers.",
-    detailId: "Penebak token berikutnya yang mentah, baru keluar dari pelatihan Modul 2. Tak tahu bahwa pertanyaan layak dijawab.",
+    detailId: "Penebak token berikutnya yang mentah, baru keluar dari training Modul 2. Nggak tau kalau pertanyaan layak dijawab.",
     example: 'How do I reverse a linked list? How do I reverse a string? How do I reverse an array? These are common interview questions...',
   },
   {
@@ -36,7 +36,7 @@ const STAGES: Stage[] = [
     label: "SFT",
     link: "/m3/supervised-fine-tuning",
     detail: "Trained on a curated collection of questions paired with ideal answers -- and graded only on the answer parts.",
-    detailId: "Dilatih pada koleksi terkurasi pertanyaan berpasangan jawaban ideal -- dan hanya dinilai pada bagian jawabannya.",
+    detailId: "Di-training di koleksi terkurasi pertanyaan berpasangan jawaban ideal -- dan cuma dinilai di bagian jawabannya.",
     example: 'To reverse a linked list, iterate through it while re-pointing each node\'s next pointer to the previous node, using three pointers: prev, curr, and next.',
   },
   {
@@ -44,7 +44,7 @@ const STAGES: Stage[] = [
     label: "PREFERENCE OPT.",
     link: "/m3/preference-optimization",
     detail: "Shaped further by better-vs-worse answer comparisons -- sharpening qualities that are easier to judge than to write down.",
-    detailId: "Dibentuk lebih lanjut lewat perbandingan jawaban lebih-baik-vs-lebih-buruk -- mengasah kualitas yang lebih mudah dinilai daripada dituliskan.",
+    detailId: "Dibentuk lebih lanjut lewat perbandingan jawaban lebih-bagus-vs-lebih-jelek -- ngasah kualitas yang lebih gampang dinilai daripada dituliskan.",
     example: 'Track three pointers -- prev, curr, next. At each step: save curr.next, point curr.next to prev, then advance prev and curr. Runs in O(n) time, O(1) space.',
   },
   {
@@ -52,7 +52,7 @@ const STAGES: Stage[] = [
     label: "RL / TOOLS / SAFETY",
     link: "/m3/tools-and-safety-tuning",
     detail: "Adds checkable rewards (did the code actually run?), practice using tools, and learning to decline genuinely harmful requests.",
-    detailId: "Menambahkan hadiah yang bisa dicek (apakah kodenya benar-benar jalan?), latihan memakai alat, dan belajar menolak permintaan yang sungguh berbahaya.",
+    detailId: "Nambahin hadiah yang bisa dicek (kodenya beneran jalan nggak?), latihan pakai tools, dan belajar nolak permintaan yang beneran berbahaya.",
     example: '(after running the candidate code against test cases) Verified: the three-pointer approach passes all cases, including empty and single-node lists.',
   },
   {
@@ -60,7 +60,7 @@ const STAGES: Stage[] = [
     label: "DEPLOYED ASSISTANT",
     link: null,
     detail: "The model you actually talk to -- the same machine as the base model; every difference above lives in the learned numbers.",
-    detailId: "Model yang benar-benar kamu ajak bicara -- mesin yang sama dengan model base; setiap perbedaan di atas hidup di angka-angka hasil belajar.",
+    detailId: "Model yang beneran kamu ajak ngobrol -- mesin yang sama dengan model base; setiap perbedaan di atas hidup di angka-angka hasil training.",
     example: 'Reverse a linked list with three pointers (prev, curr, next), re-linking each node backward as you go -- O(n) time, O(1) space. Want the code?',
   },
 ];
@@ -87,13 +87,12 @@ export default function Overview() {
           }
           id={
             <p>
-              Model yang baru selesai pra-pelatihan adalah cermin internet: brilian melanjutkan teks apa pun
-              secara masuk akal, dan nyaris tak berguna sebagai asisten, karena tak ada apa pun di
-              pelatihannya yang pernah menetapkan "jawab orangnya dengan membantu, lalu berhenti" sebagai
-              tujuan. Pasca-pelatihan adalah perbaikannya. Bayangkan pra-pelatihan sebagai dua belas tahun
-              sekolah dan pasca-pelatihan sebagai kursus kerja singkat nan padat setelahnya -- mungil
-              dibandingkan, tetapi itulah yang mengubah pengetahuan mentah menjadi seseorang yang sungguh
-              ingin kamu ajak bekerja.
+              Model yang baru selesai pra-training itu cermin internet: brilian nerusin teks apa pun secara
+              masuk akal, dan nyaris nggak berguna sebagai asisten, karena nggak ada apa pun di training-nya
+              yang pernah nentuin "jawab orangnya dengan membantu, terus berhenti" sebagai tujuan.
+              Pasca-training itu perbaikannya. Bayangin pra-training sebagai dua belas tahun sekolah dan
+              pasca-training sebagai kursus kerja singkat nan padat setelahnya -- mungil dibandingin, tapi
+              itulah yang ngubah pengetahuan mentah jadi seseorang yang beneran pengen kamu ajak kerja.
             </p>
           }
         />
@@ -107,10 +106,10 @@ export default function Overview() {
           "This is the part of the field where one person with a modest budget can genuinely contribute: fine-tuning a mid-sized open model with this module's techniques is a weekend project on rented hardware, not a data-center undertaking.",
         ],
         [
-          "Pasca-pelatihan berbiaya sekelumit kecil dari pra-pelatihan -- namun ialah yang bertanggung jawab atas hampir semua perbedaan antara autocomplete mentah dan asisten yang membantu.",
-          "Jalur standarnya: model base → belajar dari contoh jawaban (SFT) → belajar dari perbandingan lebih-baik-vs-lebih-buruk → hadiah, alat, dan keamanan → asisten yang diluncurkan. Tiap tahap punya pelajarannya sendiri.",
-          "Mesinnya tak pernah berubah di tahap mana pun -- setiap perbedaan perilaku hidup sepenuhnya di angka-angka hasil belajar.",
-          "Inilah bagian bidang ini di mana satu orang beranggaran sederhana bisa sungguh berkontribusi: fine-tuning model terbuka ukuran sedang dengan teknik-teknik modul ini adalah proyek akhir pekan di perangkat sewaan, bukan urusan pusat data.",
+          "Pasca-training biayanya sekelumit kecil dari pra-training -- tapi dialah yang bertanggung jawab atas hampir semua perbedaan antara autocomplete mentah dan asisten yang membantu.",
+          "Pipeline standarnya: model base → belajar dari contoh jawaban (SFT) → belajar dari perbandingan lebih-bagus-vs-lebih-jelek → hadiah, tools, dan keamanan → asisten yang diluncurin. Tiap tahap punya pelajarannya sendiri.",
+          "Mesinnya nggak pernah berubah di tahap mana pun -- setiap perbedaan perilaku hidup sepenuhnya di angka-angka hasil training.",
+          "Inilah bagian bidang ini di mana satu orang beranggaran sederhana bisa beneran berkontribusi: fine-tuning model terbuka ukuran sedang dengan teknik-teknik modul ini itu proyek akhir pekan di perangkat sewaan, bukan urusan data center.",
         ],
       )}
       references={[
@@ -142,10 +141,10 @@ export default function Overview() {
           }
           id={
             <p>
-              Klik menyusuri jalurnya. Tanggapan tiap tahap terhadap prompt yang sama adalah contoh ilustrasi
-              perilaku khas tahap itu, bukan keluaran model langsung -- mekanika jalurnya, dan pelajaran di
-              balik tiap tahap, itulah isi sesungguhnya di sini. (Contoh jawabannya dibiarkan dalam bahasa
-              Inggris karena prompt-nya berbahasa Inggris.)
+              Klik nyusurin pipeline-nya. Respons tiap tahap ke prompt yang sama itu contoh ilustrasi perilaku
+              khas tahap itu, bukan output model langsung -- mekanika pipeline-nya, dan pelajaran di balik tiap
+              tahap, itulah isi sesungguhnya di sini. (Contoh jawabannya dibiarin dalam bahasa Inggris karena
+              prompt-nya berbahasa Inggris.)
             </p>
           }
         />
@@ -201,18 +200,18 @@ export default function Overview() {
           }
           id={
             <p>
-              Layak ditegaskan gamblang karena mudah terlupa: tidak ada apa pun di mesin model -- bukan
-              lapisan, bukan attention, bukan jumlah parameter -- yang berubah di tahap mana pun di atas. Model
-              base dan asisten yang diluncurkan adalah mesin identik dari Modul 1. Setiap perbedaan perilaku
-              -- sifat membantu, menolak permintaan berbahaya, memakai alat, nada bicara -- datang dari apa
-              yang dituliskan pelatihan ke angka-angka hasil belajar selama tahap-tahap belakangan ini.
-              Kepribadian adalah data, bukan perangkat keras.
+              Layak ditegasin gamblang karena gampang kelupaan: nggak ada apa pun di mesin model -- bukan
+              layer, bukan attention, bukan jumlah parameter -- yang berubah di tahap mana pun di atas. Model
+              base dan asisten yang diluncurin itu mesin identik dari Modul 1. Setiap perbedaan perilaku --
+              sifat membantu, nolak permintaan berbahaya, pakai tools, nada bicara -- datang dari apa yang
+              dituliskan training ke angka-angka hasil training selama tahap-tahap belakangan ini. Kepribadian
+              itu data, bukan hardware.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Where an individual actually competes", "Di mana perorangan sungguh bisa bersaing")}>
+      <Section title={pick(lang, "Where an individual actually competes", "Di mana perorangan beneran bisa bersaing")}>
         <Bi
           en={
             <p>
@@ -226,12 +225,12 @@ export default function Overview() {
           }
           id={
             <p>
-              Pra-pelatihan di garis depan menuntut sumber daya jauh melampaui perorangan atau tim kecil
-              mana pun. Pasca-pelatihan tidak. LoRA (pelajaran 3.2) hanya melatih tempelan mungil alih-alih
-              seluruh model; DPO (pelajaran 3.3) belajar dari perbandingan jawaban tanpa mesin berat yang
-              dulu diperlukan. Fine-tuning model terbuka ukuran sedang dengan kedua teknik itu realistisnya
-              satu akhir pekan di perangkat cloud sewaan -- persis itulah kenapa modul ini, lebih dari Modul
-              2, adalah tempat latihan langsungmu sebaiknya dipusatkan.
+              Pra-training di garis depan nuntut sumber daya jauh ngelewatin perorangan atau tim kecil mana
+              pun. Pasca-training nggak. LoRA (pelajaran 3.2) cuma nge-training tempelan mungil daripada seluruh
+              model; DPO (pelajaran 3.3) belajar dari perbandingan jawaban tanpa mesin berat yang dulu
+              diperluin. Fine-tuning model terbuka ukuran sedang dengan kedua teknik itu realistisnya satu
+              akhir pekan di perangkat cloud sewaan -- persis itulah kenapa modul ini, lebih dari Modul 2, itu
+              tempat latihan langsungmu sebaiknya dipusatin.
             </p>
           }
         />

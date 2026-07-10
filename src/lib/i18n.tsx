@@ -93,7 +93,7 @@ export const UI = {
     calibration: "KALIBRASI",
     homeTitle: "DASAR-DASAR LLM — KURIKULUM LAB SINYAL",
     homeIntro:
-      "Dua puluh dua perhentian dalam tiga modul, ditata sebagai satu jalur bersambung. Setiap lab di situs ini menghitung angkanya secara langsung dari persamaan aslinya — ikuti jalannya, lalu putar sendiri kenop-kenopnya.",
+      "Dua puluh dua perhentian dalam tiga modul, ditata jadi satu jalur nyambung. Setiap lab di situs ini ngitung angkanya secara langsung dari persamaan aslinya — ikutin jalannya, terus puter sendiri kenop-kenopnya.",
     notFoundMsg: "Kanal pelajaran itu tidak ada.",
     backToDashboard: "KEMBALI KE DASBOR",
     progressAria: "Kemajuan kursus keseluruhan",

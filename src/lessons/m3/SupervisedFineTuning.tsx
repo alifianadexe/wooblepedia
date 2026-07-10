@@ -74,11 +74,11 @@ export default function SupervisedFineTuning() {
           }
           id={
             <p>
-              Supervised fine-tuning (SFT) tak lebih dari loop latihan tebak-lalu-nilai pelajaran 1.7 yang
-              diarahkan ke bahan baru: alih-alih internet mentah, koleksi kecil percakapan contoh yang
-              ditulis cermat, memperlihatkan seperti apa asisten yang baik. Mekanismenya tak berubah sama
-              sekali. Yang berubah adalah apa yang dibaca model -- dan, yang krusial, bagian mana darinya
-              yang benar-benar dinilai.
+              Supervised fine-tuning (SFT) itu nggak lebih dari loop training tebak-lalu-nilai pelajaran 1.7
+              yang diarahin ke bahan baru: daripada internet mentah, koleksi kecil percakapan contoh yang
+              ditulis cermat, nunjukin kayak apa asisten yang bagus. Mekanismenya nggak berubah sama sekali.
+              Yang berubah itu apa yang dibaca model -- dan, yang krusial, bagian mana darinya yang beneran
+              dinilai.
             </p>
           }
         />
@@ -93,11 +93,11 @@ export default function SupervisedFineTuning() {
           "LoRA is the trick that makes fine-tuning affordable: freeze the whole model and train only small add-on pieces. QLoRA (Quantized LoRA) also compresses the frozen model into less memory -- together they fit an 8-billion-parameter fine-tune on an ordinary graphics card.",
         ],
         [
-          "SFT adalah latihan tebak-lalu-nilai biasa dari pelajaran 1.7 yang diterapkan pada percakapan contoh -- tanpa matematika baru, hanya bahan bacaan baru.",
-          "Templat obrolan membungkus giliran tiap pembicara dengan token penanda khusus (seperti <|user|> dan <|assistant|>) -- petunjuk panggung dalam naskah -- supaya model tahu siapa yang bicara.",
-          "Loss mask berarti model hanya dinilai pada kalimat-kalimat si asisten. Ia membaca pesan pengguna tetapi tak dilatih menirunya -- kamu ingin ia mempelajari peran menjawab, bukan kedua sisi percakapan.",
-          "Temuan terkenal bernama LIMA menunjukkan sekitar seribu percakapan contoh yang benar-benar unggul mengalahkan ratusan ribu yang biasa-biasa saja. Untuk SFT, kualitas mengalahkan kuantitas, telak.",
-          "LoRA adalah trik yang membuat fine-tuning terjangkau: bekukan seluruh model dan latih hanya kepingan tempelan kecil. QLoRA (Quantized LoRA) juga memampatkan model beku ke memori lebih hemat -- bersama-sama keduanya memuatkan fine-tune 8 miliar parameter di kartu grafis biasa.",
+          "SFT itu training tebak-lalu-nilai biasa dari pelajaran 1.7 yang diterapin ke percakapan contoh -- tanpa matematika baru, cuma bahan bacaan baru.",
+          "Template obrolan mbungkus giliran tiap pembicara dengan token penanda khusus (kayak <|user|> dan <|assistant|>) -- petunjuk panggung dalam naskah -- biar model tau siapa yang lagi ngomong.",
+          "Loss mask artinya model cuma dinilai di kalimat-kalimat si asisten. Dia baca pesan user tapi nggak di-training buat nirunya -- kamu pengen dia mempelajari peran njawab, bukan kedua sisi percakapan.",
+          "Temuan terkenal namanya LIMA nunjukin sekitar seribu percakapan contoh yang beneran unggul ngalahin ratusan ribu yang biasa-biasa aja. Buat SFT, kualitas ngalahin kuantitas, telak.",
+          "LoRA itu trik yang bikin fine-tuning terjangkau: bekuin seluruh model dan training cuma kepingan tempelan kecil. QLoRA (Quantized LoRA) juga mampatin model beku ke memori lebih hemat -- bareng-bareng keduanya bikin fine-tune 8 miliar parameter muat di kartu grafis biasa.",
         ],
       )}
       references={[
@@ -123,7 +123,7 @@ export default function SupervisedFineTuning() {
         },
       ]}
     >
-      <Section title={pick(lang, "Lab — the template and mask microscope", "Lab — mikroskop templat dan mask")}>
+      <Section title={pick(lang, "Lab — the template and mask microscope", "Lab — mikroskop template dan mask")}>
         <Bi
           en={
             <p>
@@ -135,10 +135,10 @@ export default function SupervisedFineTuning() {
           }
           id={
             <p>
-              Di bawah ini percakapan latihan persis seperti yang dilihat model, lengkap dengan token
-              penandanya. Balik sakelar loss mask untuk melihat bagian mana yang dinilai: hanya
-              kalimat-kalimat si asisten sendiri. Semua yang lain -- penanda, pesan pengguna -- dibaca
-              sebagai konteks tetapi tak pernah dihitung dalam nilai.
+              Di bawah ini percakapan training persis kayak yang dilihat model, lengkap dengan token
+              penandanya. Balik sakelar loss mask buat lihat bagian mana yang dinilai: cuma kalimat-kalimat si
+              asisten sendiri. Semua yang lain -- penanda, pesan user -- dibaca sebagai konteks tapi nggak
+              pernah dihitung dalam nilai.
             </p>
           }
         />
@@ -162,12 +162,12 @@ export default function SupervisedFineTuning() {
               ? pick(
                   lang,
                   "Only the highlighted assistant text contributes to the loss.",
-                  "Hanya teks asisten yang tersorot yang dihitung ke dalam loss.",
+                  "Cuma teks asisten yang tersorot yang dihitung ke dalam loss.",
                 )
               : pick(
                   lang,
                   "Mask off: every token in the sequence would contribute to the loss, including the user's own messages.",
-                  "Mask mati: setiap token dalam barisan akan dihitung ke dalam loss, termasuk pesan-pesan si pengguna sendiri.",
+                  "Mask mati: setiap token dalam barisan bakal dihitung ke dalam loss, termasuk pesan-pesan si user sendiri.",
                 )}
           </p>
         </ScopeScreen>
@@ -190,15 +190,15 @@ export default function SupervisedFineTuning() {
           }
           id={
             <p>
-              Studi LIMA menegaskan poinnya tak terlupakan: kira-kira seribu percakapan contoh yang ditulis
-              luar biasa cermat menghasilkan model yang sanggup mengimbangi model-model yang dilatih dengan
-              contoh jauh lebih banyak tapi lebih berantakan. Wawasannya: SFT bukan mengajari model fakta
-              baru -- itu sudah ia serap di pra-pelatihan. Ia mengajarkan <em>bentuk</em> jawaban yang baik:
-              cara menyusunnya, seberapa panjang, kapan berhenti. Untuk mengajarkan gaya, setumpuk kecil
-              contoh sempurna mengalahkan segudang contoh asal-asalan -- sebagaimana satu guru menulis hebat
-              mengalahkan seribu komentar internet acak. (Satu detail praktis: demi hemat waktu, beberapa
-              percakapan pendek biasanya dibundel jadi satu barisan latihan, dengan mask penilaian memastikan
-              mereka tak pernah melebur satu sama lain.)
+              Studi LIMA negesin poinnya sampai nggak terlupakan: kira-kira seribu percakapan contoh yang
+              ditulis luar biasa cermat ngehasilin model yang sanggup ngimbangin model-model yang di-training
+              dengan contoh jauh lebih banyak tapi lebih berantakan. Wawasannya: SFT bukan ngajarin model fakta
+              baru -- itu udah dia serep di pra-training. Dia ngajarin <em>bentuk</em> jawaban yang bagus: cara
+              nyusunnya, seberapa panjang, kapan berhenti. Buat ngajarin gaya, setumpuk kecil contoh sempurna
+              ngalahin segudang contoh asal-asalan -- kayak satu guru nulis hebat ngalahin seribu komentar
+              internet acak. (Satu detail praktis: demi hemat waktu, beberapa percakapan pendek biasanya
+              dibundel jadi satu barisan training, dengan mask penilaian mastiin mereka nggak pernah melebur
+              satu sama lain.)
             </p>
           }
         />
@@ -220,14 +220,14 @@ export default function SupervisedFineTuning() {
           }
           id={
             <p>
-              Fine-tuning kedelapan miliar parameter satu per satu menuntut perangkat serius.{" "}
-              <strong>LoRA</strong> ("low-rank adaptation") adalah jalan pintasnya: bekukan seluruh model
-              asli dan pasang kepingan-samping kecil yang bisa dilatih pada bagian-bagian pilihannya --
-              seperti merenovasi rumah dengan menambah beberapa perabot baru alih-alih membangun ulang semua
-              tembok. Kepingan-sampingnya sengaja kurus: alih-alih mempelajari koreksi penuh seukuran kisi
-              aslinya, LoRA mempelajari dua bilah tipis yang hasil kalinya mewakilinya, dan kenop bernama{" "}
-              <strong>rank</strong> mengatur seberapa tipis. Pilih rank dan tentukan bagian model mana yang
-              mendapat kepingan-samping, lalu lihat betapa sedikitnya parameter yang akhirnya kamu latih.
+              Fine-tuning kedelapan miliar parameter satu per satu nuntut perangkat serius.{" "}
+              <strong>LoRA</strong> ("low-rank adaptation") itu jalan pintasnya: bekuin seluruh model asli dan
+              pasang kepingan-samping kecil yang bisa di-training di bagian-bagian pilihannya -- kayak
+              ngerenovasi rumah dengan nambah beberapa perabot baru daripada mbangun ulang semua tembok.
+              Kepingan-sampingnya sengaja kurus: daripada mempelajari koreksi penuh seukuran kisi aslinya, LoRA
+              mempelajari dua bilah tipis yang hasil kalinya ngewakilinnya, dan kenop namanya{" "}
+              <strong>rank</strong> ngatur seberapa tipis. Pilih rank dan tentuin bagian model mana yang dapet
+              kepingan-samping, terus lihat betapa dikitnya parameter yang akhirnya kamu training.
             </p>
           }
         />
@@ -252,7 +252,7 @@ export default function SupervisedFineTuning() {
             {pick(
               lang,
               "The QLoRA estimate = the frozen model compressed to half a byte per parameter, plus full training bookkeeping on just the tiny add-on pieces. (Temporary working numbers not included.)",
-              "Perkiraan QLoRA = model beku dimampatkan jadi setengah byte per parameter, plus pembukuan latihan penuh hanya pada kepingan tempelan mungilnya. (Angka kerja sementara belum termasuk.)",
+              "Perkiraan QLoRA = model beku dimampatin jadi setengah byte per parameter, plus pembukuan training penuh cuma di kepingan tempelan mungilnya. (Angka kerja sementara belum termasuk.)",
             )}
           </p>
         </ScopeScreen>
