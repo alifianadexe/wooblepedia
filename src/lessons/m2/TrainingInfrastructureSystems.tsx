@@ -66,11 +66,10 @@ export default function TrainingInfrastructureSystems() {
           }
           id={
             <p>
-              Ketika model terlalu besar untuk memori satu GPU, kamu tak bisa sekadar "menjalankannya lebih
-              lambat" -- seperti puzzle yang kebesaran untuk satu meja, ia harus dipecah ke banyak mesin, dan{" "}
-              <em>bagaimana</em> memecahnya adalah keputusan rekayasa sungguhan dengan akibat besar.
-              Pelajaran ini mulai dari aritmetika memori yang polos dan membangun sampai tiga cara model
-              benar-benar dibagi ke segudang GPU.
+              Pas model kegedean buat memori satu GPU, kamu nggak bisa cuma "ngejalaninnya lebih lambat" --
+              kayak puzzle yang kegedean buat satu meja, dia harus dipecah ke banyak mesin, dan{" "}
+              <em>gimana</em> mecahnya itu keputusan engineering beneran dengan akibat gede. Pelajaran ini mulai
+              dari aritmetika memori yang polos dan naik sampai tiga cara model beneran dibagi ke segudang GPU.
             </p>
           }
         />
@@ -85,11 +84,11 @@ export default function TrainingInfrastructureSystems() {
           "With thousands of GPUs running for months, something is always breaking. What keeps a run alive isn't preventing failures -- it's automatic save-points and fast restarts.",
         ],
         [
-          "Menjalankan model memakan sekitar 2 byte memori per parameter; melatihnya sekitar 16, karena semua angka pembukuan ekstra -- dan itu belum menghitung angka kerja sementara.",
-          "Tiga cara membagi pekerjaan: beri tiap GPU salinan penuh model dan teks berbeda untuk dikunyah (data parallel); pecah matematika tiap lapisan ke banyak GPU (tensor parallel); atau bagikan lapisan-lapisannya sendiri seperti lini perakitan (pipeline parallel). Pelatihan besar menggabungkan ketiganya.",
-          "Trik bernama ZeRO menghentikan tiap GPU menyimpan salinan identik pembukuan pelatihan secara boros -- masing-masing memegang irisannya saja dan berbagi sesuai kebutuhan, memangkas memori per-GPU drastis.",
-          "Activation checkpointing menghemat memori dengan membuang sebagian besar hasil antara dan mengulang hitungannya nanti saat dibutuhkan -- sengaja menukar komputasi ekstra dengan ruang.",
-          "Dengan ribuan GPU berjalan berbulan-bulan, selalu ada yang rusak. Yang menjaga pelatihan tetap hidup bukan mencegah kegagalan -- melainkan titik-simpan otomatis dan mulai-ulang yang cepat.",
+          "Ngejalanin model makan sekitar 2 byte memori per parameter; nge-training-nya sekitar 16, gara-gara semua angka pembukuan ekstra -- dan itu belum ngitung angka kerja sementara.",
+          "Tiga cara bagi kerjaan: kasih tiap GPU salinan penuh model dan teks beda buat dikunyah (data parallel); pecah matematika tiap layer ke banyak GPU (tensor parallel); atau bagiin layer-layernya sendiri kayak lini perakitan (pipeline parallel). Training gede nge-gabungin ketiganya.",
+          "Trik namanya ZeRO nyetop tiap GPU nyimpen salinan identik pembukuan training secara boros -- masing-masing megang irisannya doang dan sharing sesuai kebutuhan, mangkas memori per-GPU drastis.",
+          "Activation checkpointing ngirit memori dengan buang sebagian besar hasil antara dan ngulang hitungannya nanti pas dibutuhin -- sengaja nuker compute ekstra sama ruang.",
+          "Dengan ribuan GPU jalan berbulan-bulan, selalu ada yang rusak. Yang bikin training tetap hidup bukan nyegah kegagalan -- tapi checkpoint otomatis dan restart yang cepat.",
         ],
       )}
       references={[
@@ -126,9 +125,9 @@ export default function TrainingInfrastructureSystems() {
           }
           id={
             <p>
-              Atur ukuran model dan jumlah GPU, pilih menjalankan versus melatih, dan beralih antara "tiap
-              GPU menyimpan semuanya" dan "tiap GPU menyimpan bagiannya saja." Setiap pembacaan dihitung
-              langsung -- lihat bagaimana berbagi penyimpanan membuat model yang mustahil mendadak muat.
+              Atur ukuran model dan jumlah GPU, pilih ngejalanin versus nge-training, dan pindah antara "tiap
+              GPU nyimpen semuanya" dan "tiap GPU nyimpen bagiannya doang." Tiap pembacaan dihitung secara
+              langsung -- lihat gimana sharing penyimpanan bikin model yang mustahil mendadak muat.
             </p>
           }
         />
@@ -154,9 +153,9 @@ export default function TrainingInfrastructureSystems() {
           </div>
           <div className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 6 }}>
             {shard === "replicated"
-              ? pick(lang, "Every GPU holds a full copy.", "Tiap GPU memegang salinan penuh.")
-              : pick(lang, `Every GPU holds roughly 1/${gpuCount} of the state.`, `Tiap GPU memegang kira-kira 1/${gpuCount} dari keseluruhan.`)}
-            {gpuCount > 64 && pick(lang, ` (showing first 64 of ${gpuCount})`, ` (menampilkan 64 pertama dari ${gpuCount})`)}
+              ? pick(lang, "Every GPU holds a full copy.", "Tiap GPU megang salinan penuh.")
+              : pick(lang, `Every GPU holds roughly 1/${gpuCount} of the state.`, `Tiap GPU megang kira-kira 1/${gpuCount} dari keseluruhan.`)}
+            {gpuCount > 64 && pick(lang, ` (showing first 64 of ${gpuCount})`, ` (nampilin 64 pertama dari ${gpuCount})`)}
           </div>
         </ScopeScreen>
       </Section>
@@ -180,17 +179,16 @@ export default function TrainingInfrastructureSystems() {
           }
           id={
             <p>
-              <strong>Data parallelism</strong> paling sederhana: tiap GPU mendapat salinan penuh model yang
-              identik dan tumpukan teks berbeda untuk berlatih -- seperti memberi tiap murid di kelas buku
-              pelajaran sama tetapi soal PR berbeda, lalu merata-ratakan apa yang dipelajari semua orang tiap
-              ronde. <strong>Tensor parallelism</strong> memecah matematika <em>di dalam</em> tiap lapisan:
-              satu perkalian raksasa diiris-iris, tiap GPU menghitung irisannya, dan kepingannya dijahit
-              kembali -- beberapa koki mencincang satu bawang raksasa. <strong>Pipeline parallelism</strong>{" "}
-              membagikan lapisan-lapisannya sendiri seperti lini perakitan: GPU 1 memegang lapisan 1-4, GPU 2
-              memegang lapisan 5-8, dan teks mengalir menyusuri lini stasiun demi stasiun. (Masalah klasik
-              lini perakitan juga berlaku -- stasiun menganggur menunggu stasiun sebelumnya -- dan diatasi
-              dengan menjaga banyak batch kecil bergerak sekaligus.) Pelatihan skala besar sungguhan memakai
-              ketiganya bersamaan.
+              <strong>Data parallelism</strong> paling sederhana: tiap GPU dapet salinan penuh model yang
+              identik dan tumpukan teks beda buat latihan -- kayak ngasih tiap murid di kelas buku pelajaran
+              sama tapi soal PR beda, terus ngerata-ratain apa yang dipelajarin semua orang tiap ronde.{" "}
+              <strong>Tensor parallelism</strong> mecah matematika <em>di dalam</em> tiap layer: satu perkalian
+              raksasa diiris-iris, tiap GPU ngitung irisannya, dan kepingannya dijahit balik -- beberapa koki
+              nyincang satu bawang raksasa. <strong>Pipeline parallelism</strong> bagiin layer-layernya sendiri
+              kayak lini perakitan: GPU 1 megang layer 1-4, GPU 2 megang layer 5-8, dan teks ngalir nyusurin
+              lini stasiun demi stasiun. (Masalah klasik lini perakitan juga berlaku -- stasiun nganggur nungguin
+              stasiun sebelumnya -- dan diatasi dengan jaga banyak batch kecil bergerak sekaligus.) Training
+              skala gede beneran pakai ketiganya bareng.
             </p>
           }
         />
@@ -239,20 +237,19 @@ export default function TrainingInfrastructureSystems() {
           }
           id={
             <p>
-              Pendekatan beri-semua-salinan-penuh punya pemborosan yang jelas: seribu GPU menyimpan seribu
-              salinan identik semua pembukuan pelatihan. Perbaikannya, bernama <strong>ZeRO</strong>, bekerja
-              seperti kelompok belajar yang membagi satu buku pelajaran alih-alih semua orang membeli
-              sendiri-sendiri: tiap GPU secara permanen menyimpan hanya irisan jatahnya, dan kapan pun sebuah
-              GPU butuh sebentar bagian yang tak ia pegang, kelompoknya mengoperkannya lewat jaringan. Sedikit
-              obrolan ekstra, memori masing-masing jauh lebih hemat -- konsol di atas menghitung persis
-              pertukaran ini. Trik kedua, <strong>activation checkpointing</strong>, mengurus angka kerja
-              sementara: alih-alih menyimpan setiap hasil antara untuk langkah belajar, GPU membuang sebagian
-              besar dan sekadar mengulang hitungan itu nanti saat dibutuhkan -- membelanjakan komputasi ekstra
-              demi membebaskan ruang, seperti menurunkan ulang rumus alih-alih menyimpan setiap lembar coretan.
-              Dan satu kenyataan skala terakhir: dengan ribuan mesin berjalan berbulan-bulan, kegagalan
-              perangkat keras berhenti menjadi darurat dan menjadi cuaca. Pelatihan bertahan bukan dengan
-              mencegah kegagalan melainkan dengan menyimpan kemajuan terus-menerus dan mulai ulang cepat
-              ketika -- bukan kalau -- sesuatu mati.
+              Pendekatan kasih-semua-salinan-penuh punya pemborosan yang jelas: seribu GPU nyimpen seribu
+              salinan identik semua pembukuan training. Perbaikannya, namanya <strong>ZeRO</strong>, jalannya
+              kayak kelompok belajar yang bagi satu buku pelajaran daripada semua orang beli sendiri-sendiri:
+              tiap GPU secara permanen nyimpen cuma irisan jatahnya, dan kapan pun sebuah GPU butuh sebentar
+              bagian yang nggak dia pegang, kelompoknya ngoperinnya lewat jaringan. Ada obrolan ekstra dikit,
+              memori masing-masing jauh lebih hemat -- konsol di atas ngitung persis pertukaran ini. Trik kedua,{" "}
+              <strong>activation checkpointing</strong>, ngurusin angka kerja sementara: daripada nyimpen tiap
+              hasil antara buat langkah belajar, GPU buang sebagian besar dan cuma ngulang hitungan itu nanti pas
+              dibutuhin -- ngeluarin compute ekstra demi ngebebasin ruang, kayak nurunin ulang rumus daripada
+              nyimpen tiap lembar coretan. Dan satu kenyataan skala terakhir: dengan ribuan mesin jalan
+              berbulan-bulan, kegagalan hardware berhenti jadi darurat dan jadi cuaca. Training bertahan bukan
+              dengan nyegah kegagalan tapi dengan nyimpen kemajuan terus-terusan dan restart cepat pas -- bukan
+              kalau -- sesuatu mati.
             </p>
           }
         />

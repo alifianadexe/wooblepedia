@@ -121,12 +121,12 @@ export default function Introduction() {
           }
           id={
             <p>
-              Semua hal mengesankan yang dilakukan large language model (LLM) -- menulis kode, menjawab
-              pertanyaan, mengobrol -- berasal dari satu trik yang ternyata sederhana dan diulang
-              terus-menerus: <strong>tebak potongan teks berikutnya, sambungkan, lalu tebak lagi</strong>.
-              Pelajaran ini menelusuri seluruh perjalanan itu, dari teks yang kamu ketik sampai kata yang
-              dipilih model, memakai model mungil yang bisa kamu klik langkah demi langkah. Setiap pelajaran
-              berikutnya memperbesar salah satu dari langkah-langkah ini.
+              Semua hal keren yang bisa dilakukan large language model (LLM) -- menulis kode, menjawab
+              pertanyaan, mengobrol -- sebenarnya berasal dari satu trik sederhana yang diulang
+              terus-menerus: <strong>tebak potongan teks berikutnya, tempelkan, lalu tebak lagi</strong>.
+              Pelajaran ini menelusuri seluruh alurnya, dari teks yang kamu ketik sampai kata yang akhirnya
+              dipilih model, memakai model mungil yang bisa kamu klik step demi step. Tiap pelajaran
+              berikutnya bakal menyorot satu dari step-step ini.
             </p>
           }
         />
@@ -141,11 +141,11 @@ export default function Introduction() {
           "Everything later in this course -- tokenizer, embeddings, position, attention, MLP, training, alignment -- is a closer look at one of the eight steps you just clicked through.",
         ],
         [
-          "LLM adalah penebak token berikutnya yang berjalan dalam loop: teks menjadi token, token menjadi deretan angka, angka itu mengalir melewati model, dan keluarlah probabilitas untuk setiap kemungkinan token berikutnya. Satu dipilih, ditambahkan ke teks, dan loop berjalan lagi.",
-          "Tidak ada yang mengajari model tata bahasa atau fakta secara langsung. Ia tetap menguasainya, karena ternyata itulah satu-satunya cara untuk menjadi sangat jago menebak token berikutnya.",
-          "Parameter adalah angka hasil belajar yang tersimpan di model -- terkunci begitu pelatihan selesai. Aktivasi adalah angka sementara yang dibuat saat menjawab satu prompt, lalu dibuang.",
-          "Model kecil muat dengan mudah di memori kartu grafis biasa. Pelatihanlah yang lebih dulu jadi mahal, karena butuh beberapa angka pembukuan ekstra untuk setiap parameter.",
-          "Semua materi selanjutnya di kursus ini -- tokenizer, embedding, posisi, attention, MLP, pelatihan, alignment -- adalah tinjauan lebih dekat atas salah satu dari delapan langkah yang baru saja kamu klik.",
+          "LLM pada dasarnya penebak token berikutnya yang jalan dalam loop: teks jadi token, token jadi deretan angka, angka itu mengalir lewat model, lalu keluar probabilitas buat tiap kemungkinan token berikutnya. Satu token dipilih, ditempel ke teks, dan loop-nya jalan lagi.",
+          "Tidak ada yang mengajari model soal tata bahasa atau fakta secara eksplisit. Model menguasainya sendiri, soalnya itu satu-satunya cara supaya benar-benar jago menebak token berikutnya.",
+          "Parameter itu angka hasil training yang tersimpan di dalam model -- terkunci begitu training selesai. Aktivasi itu angka sementara yang muncul saat model menjawab satu prompt, lalu langsung dibuang.",
+          "Model kecil gampang muat di memori kartu grafis biasa. Justru training-nya yang duluan jadi mahal, karena butuh beberapa angka pembukuan ekstra untuk tiap parameter.",
+          "Semua materi selanjutnya di kursus ini -- tokenizer, embedding, posisi, attention, MLP, training, alignment -- pada dasarnya melihat lebih dekat salah satu dari delapan step yang barusan kamu klik.",
         ],
       )}
       references={[
@@ -166,7 +166,7 @@ export default function Introduction() {
         },
       ]}
     >
-      <Section title={pick(lang, "What a language model actually is", "Apa sebenarnya language model itu")}>
+      <Section title={pick(lang, "What a language model actually is", "Sebenarnya language model itu apa")}>
         <Bi
           en={
             <p>
@@ -181,13 +181,13 @@ export default function Introduction() {
           }
           id={
             <p>
-              Lepaskan semua kemasannya, dan LLM hanyalah satu fungsi matematika raksasa. Kamu memberinya
-              teks yang ada sejauh ini (dipotong-potong menjadi <strong>token</strong> -- kira-kira
-              penggalan kata), dan ia mengembalikan skor untuk setiap token yang ia kenal: seberapa mungkin
-              masing-masing muncul berikutnya. Itu saja tugasnya. Tidak ada "bagian pemahaman" terpisah yang
-              bersembunyi di dalamnya. Cara kerjanya seperti autocomplete di ponselmu, hanya jauh lebih besar
-              dan lebih pintar: untuk menulis jawaban utuh, model menebak satu token, menempelkannya di ujung
-              teks, lalu bertanya pada dirinya sendiri pertanyaan yang sama lagi -- ratusan kali berturut-turut.
+              Kalau semua kemasannya dilepas, LLM cuma satu fungsi matematika raksasa. Kamu kasih teks yang
+              ada sejauh ini (dipecah jadi <strong>token</strong> -- kira-kira penggalan kata), lalu ia
+              mengembalikan skor untuk tiap token yang ia kenal: seberapa mungkin masing-masing muncul
+              berikutnya. Ya cuma itu tugasnya. Nggak ada "bagian pemahaman" terpisah yang bersembunyi di
+              dalamnya. Cara kerjanya mirip autocomplete di ponselmu, cuma jauh lebih besar dan lebih pintar:
+              buat menulis jawaban utuh, model menebak satu token, menempelkannya di ujung teks, lalu
+              bertanya lagi ke dirinya sendiri dengan pertanyaan yang sama -- ratusan kali berturut-turut.
             </p>
           }
         />
@@ -203,12 +203,12 @@ export default function Introduction() {
           }
           id={
             <p>
-              "Autoregressive" adalah nama resmi loop itu: tebakan-tebakan lama si model ikut menjadi bagian
-              dari apa yang ia baca di putaran berikutnya. Perhatikan apa yang hilang -- tidak ada yang
-              memprogram kata, fakta, atau tata bahasa ke dalamnya. Selama pelatihan, model hanya pernah
-              melatih satu soal, "dari semua yang ada sejauh ini, token apa yang berikutnya?", pada triliunan
-              contoh teks sungguhan. Modul 2 membahas habis proses pelatihan itu; pelajaran ini membahas jalur
-              yang dilalui teksnya.
+              "Autoregressive" itu nama resmi buat loop tadi: tebakan-tebakan lama si model ikut jadi bagian
+              dari apa yang ia baca di putaran berikutnya. Coba perhatikan apa yang nggak ada di sini -- nggak
+              ada yang memprogram kata, fakta, atau tata bahasa ke dalamnya. Selama training, model cuma pernah
+              latihan satu soal, "dari semua yang ada sejauh ini, token apa berikutnya?", di triliunan contoh
+              teks beneran. Modul 2 membahas tuntas proses training itu; pelajaran ini fokus ke jalur yang
+              dilewati teksnya.
             </p>
           }
         />
@@ -227,11 +227,11 @@ export default function Introduction() {
           }
           id={
             <p>
-              Klik kedelapan tahap di bawah. Masing-masing benar-benar dihitung langsung, pada kalimat mungil
-              5 token dan model mainan yang menggambarkan tiap token dengan hanya 4 angka -- cukup kecil untuk
-              kamu baca setiap nilainya di layar. Model produksi sungguhan melakukan langkah yang persis sama,
-              hanya dengan ribuan angka per token dan lebih dari seratus lapisan bertumpuk (kamu akan bertemu
-              satu, LLaMA 3 405B, di pelajaran 2.8).
+              Klik delapan step di bawah. Masing-masing step dihitung secara langsung, pakai kalimat mungil
+              5 token dan model mainan yang menggambarkan tiap token cuma dengan 4 angka -- cukup kecil supaya
+              kamu bisa baca tiap nilainya di layar. Model produksi beneran menjalankan step yang persis sama,
+              cuma dengan ribuan angka per token dan lebih dari seratus layer yang ditumpuk (kamu bakal ketemu
+              salah satunya, LLaMA 3 405B, di pelajaran 2.8).
             </p>
           }
         />
@@ -250,14 +250,14 @@ export default function Introduction() {
           }
           id={
             <ol>
-              <li><strong>Teks mentah</strong> — sekadar karakter, seperti kalimat di pesan singkat. Belum ada token sama sekali.</li>
-              <li><strong>Tokenizer</strong> — seperangkat aturan tetap (pelajaran 1.2) memotong teks menjadi token dan memberi masing-masing nomor ID, seperti setiap kata di kamus punya nomor halamannya sendiri. Tidak ada yang dipelajari di sini.</li>
-              <li><strong>Embedding</strong> — setiap nomor ID ditukar dengan deretan angka panjang miliknya sendiri (disebut <em>vektor</em>) dengan mencari satu baris di tabel besar (pelajaran 1.3). Kata-kata yang maknanya mirip berakhir dengan deretan yang mirip.</li>
-              <li><strong>+Posisi</strong> — langkah attention yang akan datang tidak bisa tahu sendiri token mana yang lebih dulu, jadi angka tiap token dicampuri "stempel posisi" (pelajaran 1.4).</li>
-              <li><strong>Attention</strong> — langkah tempat token saling melihat dan bertukar informasi (pelajaran 1.5). Kata "dia" bisa mengetahui bahwa yang dimaksud adalah "si kucing". Ini satu-satunya langkah tempat token berkomunikasi.</li>
-              <li><strong>MLP</strong> — setiap token, sendirian sepenuhnya, didorong melewati lapisan penghitung kecil yang membentuk ulang vektornya (pelajaran 1.6). Tidak ada lirik-lirikan ke tetangga di sini.</li>
-              <li><strong>LM head</strong> (Language Model head) — vektor terakhir diubah menjadi satu skor mentah (disebut <em>logit</em>) untuk setiap kemungkinan token berikutnya.</li>
-              <li><strong>Softmax → sampel</strong> — skor mentah diubah menjadi persentase yang totalnya 100%, lalu satu token diundi, seperti arisan berhadiah di mana token yang lebih mungkin memegang lebih banyak kupon. Token itu ditambahkan ke teks, dan seluruh jalur berjalan lagi.</li>
+              <li><strong>Teks mentah</strong> — cuma deretan karakter, kayak kalimat di chat. Belum ada token sama sekali.</li>
+              <li><strong>Tokenizer</strong> — seperangkat aturan tetap (pelajaran 1.2) memotong teks jadi token dan memberi tiap token nomor ID, mirip tiap kata di kamus punya nomor halamannya sendiri. Nggak ada yang dipelajari di sini.</li>
+              <li><strong>Embedding</strong> — tiap nomor ID ditukar dengan deretan angka panjang miliknya sendiri (disebut <em>vektor</em>), caranya dengan mengambil satu baris di tabel besar (pelajaran 1.3). Kata-kata yang maknanya mirip bakal punya deretan angka yang mirip juga.</li>
+              <li><strong>+Posisi</strong> — step attention yang bakal datang nggak bisa tahu sendiri token mana yang lebih dulu, jadi angka tiap token dicampuri "stempel posisi" (pelajaran 1.4).</li>
+              <li><strong>Attention</strong> — step tempat antar-token saling lihat dan bertukar informasi (pelajaran 1.5). Kata "dia" bisa tahu bahwa yang dimaksud itu "si kucing". Ini satu-satunya step di mana token bisa berkomunikasi.</li>
+              <li><strong>MLP</strong> — tiap token, sendiri-sendiri, didorong lewat layer pengolah angka kecil yang membentuk ulang vektornya (pelajaran 1.6). Di sini nggak ada acara lirik-lirik ke tetangga.</li>
+              <li><strong>LM head</strong> (Language Model head) — vektor terakhir diubah jadi satu skor mentah (disebut <em>logit</em>) untuk tiap kemungkinan token berikutnya.</li>
+              <li><strong>Softmax → sampel</strong> — skor mentah diubah jadi persentase yang totalnya 100%, lalu satu token diundi, kayak arisan berhadiah di mana token yang lebih mungkin megang lebih banyak kupon. Token itu ditempel ke teks, dan seluruh alur jalan lagi.</li>
             </ol>
           }
         />
@@ -274,10 +274,10 @@ export default function Introduction() {
           }
           id={
             <p>
-              Telusuri jalurnya sendiri langkah demi langkah, atau tekan <strong>run generation step</strong>{" "}
-              untuk menjalankan kedelapan tahap pada kalimat saat ini dan benar-benar mengundi token
-              berikutnya memakai persentase asli yang dihitung di bawah -- persis undian yang dijelaskan di
-              langkah 8.
+              Telusuri sendiri jalurnya step demi step, atau tekan <strong>run generation step</strong>{" "}
+              untuk menjalankan kedelapan step pada kalimat saat ini dan benar-benar mengundi token
+              berikutnya pakai persentase asli yang dihitung di bawah -- persis undian yang dijelaskan di
+              step 8.
             </p>
           }
         />
@@ -338,7 +338,7 @@ export default function Introduction() {
               {pick(
                 lang,
                 `${sequence.join(" ").length} characters, 0 tokens. Nothing has been parsed yet.`,
-                `${sequence.join(" ").length} karakter, 0 token. Belum ada yang diurai.`,
+                `${sequence.join(" ").length} karakter, 0 token. Belum ada apa-apa yang diproses.`,
               )}
             </div>
           )}
@@ -349,7 +349,7 @@ export default function Introduction() {
               {pick(
                 lang,
                 "A real BPE tokenizer would sub-split unfamiliar words; here each word is already in the toy vocabulary.",
-                "Tokenizer BPE sungguhan akan memecah kata yang asing; di sini setiap kata sudah ada di kosakata mainan.",
+                "Tokenizer BPE beneran bakal memecah kata yang asing jadi bagian lebih kecil; di sini tiap kata kebetulan sudah ada di vocab mainan.",
               )}
             </div>
           )}
@@ -462,7 +462,7 @@ export default function Introduction() {
                 {pick(
                   lang,
                   'These are real softmax outputs over the logits from the previous stage -- press "run generation step" to draw a token from exactly this distribution.',
-                  'Ini keluaran softmax asli dari logit tahap sebelumnya -- tekan "run generation step" untuk mengundi token persis dari distribusi ini.',
+                  'Ini output softmax asli dari logit di step sebelumnya -- tekan "run generation step" buat mengundi token persis dari distribusi ini.',
                 )}
               </p>
             </div>
@@ -474,7 +474,7 @@ export default function Introduction() {
         title={pick(
           lang,
           "Why guessing the next token leads to apparent understanding",
-          "Mengapa menebak token berikutnya bisa terlihat seperti memahami",
+          "Kenapa cuma menebak token berikutnya bisa kelihatan seperti paham",
         )}
       >
         <Bi
@@ -492,16 +492,15 @@ export default function Introduction() {
           }
           id={
             <p>
-              "Menebak token berikutnya" terdengar seperti trik sulap, bukan jalan menuju kecerdasan.
-              Rahasianya ada pada apa yang dibutuhkan untuk menjadi <em>jago</em> melakukannya. Untuk menebak
-              kata berikutnya dari sebuah program komputer, kamu harus menangkap aturan bahasa pemrogramannya.
-              Untuk menebak lanjutan "ibu kota Prancis adalah", kamu harus sudah menyimpan fakta bahwa
-              jawabannya Paris. Untuk menebak apa yang datang setelah "sang pengacara berargumen", kamu harus
-              terus melacak siapa yang sedang bicara dalam cerita. Tidak ada yang pernah menyuruh model
-              belajar tata bahasa, fakta, atau logika secara langsung -- tetapi menyerap semua keterampilan
-              itu ternyata satu-satunya cara untuk menjadi sangat jago pada satu-satunya hal yang{" "}
-              <em>memang</em> disuruh ia lakukan, di sepanjang triliunan kata teks latihan. Pemahaman muncul
-              sebagai efek samping.
+              "Menebak token berikutnya" kedengarannya kayak trik sulap, bukan jalan menuju kecerdasan.
+              Rahasianya ada di apa yang dibutuhkan supaya <em>jago</em> melakukannya. Buat menebak kata
+              berikutnya dari sebuah program komputer, kamu harus paham aturan bahasa pemrogramannya. Buat
+              menebak lanjutan "ibu kota Prancis adalah", kamu harus sudah menyimpan fakta bahwa jawabannya
+              Paris. Buat menebak apa yang datang setelah "sang pengacara berargumen", kamu harus terus
+              melacak siapa yang lagi bicara di cerita itu. Nggak ada yang pernah nyuruh model belajar tata
+              bahasa, fakta, atau logika secara langsung -- tapi menyerap semua skill itu ternyata satu-satunya
+              cara supaya benar-benar jago di satu-satunya hal yang <em>memang</em> disuruh dikerjakan, di
+              sepanjang triliunan kata teks latihan. Pemahaman muncul sebagai efek samping.
             </p>
           }
         />
@@ -523,13 +522,13 @@ export default function Introduction() {
           }
           id={
             <p>
-              Ada dua jenis angka di dalam model yang sedang berjalan, dan penting untuk tidak menukarnya.{" "}
-              <strong>Parameter</strong> (disebut juga <em>bobot</em>) adalah angka hasil belajar model --
-              tabel besar itu, semua angka attention dan MLP -- terkunci begitu pelatihan selesai dan disimpan
-              ke disk. <strong>Aktivasi</strong> adalah angka sementara yang dibuat baru untuk setiap prompt
-              -- semua vektor antara yang barusan kamu lihat mengalir melewati delapan tahap. Bayangkan buku
-              resep versus meja dapur yang berantakan: resep (parameter) tidak pernah berubah selama kamu
-              memasak; bawang cincang dan mangkuk kotor (aktivasi) hanya ada untuk masakan malam ini dan
+              Ada dua jenis angka di dalam model yang lagi jalan, dan penting buat nggak menukarnya.{" "}
+              <strong>Parameter</strong> (disebut juga <em>weight</em>) itu angka hasil training model --
+              tabel besar tadi, semua angka attention dan MLP -- yang terkunci begitu training selesai lalu
+              disimpan ke disk. <strong>Aktivasi</strong> itu angka sementara yang dibikin baru untuk tiap
+              prompt -- semua vektor antara yang barusan kamu lihat mengalir lewat delapan step. Bayangkan
+              buku resep versus meja dapur yang berantakan: resepnya (parameter) nggak pernah berubah selama
+              kamu masak; bawang cincang dan mangkuk kotornya (aktivasi) cuma ada buat masakan malam ini dan
               dibereskan setelahnya.
             </p>
           }
@@ -548,20 +547,19 @@ export default function Introduction() {
           }
           id={
             <p>
-              Kenapa ini penting? Memori. Disimpan secara ringkas, tiap parameter memakan sekitar 2 byte.
-              124 juta parameter GPT-2 small hanya butuh sekitar 0,23 GB -- kartu grafis 8 GB yang murah pun
-              nyaris tak terasa. Tetapi model 7 miliar parameter butuh sekitar 14 GB hanya untuk duduk di
-              memori -- sudah kebesaran untuk kartu itu bahkan sebelum ada pekerjaan yang dilakukan. Itulah
-              kenapa pelajaran 1.9 dan Modul 3 menghabiskan banyak waktu membahas trik mengecilkan model.
-              Aktivasi tumbuh mengikuti banyaknya teks yang kamu masukkan, bukan ukuran model -- itulah kenapa
-              sebuah model bisa termuat dengan baik tetapi tetap kehabisan memori di tengah jawaban yang
-              panjang.
+              Kenapa ini penting? Memori. Disimpan ringkas, tiap parameter makan sekitar 2 byte. 124 juta
+              parameter GPT-2 small cuma butuh sekitar 0,23 GB -- kartu grafis 8 GB yang murah pun nyaris
+              nggak kerasa. Tapi model 7 miliar parameter butuh sekitar 14 GB cuma buat nangkring di memori --
+              udah kebesaran buat kartu itu bahkan sebelum ada kerjaan yang dilakukan. Makanya pelajaran 1.9
+              dan Modul 3 banyak banget bahas trik buat mengecilkan model. Aktivasi tumbuh mengikuti seberapa
+              banyak teks yang kamu masukkan, bukan ukuran model -- makanya sebuah model bisa ke-load dengan
+              lancar tapi tetap kehabisan memori di tengah jawaban yang panjang.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Where this course goes", "Ke mana kursus ini menuju")}>
+      <Section title={pick(lang, "Where this course goes", "Kursus ini mau ke mana")}>
         <Bi
           en={
             <p>
@@ -575,13 +573,13 @@ export default function Introduction() {
           }
           id={
             <p>
-              Modul 1 membedah setiap tahap yang barusan kamu klik -- tokenizer, embedding, posisi, attention,
-              pelatihan -- dan ditutup dengan kamu menghitung ukuran GPT-2 sungguhan. Modul 2 membahas fase
+              Modul 1 membedah tiap step yang barusan kamu klik -- tokenizer, embedding, posisi, attention,
+              training -- lalu ditutup dengan kamu menghitung ukuran GPT-2 beneran. Modul 2 membahas fase
               besar dan mahal tempat pengetahuan dituliskan ke dalam parameter: data apa yang dipakai, berapa
-              banyak, dan rekayasa yang dibutuhkan untuk melatih dalam skala besar. Modul 3 membahas fase
-              singkat dan cermat yang mengubah mesin autocomplete mentah menjadi asisten membantu yang
-              benar-benar kamu ajak mengobrol. Mesinnya sendiri tidak pernah berubah di sepanjang semua ini --
-              hanya angka-angka yang tersimpan di dalamnya yang berubah.
+              banyak, dan engineering yang dibutuhkan buat training dalam skala besar. Modul 3 membahas fase
+              singkat dan teliti yang mengubah mesin autocomplete mentah jadi asisten yang benar-benar enak
+              kamu ajak ngobrol. Mesinnya sendiri nggak pernah berubah di sepanjang semua ini -- yang berubah
+              cuma angka-angka yang tersimpan di dalamnya.
             </p>
           }
         />

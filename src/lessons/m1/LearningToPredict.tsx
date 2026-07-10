@@ -87,11 +87,11 @@ export default function LearningToPredict() {
           id={
             <p>
               Semua yang kamu bangun sejauh ini -- tokenizer, embedding, stempel posisi, attention, MLP --
-              berujung pada satu keluaran: untuk tiap titik di teks, sekumpulan persentase tentang "token apa
-              yang berikutnya". Model yang baru dibuat menghasilkan persentase sampah, karena semua angka
-              hasil belajarnya berawal acak. Pelatihan adalah loop yang memperbaikinya: buat tebakan, ukur
-              seberapa salah, geser setiap angka ke arah yang akan membuat tebakan itu tak sesalah tadi, lalu
-              ulangi -- miliaran kali.
+              berujung ke satu output: buat tiap titik di teks, sekumpulan persentase tentang "token apa
+              berikutnya". Model yang baru dibikin ngeluarin persentase sampah, karena semua angka hasil
+              training-nya berawal acak. Training itu loop yang memperbaikinya: bikin tebakan, ukur seberapa
+              salah, geser tiap angka ke arah yang bikin tebakan itu jadi nggak sesalah tadi, lalu ulangi --
+              miliaran kali.
             </p>
           }
         />
@@ -106,11 +106,11 @@ export default function LearningToPredict() {
           "AdamW, the standard training algorithm, gives every individual parameter its own personalized step size instead of one global speed for all -- it's the default for essentially all modern LLM training.",
         ],
         [
-          "Skor kesalahan model (\"loss\") untuk satu tebakan hanya bergantung pada persentase yang ia berikan ke token yang benar-benar muncul berikutnya -- persentase tinggi berarti loss rendah. Pelatihan bekerja mengecilkan rata-rata loss di semua tebakan.",
-          "Kurva penilaiannya sengaja kejam tak adil: salah dengan percaya diri jauh lebih mahal daripada jujur ragu-ragu. Tekanan itulah yang mengajari model ketidakpastian yang terkalibrasi.",
-          "Perplexity menyatakan ulang loss sebagai \"model sebingung memilih buta di antara sekian token yang sama mungkinnya\" -- perplexity 20 berarti sebingung undian 20 arah.",
-          "Selama pelatihan, model tidak menghasilkan token satu demi satu -- ia menilai tebakannya di setiap posisi sebuah teks asli serentak, dalam satu lintasan. Trik itu bernama teacher forcing.",
-          "AdamW, algoritme pelatihan standar, memberi setiap parameter langkah pribadinya sendiri alih-alih satu kecepatan global untuk semua -- ia bawaan untuk hampir semua pelatihan LLM modern.",
+          "Skor kesalahan model (\"loss\") buat satu tebakan cuma bergantung pada persentase yang ia kasih ke token yang beneran muncul berikutnya -- persentase tinggi berarti loss rendah. Training berusaha ngecilin rata-rata loss di semua tebakan.",
+          "Kurva penilaiannya sengaja kejam nggak adil: salah dengan pede jauh lebih mahal ketimbang jujur ragu-ragu. Tekanan itulah yang ngajarin model buat ragu di saat yang tepat.",
+          "Perplexity nyatain ulang loss jadi \"model sebingung milih buta di antara sekian token yang sama mungkinnya\" -- perplexity 20 berarti sebingung undian 20 arah.",
+          "Selama training, model nggak menghasilkan token satu demi satu -- ia menilai tebakannya di tiap posisi sebuah teks asli sekaligus, dalam satu pass. Trik itu namanya teacher forcing.",
+          "AdamW, algoritma training standar, ngasih tiap parameter ukuran langkahnya sendiri ketimbang satu kecepatan global buat semua -- ia default buat hampir semua training LLM modern.",
         ],
       )}
       references={[
@@ -149,16 +149,15 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              Pelatihan adalah empat langkah yang diulang-ulang. <strong>Tebak:</strong> jalankan kalimat asli
-              dari teks latihan lewat model dan dapatkan persentasenya untuk token berikutnya di tiap titik.{" "}
-              <strong>Nilai:</strong> bandingkan tiap tebakan dengan token yang <em>benar-benar</em> muncul
+              Training itu empat step yang diulang-ulang. <strong>Tebak:</strong> jalanin kalimat asli dari
+              teks training lewat model dan dapetin persentasenya buat token berikutnya di tiap titik.{" "}
+              <strong>Nilai:</strong> bandingin tiap tebakan dengan token yang <em>beneran</em> muncul
               berikutnya di teks, menghasilkan satu angka kesalahan bernama <strong>loss</strong>.{" "}
-              <strong>Diagnosis:</strong> hitung, untuk setiap satu dari jutaan angka hasil belajar model,
-              apakah menaikkan atau menurunkannya sedikit akan membuat loss lebih kecil (arah per-angka ini
-              disebut <strong>gradien</strong>). <strong>Geser:</strong> pindahkan setiap angka sedikit saja
-              ke arah yang menolongnya. Itu saja. Diulang pada triliunan token, loop inilah pra-pelatihan --
-              Modul 2 membahas cara melakukannya dalam skala raksasa, bukan tentang sesuatu yang berbeda
-              secara mendasar.
+              <strong>Diagnosis:</strong> hitung, buat tiap satu dari jutaan angka hasil training model,
+              apakah naikin atau nurunin dikit bakal bikin loss lebih kecil (arah per-angka ini disebut{" "}
+              <strong>gradien</strong>). <strong>Geser:</strong> pindahin tiap angka sedikit aja ke arah yang
+              nolongin. Cuma gitu. Diulang di triliunan token, loop inilah pra-training -- Modul 2 membahas
+              cara melakukannya dalam skala raksasa, bukan sesuatu yang beda secara mendasar.
             </p>
           }
         />
@@ -177,11 +176,11 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              Nama resmi skor kesalahan itu <strong>cross-entropy</strong>, dan untuk satu tebakan rumusnya
-              sesederhana <code>-ln(p)</code>: ambil persentase <code>p</code> yang model berikan ke token
-              yang benar-benar muncul berikutnya, lalu lewatkan melalui kurva yang mendekati nol saat p
-              tinggi dan meroket saat p mendekati nol. Geser slider untuk mengatur persentase itu dan lihat
-              kedua angka pembacaan berubah langsung.
+              Nama resmi skor kesalahan itu <strong>cross-entropy</strong>, dan buat satu tebakan rumusnya
+              sesederhana <code>-ln(p)</code>: ambil persentase <code>p</code> yang model kasih ke token yang
+              beneran muncul berikutnya, lalu lewatin ke kurva yang mendekati nol pas p tinggi dan meroket
+              pas p mendekati nol. Geser slider buat ngatur persentase itu dan lihat kedua angka pembacaannya
+              berubah secara langsung.
             </p>
           }
         />
@@ -210,7 +209,7 @@ export default function LearningToPredict() {
             {pick(
               lang,
               `Perplexity ${ppl.toFixed(1)} reads as "as uncertain as choosing uniformly among ${ppl.toFixed(0)} equally likely tokens."`,
-              `Perplexity ${ppl.toFixed(1)} dibaca "sebingung memilih rata di antara ${ppl.toFixed(0)} token yang sama mungkinnya."`,
+              `Perplexity ${ppl.toFixed(1)} dibaca "sebingung milih acak di antara ${ppl.toFixed(0)} token yang sama-sama mungkin."`,
             )}
           </p>
         </ScopeScreen>
@@ -231,14 +230,14 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              Bayangkan loss sebagai lanskap berbukit di mana makin rendah makin baik, dan pelatihan sebagai
-              pendaki dalam kabut tebal yang hanya bisa merasakan kemiringan di bawah kakinya dan selalu
-              melangkah menurun. Kurva di bawah adalah lanskap seperti itu, dengan dua lembah.{" "}
-              <strong>Learning rate</strong> adalah panjang langkah si pendaki. Atur itu dan titik awal, lalu
-              melangkah menurun satu gerakan demi satu, atau jalankan 30 gerakan sekaligus. Langkah kecil
-              merayap pelan; langkah yang masuk akal mengendap ke sebuah lembah; dan coba besarkan langkahnya
-              habis-habisan -- si pendaki bukan sekadar turun lebih lambat, ia melompati lembah sepenuhnya dan
-              terbang keluar dari lanskap. Itu disebut divergensi, dan itu mode kegagalan sungguhan.
+              Bayangin loss sebagai lanskap berbukit di mana makin rendah makin bagus, dan training sebagai
+              pendaki dalam kabut tebal yang cuma bisa ngerasain kemiringan di bawah kakinya dan selalu
+              melangkah menurun. Kurva di bawah itu lanskap kayak gitu, dengan dua lembah.{" "}
+              <strong>Learning rate</strong> itu panjang langkah si pendaki. Atur itu dan titik awal, lalu
+              melangkah turun satu gerakan demi satu, atau jalanin 30 gerakan sekaligus. Langkah kecil
+              merayap pelan; langkah yang pas mengendap ke sebuah lembah; dan coba gedein langkahnya
+              habis-habisan -- si pendaki bukan cuma turun lebih lambat, tapi ngelewatin lembahnya total dan
+              terbang keluar dari lanskap. Itu namanya divergensi, dan itu mode kegagalan yang beneran.
             </p>
           }
         />
@@ -299,16 +298,16 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              Ketika model <em>menghasilkan</em> teks, ia harus berjalan satu token demi satu -- tiap token
-              baru dimasukkan kembali sebelum tebakan berikutnya. Pelatihan punya jalan pintas yang indah.
-              Diberi kalimat asli yang utuh dari teks latihan, aturan dilarang-mengintip dari pelajaran 1.5
-              sudah menjamin tiap posisi hanya melihat apa yang datang sebelumnya. Jadi model bisa dinilai di{" "}
-              <em>setiap</em> posisi kalimat dalam satu lintasan: "setelah kata 3, apakah kamu menebak kata
-              4?", "setelah kata 4, apakah kamu menebak kata 5?" -- semuanya serentak, seperti menilai semua
-              soal pada ujian yang sudah selesai sekaligus, alih-alih menunggu murid menjawab satu soal
-              sebelum membuka soal berikutnya. Ini disebut <strong>teacher forcing</strong>, karena di setiap
-              posisi model membaca riwayat yang benar dari teks asli -- tak pernah tebakan-tebakan lamanya
-              sendiri yang mungkin salah.
+              Pas model <em>menghasilkan</em> teks, ia harus jalan satu token demi satu -- tiap token baru
+              dimasukin lagi sebelum tebakan berikutnya. Nah, training punya jalan pintas yang keren. Dikasih
+              kalimat asli yang utuh dari teks training, aturan dilarang-ngintip dari pelajaran 1.5 udah
+              menjamin tiap posisi cuma lihat apa yang datang sebelumnya. Jadi model bisa dinilai di{" "}
+              <em>tiap</em> posisi kalimat dalam satu pass: "setelah kata 3, apakah kamu nebak kata 4?",
+              "setelah kata 4, apakah kamu nebak kata 5?" -- semuanya sekaligus, kayak nilai semua soal di
+              ujian yang udah kelar sekaligus, ketimbang nunggu murid jawab satu soal sebelum buka soal
+              berikutnya. Ini namanya <strong>teacher forcing</strong>, karena di tiap posisi model baca
+              riwayat yang benar dari teks asli -- nggak pernah tebakan-tebakan lamanya sendiri yang mungkin
+              salah.
             </p>
           }
         />
@@ -331,15 +330,15 @@ export default function LearningToPredict() {
           }
           id={
             <p>
-              "Pendaki" polos di atas memakai satu panjang langkah untuk setiap parameter di model. Dalam
-              praktik, itu kikuk: sebagian parameter menerima sinyal yang tenang dan mantap sehingga aman
-              mengambil langkah lebih besar, sementara yang lain menerima sinyal liar dan berisik sehingga
-              perlu dikekang. <strong>AdamW</strong>, algoritme pelatihan yang benar-benar dipakai hampir
-              semua LLM modern, menyimpan ingatan pendek tentang perilaku sinyal tiap parameter dan memberi
-              masing-masing langkah pribadinya sendiri -- lebih besar untuk yang mantap, diredam untuk yang
-              melonjak-lonjak. Huruf "W" menambah satu kebiasaan lagi: di tiap langkah, semua parameter
-              ditarik sedikit kembali ke arah nol ("weight decay"), disiplin lembut yang mencegah satu angka
-              pun tumbuh raksasa dan membantu model menggeneralisasi alih-alih menghafal.
+              "Pendaki" polos di atas pakai satu panjang langkah buat tiap parameter di model. Dalam praktik,
+              itu kaku: sebagian parameter nerima sinyal yang tenang dan mantap jadi aman ngambil langkah
+              lebih besar, sementara yang lain nerima sinyal liar dan berisik jadi perlu dikekang.{" "}
+              <strong>AdamW</strong>, algoritma training yang beneran dipakai hampir semua LLM modern,
+              nyimpen ingatan pendek soal perilaku sinyal tiap parameter dan ngasih masing-masing langkahnya
+              sendiri -- lebih besar buat yang mantap, diredam buat yang lonjak-lonjak. Huruf "W" nambah satu
+              kebiasaan lagi: di tiap step, semua parameter ditarik sedikit balik ke arah nol ("weight
+              decay"), disiplin lembut yang mencegah satu angka pun tumbuh raksasa dan bantu model
+              menggeneralisasi ketimbang cuma ngapalin.
             </p>
           }
         />

@@ -77,6 +77,9 @@ export const UI = {
     glossaryIntro: "Every short term used across the lessons, spelled out in full.",
     glossaryClose: "Close",
     glossaryCloseAria: "Close glossary",
+    fontSizeAria: "Reading text size",
+    fontSmaller: "Decrease text size",
+    fontLarger: "Increase text size",
   },
   id: {
     keyTakeaways: "POIN-POIN KUNCI",
@@ -90,7 +93,7 @@ export const UI = {
     calibration: "KALIBRASI",
     homeTitle: "DASAR-DASAR LLM — KURIKULUM LAB SINYAL",
     homeIntro:
-      "Dua puluh dua perhentian dalam tiga modul, ditata sebagai satu jalur bersambung. Setiap lab di situs ini menghitung angkanya secara langsung dari persamaan aslinya — ikuti jalannya, lalu putar sendiri kenop-kenopnya.",
+      "Dua puluh dua perhentian dalam tiga modul, ditata jadi satu jalur nyambung. Setiap lab di situs ini ngitung angkanya secara langsung dari persamaan aslinya — ikutin jalannya, terus puter sendiri kenop-kenopnya.",
     notFoundMsg: "Kanal pelajaran itu tidak ada.",
     backToDashboard: "KEMBALI KE DASBOR",
     progressAria: "Kemajuan kursus keseluruhan",
@@ -102,6 +105,9 @@ export const UI = {
     glossaryIntro: "Setiap istilah singkat yang dipakai di seluruh pelajaran, dieja lengkap.",
     glossaryClose: "Tutup",
     glossaryCloseAria: "Tutup daftar istilah",
+    fontSizeAria: "Ukuran teks bacaan",
+    fontSmaller: "Perkecil ukuran teks",
+    fontLarger: "Perbesar ukuran teks",
   },
 } as const;
 

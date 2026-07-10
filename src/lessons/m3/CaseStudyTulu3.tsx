@@ -36,7 +36,7 @@ const CARDS: SpecCard[] = [
     label: "STAGE 2",
     labelId: "TAHAP 2",
     value: "DPO — better-vs-worse comparisons, including ones judged on the model's own answers",
-    valueId: "DPO — perbandingan lebih-baik-vs-lebih-buruk, termasuk yang dinilai pada jawaban si model sendiri",
+    valueId: "DPO — perbandingan lebih-bagus-vs-lebih-jelek, termasuk yang dinilai di jawaban si model sendiri",
     link: "/m3/preference-optimization",
   },
   {
@@ -49,13 +49,13 @@ const CARDS: SpecCard[] = [
     label: "TEST HYGIENE",
     labelId: "HIGIENE TES",
     value: "Training data continuously scrubbed of benchmark test questions",
-    valueId: "Data latihan terus-menerus dibersihkan dari soal-soal tes benchmark",
+    valueId: "Data training terus-terusan dibersihin dari soal-soal tes benchmark",
   },
   {
     label: "RELEASE",
     labelId: "RILIS",
     value: "Data, training code, and finished model all public",
-    valueId: "Data, kode pelatihan, dan model jadinya semua publik",
+    valueId: "Data, kode training, dan model jadinya semua publik",
   },
 ];
 
@@ -110,12 +110,12 @@ export default function CaseStudyTulu3() {
           }
           id={
             <p>
-              Setiap tahap di modul ini punya teori yang terdokumentasi baik tetapi praktik yang buram --
-              kebanyakan lab merahasiakan data dan resep persisnya. Tulu 3, dari Allen Institute for AI,
-              adalah pengecualiannya: mereka menerbitkan semuanya -- datanya, kode pelatihannya, model
-              jadinya, dan cerita jujur setiap keputusan di sepanjang jalan. Inilah yang paling mendekati
-              buku resep lengkap yang diterbitkan untuk modul ini, dan ia menjalankan persis jalur tiga
-              tahap yang baru kamu pelajari.
+              Setiap tahap di modul ini punya teori yang terdokumentasi baik tapi praktik yang buram --
+              kebanyakan lab ngerahasiain data dan resep persisnya. Tulu 3, dari Allen Institute for AI, itu
+              pengecualiannya: mereka nerbitin semuanya -- datanya, kode training-nya, model jadinya, dan
+              cerita jujur setiap keputusan di sepanjang jalan. Inilah yang paling mendekati buku resep lengkap
+              yang diterbitin buat modul ini, dan dia njalanin persis pipeline tiga tahap yang baru kamu
+              pelajarin.
             </p>
           }
         />
@@ -129,10 +129,10 @@ export default function CaseStudyTulu3() {
           "Because everything is public, reproducing a slice of the Tulu 3 recipe on rented hardware is a realistic, well-specified capstone project for this course.",
         ],
         [
-          "Tulu 3 menjalankan persis jalur tiga tahap modul ini -- contoh jawaban (SFT), lalu perbandingan jawaban (DPO), lalu latihan berbasis hadiah -- pada model base Llama 3.1 yang publik, dengan data dan kode tiap tahap dirilis.",
-          "Tahap hadiahnya memakai RLVR (Reinforcement Learning with Verifiable Rewards): alih-alih model juri terlatih menebak apa yang disukai orang, program komputer polos mengecek jawabannya -- apakah matematikanya keluar benar? apakah aturannya dipatuhi? Kunci jawaban, bukan opini juri.",
-          "Sepanjang jalan, tim terus membersihkan data latihannya dari apa pun yang beririsan dengan tes standar -- disiplin jaga-ujian-tetap-jujur yang sama dari pelajaran 2.7.",
-          "Karena semuanya publik, mereproduksi seiris resep Tulu 3 di perangkat sewaan adalah proyek puncak yang realistis dan terspesifikasi baik untuk kursus ini.",
+          "Tulu 3 njalanin persis pipeline tiga tahap modul ini -- contoh jawaban (SFT), terus perbandingan jawaban (DPO), terus latihan berbasis hadiah -- di model base Llama 3.1 yang publik, dengan data dan kode tiap tahap dirilis.",
+          "Tahap hadiahnya pakai RLVR (Reinforcement Learning with Verifiable Rewards): daripada model juri terlatih nebak apa yang disukai orang, program komputer polos ngecek jawabannya -- matematikanya keluar bener nggak? aturannya dipatuhi nggak? Kunci jawaban, bukan opini juri.",
+          "Sepanjang jalan, tim terus mbersihin data training-nya dari apa pun yang beririsan dengan tes standar -- disiplin jaga-ujian-tetap-jujur yang sama dari pelajaran 2.7.",
+          "Karena semuanya publik, mereproduksi seiris resep Tulu 3 di perangkat sewaan itu proyek puncak yang realistis dan terspesifikasi baik buat kursus ini.",
         ],
       )}
       references={[
@@ -178,11 +178,11 @@ export default function CaseStudyTulu3() {
           }
           id={
             <p>
-              Mainkan peran si model: pilih jawaban untuk tiap soal di bawah. Fungsi pengecek sungguhan
-              menilai pilihanmu dan memberi 1 poin untuk benar, 0 untuk salah -- tanpa opini, tanpa model
-              juri, hanya program yang membandingkan dengan kunci jawaban. Itulah seluruh ide RLVR: untuk
-              bidang-bidang yang jawabannya bisa dicek mekanis (matematika, kode, mengikuti aturan
-              eksplisit), biarkan si pengecek jadi gurunya.
+              Mainin peran si model: pilih jawaban buat tiap soal di bawah. Fungsi pengecek beneran nilai
+              pilihanmu dan ngasih 1 poin buat bener, 0 buat salah -- tanpa opini, tanpa model juri, cuma
+              program yang ngebandingin dengan kunci jawaban. Itulah seluruh ide RLVR: buat bidang-bidang yang
+              jawabannya bisa dicek mekanis (matematika, kode, ngikutin aturan eksplisit), biarin si pengecek
+              jadi gurunya.
             </p>
           }
         />
@@ -222,11 +222,11 @@ export default function CaseStudyTulu3() {
           id={
             <p>
               Karena contoh jawaban, data perbandingan, dan soal-soal latihan Tulu 3 semuanya publik, kamu
-              sungguh bisa mereproduksi seirisnya sendiri: fine-tune model 8 miliar parameter pada sebagian
-              datanya memakai trik tempelan LoRA dari pelajaran 3.2, lalu jalankan DPO pada
-              perbandingan-perbandingan rilisannya memakai resep pelajaran 3.3 -- semua di perangkat cloud
-              sewaan dalam satu akhir pekan panjang. Resep yang diterbitkan penuh pada skala yang sungguh
-              bisa dimasak satu orang: itulah yang menjadikan Tulu 3 tujuan akhir alami kursus ini.
+              beneran bisa mereproduksi seirisnya sendiri: fine-tune model 8 miliar parameter di sebagian
+              datanya pakai trik tempelan LoRA dari pelajaran 3.2, terus jalanin DPO di
+              perbandingan-perbandingan rilisannya pakai resep pelajaran 3.3 -- semua di perangkat cloud sewaan
+              dalam satu akhir pekan panjang. Resep yang diterbitin penuh di skala yang beneran bisa dimasak
+              satu orang: itulah yang bikin Tulu 3 jadi tujuan akhir alami kursus ini.
             </p>
           }
         />

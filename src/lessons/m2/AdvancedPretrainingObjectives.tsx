@@ -46,11 +46,11 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              "Tebak token berikutnya" adalah latihan utamanya, tetapi bukan satu-satunya drill yang bisa
-              diperas sebuah pelatihan dari teks yang sama. Pelajaran ini membahas empat drill ekstra yang
-              dilapiskan di atasnya. Hal kunci untuk diperhatikan: tak satu pun mengubah mesinnya. Model
-              tetap penebak kiri-ke-kanan yang ketat -- kecerdikannya sepenuhnya ada pada cara bahan latihan
-              disusun ulang sebelum disuapkan.
+              "Tebak token berikutnya" itu latihan utamanya, tapi bukan satu-satunya drill yang bisa diperes
+              sebuah training dari teks yang sama. Pelajaran ini ngebahas empat drill ekstra yang dilapisin di
+              atasnya. Hal kunci yang perlu diperhatiin: nggak ada satu pun yang ngubah mesinnya. Model tetap
+              penebak kiri-ke-kanan yang ketat -- kecerdikannya sepenuhnya ada di cara bahan latihan disusun
+              ulang sebelum disuapin.
             </p>
           }
         />
@@ -65,11 +65,11 @@ export default function AdvancedPretrainingObjectives() {
           "A related family called span corruption also teaches hole-filling but changes how the model reads; FIM's charm is that it never touches the machine -- it only rearranges the text.",
         ],
         [
-          "Fill-in-the-middle (FIM): gunting sepotong dari dokumen, pindahkan ke ujung, dan tandai kepingannya dengan token khusus. Penebak kiri-ke-kanan yang ketat dengan begitu belajar mengisi lubang -- wajib untuk editor kode yang melengkapi bagian tengah berkasmu.",
-          "Multi-token prediction: alih-alih hanya menebak token persis berikutnya, head penebak ekstra juga menebak dua, tiga, dan empat langkah ke depan -- lebih banyak belajar dari tiap posisi, dan trik kecepatan saat menghasilkan teks nanti.",
-          "Teks panjang ditangani dua fase: latih kebanyakan pada teks lebih pendek (lebih murah), lalu regangkan positional encoding-nya dan lanjutkan pelatihan sebentar pada panjang baru yang lebih besar.",
-          "Kurikulum: simpan bahan bacaan kualitas terbaik untuk akhir pelatihan, saat model paling siap memanfaatkannya -- seperti kursus menyimpan proyek puncaknya untuk terakhir.",
-          "Keluarga serumpun bernama span corruption juga mengajarkan isi-lubang tetapi mengubah cara model membaca; pesona FIM adalah ia tak pernah menyentuh mesinnya -- hanya menyusun ulang teksnya.",
+          "Fill-in-the-middle (FIM): gunting sepotong dari dokumen, pindahin ke ujung, dan tandain kepingannya dengan token khusus. Penebak kiri-ke-kanan yang ketat dengan begitu belajar ngisi lubang -- wajib buat editor kode yang ngelengkapin bagian tengah file-mu.",
+          "Multi-token prediction: daripada cuma nebak token persis berikutnya, head penebak ekstra juga nebak dua, tiga, dan empat langkah ke depan -- lebih banyak belajar dari tiap posisi, dan trik kecepatan pas generate teks nanti.",
+          "Teks panjang ditangani dua fase: training kebanyakan di teks lebih pendek (lebih murah), terus regangin positional encoding-nya dan lanjutin training sebentar di panjang baru yang lebih gede.",
+          "Kurikulum: simpen bahan bacaan kualitas terbaik buat akhir training, pas model paling siap manfaatinnya -- kayak kursus nyimpen proyek puncaknya buat terakhir.",
+          "Keluarga serumpun namanya span corruption juga ngajarin isi-lubang tapi ngubah cara model baca; pesona FIM itu dia nggak pernah nyentuh mesinnya -- cuma nyusun ulang teksnya.",
         ],
       )}
       references={[
@@ -90,7 +90,7 @@ export default function AdvancedPretrainingObjectives() {
         },
       ]}
     >
-      <Section title={pick(lang, "Lab — fill-in-the-middle, literally rearranged", "Lab — fill-in-the-middle, benar-benar disusun ulang")}>
+      <Section title={pick(lang, "Lab — fill-in-the-middle, literally rearranged", "Lab — fill-in-the-middle, beneran disusun ulang")}>
         <Bi
           en={
             <p>
@@ -105,13 +105,13 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              Ini teka-teki yang dipecahkan FIM: penebak kiri-ke-kanan hanya bisa melanjutkan teks di
-              ujungnya, padahal kursor programmer biasanya di <em>tengah</em> berkas. Perbaikannya
-              menyenangkan sederhananya -- susun ulang teks latihannya. Gunting sepotong bagian tengah, taruh
-              bagian awal dan akhirnya lebih dulu (dilabeli token penanda khusus), dan tempelkan bagian
-              tengah yang hilang di ujung. Sekarang "mengisi lubang" <em>adalah</em> "melanjutkan di ujung",
-              yang sudah model tahu caranya. Geser slider untuk memilih potongan yang digunting dan lihat
-              persis barisan susun-ulang yang akan dilatihkan ke model.
+              Ini teka-teki yang dipecahin FIM: penebak kiri-ke-kanan cuma bisa nerusin teks di ujungnya,
+              padahal kursor programmer biasanya di <em>tengah</em> file. Perbaikannya simpel banget dan bikin
+              seneng -- susun ulang teks latihannya. Gunting sepotong bagian tengah, taruh bagian awal dan
+              akhirnya duluan (dilabeli token penanda khusus), dan tempelin bagian tengah yang hilang di ujung.
+              Sekarang "ngisi lubang" <em>itu sama aja</em> dengan "nerusin di ujung", yang udah model tau
+              caranya. Geser slider buat milih potongan yang digunting dan lihat persis barisan susun-ulang
+              yang bakal di-training-in ke model.
             </p>
           }
         />
@@ -124,7 +124,7 @@ export default function AdvancedPretrainingObjectives() {
           <Slider label="MIDDLE START (char index)" value={start} min={0} max={SNIPPET.length - 1} step={1} onChange={setMidStart} />
           <Slider label="MIDDLE END (char index)" value={end} min={1} max={SNIPPET.length} step={1} onChange={setMidEnd} />
 
-          <div className="mono" style={{ fontSize: 11, color: "var(--muted)", margin: "12px 0 4px" }}>{pick(lang, "REARRANGED TRAINING SEQUENCE:", "BARISAN LATIHAN SETELAH DISUSUN ULANG:")}</div>
+          <div className="mono" style={{ fontSize: 11, color: "var(--muted)", margin: "12px 0 4px" }}>{pick(lang, "REARRANGED TRAINING SEQUENCE:", "BARISAN TRAINING SETELAH DISUSUN ULANG:")}</div>
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, whiteSpace: "pre-wrap", padding: 10, border: `1px solid ${colors.border}`, borderRadius: 6 }}>
             <span style={{ color: colors.amber }}>&lt;PRE&gt;</span> {prefix}{" "}
             <span style={{ color: colors.cyan }}>&lt;SUF&gt;</span> {suffix}{" "}
@@ -135,7 +135,7 @@ export default function AdvancedPretrainingObjectives() {
             {pick(
               lang,
               "Only the highlighted part after <MID> gets graded -- that's what the model practices producing. Everything before it is just context to read.",
-              "Hanya bagian tersorot setelah <MID> yang dinilai -- itulah yang model latih untuk dihasilkan. Semua sebelumnya hanyalah konteks untuk dibaca.",
+              "Cuma bagian tersorot setelah <MID> yang dinilai -- itulah yang model latih buat dihasilin. Semua sebelumnya cuma konteks buat dibaca.",
             )}
           </p>
         </ScopeScreen>
@@ -155,12 +155,12 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              Biasanya model membuat satu tebakan per posisi: token persis berikutnya. Multi-token prediction
-              memasang head penebak ekstra yang serentak memprediksi dua, tiga, dan empat token ke depan dari
-              titik yang sama -- seperti murid catur yang diminta menyebut beberapa langkah berikutnya, bukan
-              cuma satu. Model belajar lebih banyak dari tiap posisi, dan head ekstranya berbuah lagi nanti:
-              saat menghasilkan teks mereka bisa mengusulkan beberapa token sekaligus untuk dicek cepat, trik
-              kecepatan bernama speculative decoding.
+              Biasanya model bikin satu tebakan per posisi: token persis berikutnya. Multi-token prediction
+              masang head penebak ekstra yang serentak nge-prediksi dua, tiga, dan empat token ke depan dari
+              titik yang sama -- kayak murid catur yang diminta nyebut beberapa langkah berikutnya, bukan cuma
+              satu. Model belajar lebih banyak dari tiap posisi, dan head ekstranya berbuah lagi nanti: pas
+              generate teks mereka bisa ngusulin beberapa token sekaligus buat dicek cepat, trik kecepatan
+              namanya speculative decoding.
             </p>
           }
         />
@@ -218,13 +218,13 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              Berlatih pada teks yang sangat panjang sejak hari pertama itu mahal -- biaya langkah attention
-              tumbuh cepat mengikuti panjang teks. Maka kebanyakan pelatihan mengerjakan porsi besarnya pada
-              teks lebih pendek (beberapa ribu token) dan meregang setelahnya. Ingat RoPE dari pelajaran 1.4,
-              yang mengodekan posisi dengan memutar angka-angka tiap kata? Meregang kebanyakan berarti
-              menyetel sudut-sudut putaran itu supaya rentang sudut yang sama mencakup bentangan teks lebih
-              panjang -- seperti menandai ulang penggaris supaya panjang fisik yang sama kini mengukur jarak
-              lebih jauh -- diikuti fase pelatihan ekstra singkat pada panjang baru supaya model terbiasa.
+              Training di teks yang panjang banget sejak hari pertama itu mahal -- biaya langkah attention naik
+              cepet ngikutin panjang teks. Makanya kebanyakan training ngerjain porsi gedenya di teks lebih
+              pendek (beberapa ribu token) dan meregang setelahnya. Inget RoPE dari pelajaran 1.4, yang nge-encode
+              posisi dengan muter angka-angka tiap kata? Meregang kebanyakan artinya nyetel sudut-sudut putaran
+              itu biar rentang sudut yang sama nyakup bentangan teks lebih panjang -- kayak nandain ulang
+              penggaris biar panjang fisik yang sama sekarang ngukur jarak lebih jauh -- diikuti fase training
+              ekstra singkat di panjang baru biar model terbiasa.
             </p>
           }
         />
@@ -243,14 +243,14 @@ export default function AdvancedPretrainingObjectives() {
           }
           id={
             <p>
-              <strong>Kurikulum</strong> adalah keputusan penjadwalan, bukan perubahan mesin: banyak resep
-              pelatihan sengaja menahan bahan terbaiknya -- teks yang tersaring cermat, buku pelajaran, data
-              bergaya tanya-jawab -- untuk bentangan akhir pelatihan, saat model sudah punya fondasi untuk
-              benar-benar memetiknya. Logika yang sama dengan kurikulum sekolah: kalkulus datang setelah
-              aljabar. Satu sepupu terakhir yang layak dikenal namanya: <strong>span corruption</strong> juga
-              mengajarkan isi-lubang dengan mengosongkan potongan acak, tetapi ia mengubah cara model boleh
-              membaca teksnya. Seluruh daya tarik FIM adalah ia tidak begitu -- ia hanya mengocok teks dan
-              membiarkan mesin kiri-ke-kanan biasa mengerjakan sisanya.
+              <strong>Kurikulum</strong> itu keputusan penjadwalan, bukan perubahan mesin: banyak resep training
+              sengaja nahan bahan terbaiknya -- teks yang tersaring cermat, buku pelajaran, data bergaya
+              tanya-jawab -- buat bentangan akhir training, pas model udah punya fondasi buat beneran metiknya.
+              Logika yang sama kayak kurikulum sekolah: kalkulus datang setelah aljabar. Satu sepupu terakhir
+              yang layak dikenal namanya: <strong>span corruption</strong> juga ngajarin isi-lubang dengan
+              ngosongin potongan acak, tapi dia ngubah cara model boleh baca teksnya. Seluruh daya tarik FIM
+              itu dia nggak gitu -- dia cuma ngocok teks dan ngebiarin mesin kiri-ke-kanan biasa ngerjain
+              sisanya.
             </p>
           }
         />

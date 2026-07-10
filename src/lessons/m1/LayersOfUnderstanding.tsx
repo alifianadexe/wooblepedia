@@ -85,12 +85,11 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Satu operasi attention saja sudah berguna. Model sungguhan menjalankan beberapa sekaligus
-              berdampingan -- disebut <strong>head</strong> -- lalu menumpuk lusinan lapisan seperti ini.
-              Pelajaran ini membahas apa yang kamu dapat dari semua itu: head-head berbeda yang
-              masing-masing belajar mengawasi jenis hubungan antarkata yang berbeda, dan desain "jumlah
-              berjalan" yang cerdik (residual stream) yang membuat model sedalam 100 lapisan tetap bisa
-              dilatih.
+              Satu operasi attention aja udah berguna. Model beneran menjalankan beberapa sekaligus
+              berdampingan -- disebut <strong>head</strong> -- lalu numpuk lusinan layer kayak gini.
+              Pelajaran ini membahas apa yang kamu dapat dari semua itu: head-head beda yang masing-masing
+              belajar mengawasi jenis hubungan antar-kata yang beda, dan desain "jumlah berjalan" yang cerdik
+              (residual stream) yang bikin model sedalam 100 layer tetap bisa di-training.
             </p>
           }
         />
@@ -105,11 +104,11 @@ export default function LayersOfUnderstanding() {
           "Early layers tend to notice surface-level things (which word is next door, exact repeats); deeper layers combine those clues into more abstract understanding.",
         ],
         [
-          "Multi-head attention menjalankan beberapa operasi attention lebih kecil berdampingan, masing-masing dengan lensa hasil belajarnya sendiri, lalu menjahit jawaban mereka kembali jadi satu -- dan tiap head cenderung berspesialisasi memperhatikan satu jenis hubungan.",
-          "Residual stream adalah jumlah berjalan: tiap lapisan membaca angka saat ini dan menambahkan sumbangan kecilnya di atasnya, bukan mengganti semuanya. Desain penjumlahan itulah kenapa model yang sangat dalam tetap bisa belajar -- sinyal pelatihan punya jalan lurus kembali melewati semua tanda tambah.",
-          "Layer norm hanyalah kenop volume yang menjaga jumlah berjalan itu tidak melantur terlalu besar atau kecil saat lusinan lapisan terus menambah. Ia menyumbang kestabilan, bukan kecerdasan.",
-          "Attention adalah satu-satunya langkah tempat kata bertukar informasi; MLP setelahnya menggarap tiap kata sendirian -- dan ia memegang kira-kira dua pertiga angka hasil belajar sebuah lapisan, berperilaku sangat mirip gudang fakta-dan-pola milik model.",
-          "Lapisan awal cenderung memperhatikan hal-hal di permukaan (kata mana yang bersebelahan, pengulangan persis); lapisan lebih dalam menggabungkan petunjuk itu menjadi pemahaman yang lebih abstrak.",
+          "Multi-head attention menjalankan beberapa operasi attention lebih kecil berdampingan, masing-masing dengan lensa hasil training-nya sendiri, lalu menjahit jawaban mereka balik jadi satu -- dan tiap head cenderung nge-spesialisasi memperhatikan satu jenis hubungan.",
+          "Residual stream itu jumlah berjalan: tiap layer baca angka saat ini dan nambahin sumbangan kecilnya di atasnya, bukan ngeganti semuanya. Desain penjumlahan itulah kenapa model yang sangat dalam tetap bisa belajar -- sinyal training punya jalan lurus balik lewat semua tanda tambah.",
+          "Layer norm cuma kenop volume yang jaga jumlah berjalan itu biar nggak melantur terlalu besar atau kecil pas lusinan layer terus nambah. Ia nyumbang kestabilan, bukan kecerdasan.",
+          "Attention itu satu-satunya step tempat kata bertukar informasi; MLP setelahnya menggarap tiap kata sendiri -- dan ia megang kira-kira dua pertiga angka hasil training sebuah layer, jalannya mirip banget gudang fakta-dan-pola milik model.",
+          "Layer awal cenderung memperhatikan hal-hal di permukaan (kata mana yang bersebelahan, pengulangan persis); layer lebih dalam menggabungkan petunjuk itu jadi pemahaman yang lebih abstrak.",
         ],
       )}
       references={[
@@ -153,22 +152,22 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Alih-alih menjalankan satu operasi attention besar, tiap lapisan membagi pekerjaan ke beberapa{" "}
-              <strong>head</strong> yang lebih kecil. Tiap head mendapat lensa hasil belajarnya sendiri untuk
-              membuat query, key, dan value, menjalankan matematika attention dari pelajaran lalu secara mandiri,
-              lalu jawaban semua head dijahit kembali dan dicampur. Bayangkan sekelompok teman menonton film
-              yang sama: satu mengikuti alur, satu memperhatikan kostum, satu menangkap lelucon di latar.
-              Tidak ada yang membagi tugas itu -- dan tidak ada pula yang membagi tugas ke head attention --
-              tetapi spesialisasi muncul dengan andal selama pelatihan: sebagian head akhirnya mengawasi
-              posisi kata, sebagian melacak kata yang berulang, sebagian mengikuti hubungan tata bahasa
-              seperti kata benda mana milik sebuah kata kerja. Lab di bawah menghitung tiga head yang
-              sungguh berbeda secara langsung, bukan gambar rekayasa.
+              Ketimbang menjalankan satu operasi attention besar, tiap layer membagi kerjaan ke beberapa{" "}
+              <strong>head</strong> yang lebih kecil. Tiap head dapat lensa hasil training-nya sendiri buat
+              bikin query, key, dan value, menjalankan matematika attention dari pelajaran lalu secara
+              mandiri, lalu jawaban semua head dijahit balik dan dicampur. Bayangin sekelompok teman nonton
+              film yang sama: satu ngikutin alur, satu merhatiin kostum, satu nangkep lelucon di latar. Nggak
+              ada yang ngebagi tugas itu -- dan nggak ada juga yang ngebagi tugas ke head attention -- tapi
+              spesialisasi muncul dengan andal selama training: sebagian head akhirnya ngawasin posisi kata,
+              sebagian ngelacak kata yang berulang, sebagian ngikutin hubungan tata bahasa kayak kata benda
+              mana yang punya sebuah kata kerja. Lab di bawah menghitung tiga head yang beneran beda secara
+              langsung, bukan gambar rekayasa.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Lab — three heads, the same sentence, real weights", "Lab — tiga head, kalimat sama, bobot asli")}>
+      <Section title={pick(lang, "Lab — three heads, the same sentence, real weights", "Lab — tiga head, kalimat sama, weight asli")}>
         <Bi
           en={
             <p>
@@ -181,9 +180,9 @@ export default function LayersOfUnderstanding() {
           id={
             <p>
               Kalimatnya "the cat sat on the mat", dengan intip-ke-depan diblokir. Head A mencocokkan kata
-              berdasarkan maknanya, memakai ulang susunan pelajaran lalu. Head B dibuat untuk selalu melihat
-              kata yang datang tepat sebelumnya. Head C mencocokkan berdasarkan identitas kata semata -- jadi
-              "the" kedua (posisi 4) semestinya menyala kuat untuk "the" pertama (posisi 0).
+              berdasarkan maknanya, pakai ulang susunan pelajaran lalu. Head B dibikin buat selalu lihat kata
+              yang datang tepat sebelumnya. Head C mencocokkan berdasarkan identitas kata doang -- jadi "the"
+              kedua (posisi 4) mestinya menyala kuat ke "the" pertama (posisi 0).
             </p>
           }
         />
@@ -197,7 +196,7 @@ export default function LayersOfUnderstanding() {
             {pick(
               lang,
               'Read each row as "when this token does the looking, how much lands on each column." Head B shows a bright stripe just below the diagonal (everyone looking one word back); in Head C, row 4 ("the") lights up at column 0 (the other "the").',
-              'Baca tiap baris sebagai "saat token ini yang melihat, berapa banyak jatuh ke tiap kolom." Head B menampilkan garis terang tepat di bawah diagonal (semua melihat satu kata ke belakang); di Head C, baris 4 ("the") menyala di kolom 0 ("the" satunya).',
+              'Baca tiap baris sebagai "pas token ini yang melihat, berapa banyak jatuh ke tiap kolom." Head B menampilkan garis terang tepat di bawah diagonal (semua lihat satu kata ke belakang); di Head C, baris 4 ("the") menyala di kolom 0 ("the" satunya).',
             )}
           </p>
         </ScopeScreen>
@@ -207,7 +206,7 @@ export default function LayersOfUnderstanding() {
         title={pick(
           lang,
           "The residual stream: a shared document everyone adds notes to",
-          "Residual stream: dokumen bersama yang semua orang menempeli catatan",
+          "Residual stream: dokumen bareng yang semua orang nempelin catatan",
         )}
       >
         <Bi
@@ -230,21 +229,20 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Dari lapisan embedding sampai ujung akhir, tiap kata membawa satu vektor -- si{" "}
-              <strong>residual stream</strong> -- dan inilah pilihan desain krusialnya: tidak ada lapisan yang
-              pernah menggantinya. Tiap langkah attention dan MLP membaca vektor saat ini, menghitung
-              sumbangannya, lalu <em>menambahkannya</em> di atas:{" "}
-              <code>stream = stream + sumbangan lapisan ini</code>. Bayangkan dokumen bersama yang
-              dioper menyusuri barisan panjang editor, di mana tiap editor hanya boleh menempelkan catatan di
-              pinggir, tak pernah menulis ulang teksnya. Desain penjumlahan ini adalah rahasia melatih model
-              yang sangat dalam. Selama pelatihan, sinyal koreksi harus berjalan mundur dari jawaban akhir ke
-              lapisan-lapisan paling awal, dan di desain jaringan lama ia memudar jadi tak tersisa di
-              perjalanan -- seperti pesan yang kacau dalam permainan bisik berantai seratus orang. Dengan
-              penjumlahan, sinyal lewat lurus melalui setiap tanda tambah tanpa berkurang, sehingga lapisan 1
-              dari model 100 lapisan pun mendengar jelas apa yang harus ia perbaiki. Layer norm, langkah kecil
-              yang akan sering kamu dengar seputar transformer, hanyalah kenop volume: dengan lusinan editor
-              menambah catatan, angka-angkanya akan melantur makin besar, dan layer norm menskalakan ulang ke
-              ukuran yang mantap. Kestabilan, bukan kecerdasan.
+              Dari layer embedding sampai ujung akhir, tiap kata membawa satu vektor -- si{" "}
+              <strong>residual stream</strong> -- dan inilah pilihan desain krusialnya: nggak ada layer yang
+              pernah ngegantinya. Tiap step attention dan MLP baca vektor saat ini, menghitung sumbangannya,
+              lalu <em>nambahin</em> di atasnya: <code>stream = stream + sumbangan layer ini</code>. Bayangin
+              dokumen bareng yang dioper nyusurin barisan panjang editor, di mana tiap editor cuma boleh
+              nempelin catatan di pinggir, nggak pernah nulis ulang teksnya. Desain penjumlahan ini rahasia
+              buat nge-training model yang sangat dalam. Selama training, sinyal koreksi harus jalan mundur
+              dari jawaban akhir ke layer-layer paling awal, dan di desain network lama ia memudar sampai tak
+              tersisa di jalan -- kayak pesan yang kacau di permainan bisik berantai seratus orang. Dengan
+              penjumlahan, sinyal lewat lurus melalui tiap tanda tambah tanpa berkurang, jadi layer 1 dari
+              model 100 layer pun denger jelas apa yang harus ia perbaiki. Layer norm, step kecil yang bakal
+              sering kamu denger seputar transformer, cuma kenop volume: dengan lusinan editor terus nambah
+              catatan, angka-angkanya bakal melantur makin besar, dan layer norm nge-scale ulang ke ukuran
+              yang mantap. Kestabilan, bukan kecerdasan.
             </p>
           }
         />
@@ -285,14 +283,13 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Cara berguna mengingat pembagian kerjanya: attention adalah langkah bicara -- satu-satunya momen
+              Cara gampang inget pembagian kerjanya: attention itu step "ngobrol" -- satu-satunya momen
               vektor sebuah kata bisa dipengaruhi kata lain. <strong>MLP</strong> (singkatan "multi-layer
-              perceptron", tumpukan kecil operasi pengolah angka) adalah langkah berpikir: ia mengambil
-              vektor satu kata, sendirian, dan mengubahnya, tanpa bisa melihat kata lain sama sekali.
-              Konkretnya, MLP merentangkan vektor sampai sekitar 4 kali lebarnya, menerapkan saringan
-              sederhana, lalu memerasnya kembali -- dan pada rasio itu ia memegang kira-kira dua pertiga
-              angka hasil belajar sebuah lapisan (kamu akan memastikan pembagian itu dengan angka sungguhan
-              di pelajaran 1.9).
+              perceptron", tumpukan kecil operasi pengolah angka) itu step "mikir": ia ngambil vektor satu
+              kata, sendirian, lalu mengubahnya, tanpa bisa lihat kata lain sama sekali. Konkretnya, MLP
+              merentangkan vektor sampai sekitar 4 kali lebarnya, menerapkan filter sederhana, lalu meresnya
+              balik -- dan di rasio itu ia megang kira-kira dua pertiga angka hasil training sebuah layer
+              (kamu bakal mastiin pembagian itu dengan angka beneran di pelajaran 1.9).
             </p>
           }
         />
@@ -311,15 +308,14 @@ export default function LayersOfUnderstanding() {
           }
           id={
             <p>
-              Kapasitas sebesar itu tidak menganggur. Para peneliti yang mengintip ke dalam model-model ini
-              menemukan MLP berperilaku sangat mirip bank raksasa kartu hafalan jika-maka: paruh pertama
-              belajar mengenali pola di vektor yang masuk ("ini kelihatan seperti nama kota di kalimat
-              tentang geografi"), dan paruh kedua menuliskan kembali informasi yang relevan saat sebuah pola
-              menyala ("kota berpasangan dengan negara"). Kartu-kartu di lapisan awal cenderung menyala pada
-              hal-hal di permukaan -- kata sebelumnya, pengulangan persis, tanda baca. Yang di lapisan lebih
-              dalam menyala pada struktur yang lebih abstrak dan tersusun, termasuk fakta yang tersimpan. Itu
-              kecenderungan yang diamati peneliti di banyak model, bukan aturan kaku yang dipatuhi setiap
-              lapisan.
+              Kapasitas sebesar itu nggak nganggur. Para peneliti yang ngintip ke dalam model-model ini nemu
+              MLP jalannya mirip banget bank raksasa kartu hafalan jika-maka: paruh pertama belajar mengenali
+              pola di vektor yang masuk ("ini kelihatan kayak nama kota di kalimat tentang geografi"), dan
+              paruh kedua nulis balik informasi yang relevan pas sebuah pola menyala ("kota berpasangan sama
+              negara"). Kartu-kartu di layer awal cenderung menyala di hal-hal permukaan -- kata sebelumnya,
+              pengulangan persis, tanda baca. Yang di layer lebih dalam menyala di struktur yang lebih
+              abstrak dan tersusun, termasuk fakta yang tersimpan. Itu kecenderungan yang diamati peneliti di
+              banyak model, bukan aturan kaku yang dipatuhi tiap layer.
             </p>
           }
         />

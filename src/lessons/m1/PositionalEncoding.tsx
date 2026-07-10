@@ -83,12 +83,12 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Ada fakta aneh tentang langkah attention yang akan datang di pelajaran berikutnya: sendirian, ia
-              tak bisa tahu urutan kedatangan token. Ia memperlakukan kalimat seperti sekantong kata --
-              "kucing itu duduk" dan "duduk itu kucing" terlihat identik baginya. Padahal urutan kata jelas
-              penting ("anjing menggigit orang" bukanlah "orang menggigit anjing"), jadi urutan harus
-              diselundupkan sebagai bagian dari datanya sendiri. Positional encoding adalah caranya: sebelum apa
-              pun terjadi, vektor tiap token dicampuri "stempel posisi" -- pola angka unik yang berkata "aku
+              Ada fakta aneh soal step attention yang bakal datang di pelajaran berikutnya: kalau berdiri
+              sendiri, ia nggak bisa tahu urutan kedatangan token. Ia memperlakukan kalimat kayak sekantong
+              kata -- "kucing itu duduk" dan "duduk itu kucing" kelihatan identik buat dia. Padahal urutan
+              kata jelas penting ("anjing menggigit orang" beda dengan "orang menggigit anjing"), jadi urutan
+              harus diselipin sebagai bagian dari datanya sendiri. Positional encoding-lah caranya: sebelum apa
+              pun terjadi, vektor tiap token dicampuri "stempel posisi" -- pola angka unik yang bilang "aku
               kata ke-1", "aku kata ke-2", dan seterusnya.
             </p>
           }
@@ -104,11 +104,11 @@ export default function PositionalEncoding() {
           "Most modern models use a newer scheme called RoPE, which encodes how far apart two words are rather than each word's absolute spot -- and that handles longer texts much more gracefully.",
         ],
         [
-          "Attention sendirian buta urutan: tanpa informasi posisi, \"kucing itu duduk\" dan \"duduk itu kucing\" keluar persis sama.",
-          "Perbaikan klasiknya menambahkan pola gelombang tetap (dari sinus dan kosinus) ke vektor tiap token -- tanpa pembelajaran, murni rumus.",
-          "Polanya mencampur gelombang cepat dan lambat, seperti jarum detik dan jarum jam: yang cepat membedakan posisi bertetangga, yang lambat menunjukkan kira-kira di mana kamu berada, dan bersama-sama setiap posisi mendapat stempel unik.",
-          "Kata yang sama di dua posisi berbeda sungguh menjadi dua vektor berbeda -- lab di bawah menghitungnya langsung, bukan sekadar mengklaim.",
-          "Kebanyakan model modern memakai skema lebih baru bernama RoPE, yang mengodekan seberapa jauh dua kata terpisah alih-alih posisi mutlak tiap kata -- dan itu menangani teks panjang jauh lebih anggun.",
+          "Attention sendirian itu buta urutan: tanpa informasi posisi, \"kucing itu duduk\" dan \"duduk itu kucing\" keluar persis sama.",
+          "Perbaikan klasiknya nambahin pola gelombang tetap (dari sinus dan kosinus) ke vektor tiap token -- tanpa learning, murni rumus.",
+          "Polanya mencampur gelombang cepat dan lambat, kayak jarum detik dan jarum jam: yang cepat membedakan posisi bertetangga, yang lambat menunjukkan kira-kira kamu ada di mana, dan digabung, tiap posisi dapat stempel yang unik.",
+          "Kata yang sama di dua posisi beda beneran jadi dua vektor beda -- lab di bawah menghitungnya langsung, bukan cuma ngeklaim.",
+          "Kebanyakan model modern pakai skema yang lebih baru bernama RoPE, yang mengodekan seberapa jauh dua kata terpisah ketimbang posisi mutlak tiap kata -- dan itu menangani teks panjang jauh lebih mulus.",
         ],
       )}
       references={[
@@ -144,13 +144,13 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Bayangkan seseorang menyerahkan setumpuk foto liburan tanpa tanggal tertulis, dan tumpukannya
-              sudah teracak. Sekuat apa pun menatapnya, kamu tak akan bisa memulihkan foto mana yang lebih
-              dulu -- informasi urutannya memang tidak ada. Attention menerima token persis dalam kondisi itu:
-              sebuah kumpulan, bukan barisan. Positional encoding adalah perbaikannya, dan cara kerjanya seperti
-              menuliskan tanggal di belakang tiap foto sebelum diacak: pola yang bergantung posisi ditambahkan
-              langsung ke vektor tiap token sebelum lapisan attention pertama berjalan, sehingga "urutan" ikut
-              bepergian bersama datanya sendiri, bukan sesuatu yang harus dilacak mesin secara terpisah.
+              Bayangin ada orang nyerahin setumpuk foto liburan tanpa tanggal, dan tumpukannya udah keacak.
+              Sekuat apa pun kamu menatapnya, kamu nggak bakal bisa balikin foto mana yang lebih dulu --
+              informasi urutannya emang nggak ada. Attention nerima token persis dalam kondisi itu: sebuah
+              kumpulan, bukan barisan. Positional encoding-lah perbaikannya, dan cara kerjanya kayak nulis
+              tanggal di belakang tiap foto sebelum diacak: pola yang bergantung posisi ditambahkan langsung
+              ke vektor tiap token sebelum layer attention pertama jalan, jadi "urutan" ikut jalan bareng
+              datanya sendiri, bukan sesuatu yang harus dilacak mesin secara terpisah.
             </p>
           }
         />
@@ -160,7 +160,7 @@ export default function PositionalEncoding() {
         title={pick(
           lang,
           "The wave formula, and why it uses many speeds at once",
-          "Rumus gelombangnya, dan kenapa memakai banyak kecepatan sekaligus",
+          "Rumus gelombangnya, dan kenapa pakai banyak kecepatan sekaligus",
         )}
       >
         <Bi
@@ -175,9 +175,9 @@ export default function PositionalEncoding() {
           id={
             <p>
               Transformer yang asli membangun tiap stempel posisi dari gelombang -- kurva sinus dan kosinus
-              yang mulus dan berulang dari pelajaran matematika. Tiap slot di vektor mendapat gelombangnya
-              sendiri, dan tiap gelombang berulang dengan kecepatan berbeda. Untuk posisi <code>pos</code>,
-              slot <code>2i</code> mendapat sinus dan slot <code>2i+1</code> mendapat kosinus:
+              yang mulus dan berulang, yang dulu kamu pelajari di matematika. Tiap slot di vektor dapat
+              gelombangnya sendiri, dan tiap gelombang berulang dengan kecepatan beda. Untuk posisi{" "}
+              <code>pos</code>, slot <code>2i</code> dapat sinus dan slot <code>2i+1</code> dapat kosinus:
             </p>
           }
         />
@@ -197,18 +197,18 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Rumusnya terlihat seram, tetapi idenya adalah jam dinding. Jarum detik berputar cepat: ia bisa
-              membedakan dua saat yang berdekatan tetapi tak berkata apa pun soal jamnya. Jarum jam bergerak
-              lambat: ia memberi gambaran besar tetapi bukan detail halus. Satu jarum saja tak bisa
-              memastikan waktu -- keduanya bersama bisa. Sama di sini: gelombang cepat membedakan posisi
-              bertetangga, gelombang lambat menunjukkan kira-kira di mana kamu berada di seluruh teks, dan
-              kombinasi penuhnya memberi setiap posisi pola yang jadi miliknya sendiri.
+              Rumusnya kelihatan serem, tapi idenya cuma jam dinding. Jarum detik muter cepat: ia bisa
+              membedakan dua saat yang berdekatan tapi nggak bilang apa-apa soal jamnya. Jarum jam gerak
+              lambat: ia kasih gambaran besar tapi bukan detail halus. Satu jarum aja nggak bisa memastikan
+              waktu -- keduanya bareng baru bisa. Sama di sini: gelombang cepat membedakan posisi bertetangga,
+              gelombang lambat menunjukkan kira-kira kamu ada di mana dalam seluruh teks, dan kombinasi
+              lengkapnya kasih tiap posisi sebuah pola yang jadi miliknya sendiri.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "Lab — the real PE matrix, and one row of it", "Lab — matriks PE sungguhan, dan satu barisnya")}>
+      <Section title={pick(lang, "Lab — the real PE matrix, and one row of it", "Lab — matriks PE beneran, dan satu barisnya")}>
         <Bi
           en={
             <p>
@@ -221,11 +221,11 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Di bawah ini pola gelombang sungguhan untuk vektor 64 angka pada 128 posisi, dihitung langsung.
-              Setiap kolom adalah stempel satu posisi; kuning berarti angka positif, biru kehijauan berarti
-              negatif. Geser slider untuk memilih posisi -- kolom itu diberi garis tepi, dan 64 nilainya
-              digambar sebagai garis bergelombang di bawahnya. Perhatikan baris-baris atas berkedip cepat
-              saat kamu menggeser (gelombang cepat) sementara baris bawah nyaris tak berubah (gelombang lambat).
+              Di bawah ini pola gelombang beneran untuk vektor 64 angka di 128 posisi, dihitung secara
+              langsung. Tiap kolom itu stempel satu posisi; kuning berarti angka positif, biru kehijauan
+              berarti negatif. Geser slider buat milih posisi -- kolom itu dikasih garis tepi, dan 64 nilainya
+              digambar jadi garis bergelombang di bawahnya. Perhatiin baris-baris atas berkedip cepat pas kamu
+              geser (gelombang cepat), sementara baris bawah nyaris nggak berubah (gelombang lambat).
             </p>
           }
         />
@@ -264,10 +264,10 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Balik sakelarnya: kata "the" berangkat dari baris tabel yang identik di kedua kesempatan
-              (pencarian di pelajaran 1.3 tak pernah berubah). Satu-satunya perbedaan adalah stempel posisi
-              mana yang ditambahkan -- milik posisi 0 atau posisi 4 -- dan itu saja sudah cukup membuat kedua
-              vektor akhirnya sungguh berbeda saat tiba di lapisan attention.
+              Balik toggle-nya: kata "the" berangkat dari baris tabel yang identik di kedua kesempatan
+              (lookup di pelajaran 1.3 nggak pernah berubah). Satu-satunya beda itu stempel posisi mana yang
+              ditambahkan -- punya posisi 0 atau posisi 4 -- dan cuma itu udah cukup bikin kedua vektor
+              akhirnya beneran beda pas tiba di layer attention.
             </p>
           }
         />
@@ -293,7 +293,7 @@ export default function PositionalEncoding() {
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
             {pick(lang, "Position 0 vector", "Vektor posisi 0")}: [{vecAt0.map((v) => v.toFixed(2)).join(", ")}] —{" "}
             {pick(lang, "Position 4 vector", "Vektor posisi 4")}: [{vecAtP.map((v) => v.toFixed(2)).join(", ")}].{" "}
-            {pick(lang, "Same token, different vectors.", "Token sama, vektor berbeda.")}
+            {pick(lang, "Same token, different vectors.", "Token sama, vektor beda.")}
           </p>
         </ScopeScreen>
       </Section>
@@ -311,12 +311,12 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Alih-alih rumus tetap, model juga bisa sekadar <em>mempelajari</em> stempel posisinya -- tabel
-              kedua dengan satu baris terlatih per posisi, ditambahkan ke vektor kata dengan cara yang sama.
-              Model-model era GPT-2 melakukan ini. Kelemahannya adalah kaku: kalau tabel hanya pernah dilatih
-              untuk posisi 0 sampai 1.023, maka posisi 1.024 sama sekali tak punya baris yang masuk akal --
-              seperti hotel dengan persis 1.024 kotak surat bernomor yang tiba-tiba harus melayani tamu nomor
-              1.025.
+              Ketimbang pakai rumus tetap, model juga bisa sekadar <em>mempelajari</em> stempel posisinya --
+              tabel kedua dengan satu baris terlatih per posisi, ditambahkan ke vektor kata dengan cara yang
+              sama. Model-model era GPT-2 melakukan ini. Kelemahannya kaku: kalau tabelnya cuma pernah
+              di-training untuk posisi 0 sampai 1.023, maka posisi 1.024 sama sekali nggak punya baris yang
+              masuk akal -- kayak hotel dengan persis 1.024 kotak surat bernomor yang tiba-tiba harus melayani
+              tamu nomor 1.025.
             </p>
           }
         />
@@ -335,15 +335,15 @@ export default function PositionalEncoding() {
           }
           id={
             <p>
-              Kebanyakan model masa kini justru memakai <strong>RoPE</strong> ("rotary position embedding").
-              Alih-alih menambahkan stempel ke tiap token, RoPE memutar pelan panah tiap token dengan sudut
-              yang bergantung pada posisinya -- token ke-10 diputar sedikit, token ke-100 diputar banyak.
-              Akibat cerdiknya: saat dua panah yang sudah diputar dibandingkan di langkah attention, yang penting
-              ternyata adalah <em>selisih</em> sudut keduanya -- dengan kata lain, seberapa jauh kedua kata
-              terpisah, bukan di mana masing-masing duduk secara mutlak. "Terpisah lima kata" berperilaku sama
-              di mana pun dalam teks, dan justru itulah kenapa RoPE menangani teks yang lebih panjang dari apa
-              pun yang pernah dilihat saat pelatihan dengan jauh lebih anggun. Kamu akan melihatnya dipakai
-              sungguhan di pelajaran 2.2.
+              Kebanyakan model masa kini justru pakai <strong>RoPE</strong> ("rotary position embedding").
+              Ketimbang nambahin stempel ke tiap token, RoPE memutar pelan panah tiap token dengan sudut yang
+              bergantung pada posisinya -- token ke-10 diputar dikit, token ke-100 diputar banyak. Akibat
+              cerdiknya: pas dua panah yang udah diputar dibandingkan di step attention, yang penting ternyata
+              malah <em>selisih</em> sudut keduanya -- dengan kata lain, seberapa jauh kedua kata terpisah,
+              bukan di mana masing-masing duduk secara absolut. "Terpisah lima kata" jalannya sama di mana pun
+              dalam teks, dan justru itulah kenapa RoPE menangani teks yang lebih panjang dari apa pun yang
+              pernah dilihat saat training dengan jauh lebih mulus. Kamu bakal lihat ia dipakai beneran di
+              pelajaran 2.2.
             </p>
           }
         />

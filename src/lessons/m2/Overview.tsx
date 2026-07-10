@@ -63,11 +63,11 @@ export default function Overview() {
           }
           id={
             <p>
-              Pra-pelatihan adalah fase saat pengetahuan benar-benar dituliskan ke angka-angka hasil belajar
-              model -- dan sejauh ini, inilah bagian yang mahal. Modul 1 membangun mesinnya; Modul 2 tentang
-              memberi makan mesin itu triliunan kata, yang memakan waktu berbulan-bulan, ribuan komputer, dan
-              anggaran puluhan juta dolar. Pada skala itu, masalah-masalah sulitnya berhenti menjadi soal
-              matematika dan berubah menjadi soal logistik.
+              Pra-training itu fase saat pengetahuan beneran dituliskan ke angka-angka hasil training model
+              -- dan sejauh ini, inilah bagian yang mahal. Modul 1 membangun mesinnya; Modul 2 soal ngasih
+              makan mesin itu triliunan kata, yang makan waktu berbulan-bulan, ribuan komputer, dan budget
+              puluhan juta dolar. Di skala segitu, masalah-masalah sulitnya berhenti jadi soal matematika dan
+              berubah jadi soal logistik.
             </p>
           }
         />
@@ -82,11 +82,11 @@ export default function Overview() {
           "Almost everything hard in this module -- data pipelines, keeping thousands of computers in sync, recovering from crashes -- is engineering and logistics, not new math.",
         ],
         [
-          "Pra-pelatihan tetaplah loop tebak-lalu-nilai dari pelajaran 1.7, dijalankan pada teks berjumlah raksasa. Resep intinya tak berubah mendasar sejak GPT-2.",
-          "Tiga mata uang mengatur setiap pelatihan: komputasi (C, hitungan mentah yang kamu bayar), parameter (N, ukuran model), dan data (D, berapa token yang ia baca). Ketiganya terikat satu rumus: C ≈ 6·N·D.",
-          "Pelatihan sungguhan punya empat fase -- siapkan data, tokenization dan kemas, latih dengan titik-simpan rutin, dan evaluasi terus-menerus -- dan masing-masing mendapat pelajarannya sendiri di modul ini.",
-          "Dari GPT-2 ke model terdepan hari ini, anggaran komputasi tumbuh sekitar 500.000 kali lipat. Mesinnya nyaris tak berubah; skalanyalah yang berubah.",
-          "Hampir semua yang sulit di modul ini -- jalur data, menjaga ribuan komputer tetap serempak, pulih dari crash -- adalah rekayasa dan logistik, bukan matematika baru.",
+          "Pra-training tetaplah loop tebak-lalu-nilai dari pelajaran 1.7, dijalankan di teks berjumlah raksasa. Resep intinya nggak berubah mendasar sejak GPT-2.",
+          "Tiga mata uang ngatur tiap training: compute (C, hitungan mentah yang kamu bayar), parameter (N, ukuran model), dan data (D, berapa token yang ia baca). Ketiganya terikat satu rumus: C ≈ 6·N·D.",
+          "Training beneran punya empat fase -- siapin data, tokenization dan kemas, training dengan save-point rutin, dan evaluasi terus-menerus -- dan masing-masing dapat pelajarannya sendiri di modul ini.",
+          "Dari GPT-2 ke model terdepan hari ini, budget compute tumbuh sekitar 500.000 kali lipat. Mesinnya nyaris nggak berubah; skalanyalah yang berubah.",
+          "Hampir semua yang sulit di modul ini -- data pipeline, jaga ribuan komputer tetap serempak, recover dari crash -- itu engineering dan logistik, bukan matematika baru.",
         ],
       )}
       references={[
@@ -123,14 +123,14 @@ export default function Overview() {
           }
           id={
             <p>
-              Setiap pelatihan adalah tawar-menawar antara tiga besaran. <strong>Komputasi</strong> (C)
-              adalah total aritmetika mentah yang dikerjakan, dihitung dalam operasi kali-dan-tambah satuan
-              (disebut FLOPs) -- inilah yang sesungguhnya dibayar tagihan listrik dan perangkat sewaan.{" "}
-              <strong>Parameter</strong> (N) adalah ukuran model yang dilatih. <strong>Data</strong> (D)
-              adalah berapa token teks yang ia baca selama pelatihan. Sebuah temuan riset terkenal tahun 2020
-              mengikat ketiganya dalam satu rumus sederhana: <code>C ≈ 6·N·D</code>. Dalam kata-kata: tiap
-              parameter berbiaya sekitar 6 operasi untuk tiap token yang ia latih. Pilih dua dari tiganya dan
-              rumus menyerahkan yang ketiga -- dan pelajaran 2.3 seluruhnya tentang memilihnya dengan bijak.
+              Tiap training itu tawar-menawar antara tiga besaran. <strong>Compute</strong> (C) itu total
+              aritmetika mentah yang dikerjakan, dihitung dalam operasi kali-dan-tambah satuan (disebut
+              FLOPs) -- inilah yang sesungguhnya dibayar tagihan listrik dan perangkat sewaan.{" "}
+              <strong>Parameter</strong> (N) itu ukuran model yang di-training. <strong>Data</strong> (D)
+              itu berapa token teks yang ia baca selama training. Sebuah temuan riset terkenal tahun 2020
+              mengikat ketiganya dalam satu rumus sederhana: <code>C ≈ 6·N·D</code>. Gampangnya: tiap
+              parameter makan sekitar 6 operasi buat tiap token yang ia training. Pilih dua dari tiganya dan
+              rumusnya bakal ngasih yang ketiga -- dan pelajaran 2.3 seluruhnya soal milihnya dengan bijak.
             </p>
           }
         />
@@ -148,10 +148,10 @@ export default function Overview() {
           }
           id={
             <p>
-              Atur ukuran model dan jumlah data dengan slider dan lihat biaya komputasinya berubah langsung.
-              (Slider bergerak dalam pangkat sepuluh, karena pelatihan sungguhan merentang dari jutaan hingga
-              triliunan.) Ketiga penanda adalah model sungguhan yang dipublikasikan, ditempatkan sesuai
-              ukuran dan data latihan aslinya.
+              Atur ukuran model dan jumlah data pakai slider dan lihat biaya compute-nya berubah secara
+              langsung. (Slidernya gerak dalam pangkat sepuluh, karena training beneran rentangnya dari
+              jutaan sampai triliunan.) Ketiga penanda itu model beneran yang dipublikasikan, ditempatkan
+              sesuai ukuran dan data training aslinya.
             </p>
           }
         />
@@ -200,7 +200,7 @@ export default function Overview() {
         </ScopeScreen>
       </Section>
 
-      <Section title={pick(lang, "The phase map of a real run", "Peta fase pelatihan sungguhan")}>
+      <Section title={pick(lang, "The phase map of a real run", "Peta fase satu training beneran")}>
         <Bi
           en={
             <p>
@@ -219,17 +219,17 @@ export default function Overview() {
           }
           id={
             <p>
-              Konkretnya, sebuah pelatihan bergerak melalui empat fase, masing-masing dengan pelajarannya
-              sendiri di sini. <strong>Persiapan data</strong>: kumpulkan potongan raksasa internet, saring
-              sampahnya, dan buang duplikatnya (pelajaran 2.4). <strong>Tokenization dan pengemasan</strong>:
-              jalankan semua teks itu lewat tokenizer dan pecah hasilnya menjadi potongan berukuran rata yang
-              disebar ke banyak mesin penyimpanan. <strong>Pelatihan</strong> itu sendiri: loop
-              tebak-lalu-nilai berjalan di sampai ribuan GPU (prosesor khusus, aslinya dibuat untuk grafis
-              gim video, yang kebetulan hebat untuk matematika jenis ini), dengan titik-simpan rutin supaya
-              crash tak menghapus kemajuan berbulan-bulan (pelajaran 2.2, 2.5, 2.6). Dan{" "}
-              <strong>evaluasi</strong>: terus-menerus menguji model pada teks yang belum pernah ia lihat,
-              untuk menangkap masalah lebih awal (pelajaran 2.7). Tak satu pun opsional pada skala besar --
-              latih dengan data sampah dan seluruh anggaran terbuang, sebenar apa pun semua yang lain.
+              Konkretnya, satu training itu jalan lewat empat fase, masing-masing ada pelajarannya sendiri di
+              sini. <strong>Persiapan data</strong>: kumpulin potongan raksasa internet, saring sampahnya, dan
+              buang yang duplikat (pelajaran 2.4). <strong>Tokenization dan pengemasan</strong>: jalanin semua
+              teks itu lewat tokenizer dan pecah hasilnya jadi potongan berukuran rata yang disebar ke banyak
+              mesin penyimpanan. <strong>Training</strong> itu sendiri: loop tebak-lalu-nilai jalan di sampai
+              ribuan GPU (prosesor khusus, aslinya dibikin buat grafis gim video, yang kebetulan jago banget
+              buat matematika jenis ini), dengan checkpoint rutin biar crash nggak ngehapus kemajuan
+              berbulan-bulan (pelajaran 2.2, 2.5, 2.6). Dan <strong>evaluasi</strong>: terus-terusan nguji
+              model pakai teks yang belum pernah dia lihat, buat nangkep masalah lebih awal (pelajaran 2.7).
+              Nggak ada satu pun yang opsional pas skalanya gede -- training pakai data sampah dan seluruh
+              anggaran kebuang, sebener apa pun bagian yang lain.
             </p>
           }
         />
@@ -239,7 +239,7 @@ export default function Overview() {
         title={pick(
           lang,
           "Orders of magnitude, and why this is an engineering module",
-          "Orde besaran, dan kenapa ini modul rekayasa",
+          "Orde besaran, dan kenapa ini modul engineering",
         )}
       >
         <Bi
@@ -256,13 +256,13 @@ export default function Overview() {
           }
           id={
             <p>
-              Pelatihan GPT-2 memakan sekitar 10²¹ operasi. LLaMA 3 405B, empat tahun kemudian, memakan
-              kira-kira 500.000 kali lebih banyak. Bagian mengejutkannya: hampir tak ada dari pertumbuhan itu
-              yang datang dari ide baru. Mesin transformer dari Modul 1 pada dasarnya tak berubah. Yang
-              berubah adalah rekayasa -- jalur data yang lebih baik, sistem yang menjaga ribuan GPU tetap
-              tersuapi dan berbaris serempak, dan disiplin menjaga pelatihan berbulan-bulan tetap hidup saat
-              perangkat keras pasti gagal. Bayangkan bukan "persamaan baru yang brilian" melainkan
-              "menjalankan ekspedisi berbulan-bulan tanpa cela." Itulah benang merah sisa modul ini.
+              Training GPT-2 makan sekitar 10²¹ operasi. LLaMA 3 405B, empat tahun kemudian, makan kira-kira
+              500.000 kali lebih banyak. Bagian yang bikin kaget: hampir nggak ada dari pertumbuhan itu yang
+              datang dari ide baru. Mesin transformer dari Modul 1 pada dasarnya nggak berubah. Yang berubah
+              itu engineering-nya -- data pipeline yang lebih bagus, sistem yang bikin ribuan GPU tetap kesuapi
+              dan jalan serempak, dan disiplin buat jaga training berbulan-bulan tetap hidup pas hardware pasti
+              bakal gagal. Bayanginnya bukan "persamaan baru yang brilian" tapi lebih ke "menjalankan ekspedisi
+              berbulan-bulan tanpa cela." Itulah benang merah sisa modul ini.
             </p>
           }
         />
