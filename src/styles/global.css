@@ -18,6 +18,7 @@
   --magenta: #ff64c8;
   --red: #e5484d;
   --secondary: #213183;
+  --secondary-2: #1a2668;
 
   --text: #191918;
   --text-secondary: #31302e;
@@ -52,6 +53,47 @@
      the brand voice is single-family now, so it resolves to the same Inter
      stack, with tabular numerals turned on where it's applied. */
   --mono: "Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Dark mode -- toggled via the data-theme attribute set by lib/themeMode.tsx.
+   Same relationships as light mode (panel lighter than nested panel-2,
+   accents brightened for contrast against a near-black canvas) so every
+   selector below inherits the swap for free. */
+:root[data-theme="dark"] {
+  --bg: #191919;
+
+  --panel: #242424;
+  --panel-2: #1d1d1d;
+  --screen: #202020;
+
+  --border: #3a3a3a;
+  --border-strong: #4a4a4a;
+
+  --amber: #ff8a3d;
+  --cyan: #4da3ff;
+  --cyan-active: #7cbbff;
+  --green: #4dd273;
+  --magenta: #ff8ad8;
+  --red: #ff6b6b;
+  --secondary: #3548a8;
+  --secondary-2: #2b3990;
+
+  --text: #ededec;
+  --text-secondary: #d4d4d1;
+  --muted: #9b9b98;
+  --faint: #666663;
+
+  --shadow-1:
+    0 0.2px 1px rgba(0, 0, 0, 0.16),
+    0 0.8px 3px rgba(0, 0, 0, 0.19),
+    0 2px 8px rgba(0, 0, 0, 0.23),
+    0 4px 18px rgba(0, 0, 0, 0.28);
+  --shadow-2:
+    0 0.3px 1.5px rgba(0, 0, 0, 0.17),
+    0 2px 8px rgba(0, 0, 0, 0.21),
+    0 5px 15px rgba(0, 0, 0, 0.25),
+    0 10px 24px rgba(0, 0, 0, 0.3),
+    0 23px 52px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -98,7 +140,7 @@ p {
 
 a {
   color: var(--cyan);
-  text-decoration-color: rgba(0, 117, 222, 0.35);
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
 }
 
 a:hover {
@@ -352,7 +394,7 @@ button {
 .hero-band {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, var(--secondary) 0%, #1a2668 100%);
+  background: linear-gradient(160deg, var(--secondary) 0%, var(--secondary-2) 100%);
   border-radius: var(--radius-xl);
   padding: 36px 32px;
   margin-bottom: 32px;

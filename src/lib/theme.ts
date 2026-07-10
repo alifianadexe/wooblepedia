@@ -4,11 +4,16 @@
  * properties in styles/global.css -- a warm-paper, single-accent system
  * modeled on Notion's marketing design language: one structural blue,
  * everything else decorative "sticker" color.
+ *
+ * `colors` and `moduleAccent` are Proxies that resolve against the live
+ * `data-theme` attribute on <html> (see lib/themeMode.tsx), so every lesson
+ * that reads e.g. `colors.cyan` picks up the current light/dark palette
+ * automatically -- no lesson file needs to know dark mode exists.
  */
-export const colors = {
+const LIGHT = {
   background: "#F6F5F4",
   panel: "#FFFFFF",
-  panel2: "#F0EEEB",
+  panel2: "#F0EEEA",
   screen: "#FBFAF9",
   border: "#E6E6E6",
   borderStrong: "#D8D6D3",
@@ -21,7 +26,6 @@ export const colors = {
   text: "#191918",
   muted: "#615D59",
   faint: "#A39E98",
-  // Extended sticker + brand tokens (not aliased above, used directly where needed)
   ink2: "#31302E",
   primaryActive: "#005BAB",
   secondary: "#213183",
@@ -32,13 +36,59 @@ export const colors = {
   onPrimary: "#FFFFFF",
 } as const;
 
+const DARK = {
+  background: "#191919",
+  panel: "#242424",
+  panel2: "#1D1D1D",
+  screen: "#202020",
+  border: "#3A3A3A",
+  borderStrong: "#4A4A4A",
+  gridLine: "rgba(255,255,255,0.06)",
+  amber: "#FF8A3D",
+  cyan: "#4DA3FF",
+  green: "#4DD273",
+  magenta: "#FF8AD8",
+  red: "#FF6B6B",
+  text: "#EDEDEC",
+  muted: "#9B9B98",
+  faint: "#666663",
+  ink2: "#D4D4D1",
+  primaryActive: "#7CBBFF",
+  secondary: "#3548A8",
+  sky: "#8AC4FF",
+  purple: "#E3CBFA",
+  purpleDeep: "#C9A6EE",
+  brown: "#B98352",
+  onPrimary: "#101010",
+} as const;
+
+type Palette = { [K in keyof typeof LIGHT]: string };
+
+function isDarkMode(): boolean {
+  return typeof document !== "undefined" && document.documentElement.getAttribute("data-theme") === "dark";
+}
+
+function livePalette(): Palette {
+  return isDarkMode() ? DARK : LIGHT;
+}
+
+export const colors: Palette = new Proxy({} as Palette, {
+  get(_target, prop: string) {
+    return livePalette()[prop as keyof Palette];
+  },
+}) as Palette;
+
 export type ModuleId = 1 | 2 | 3;
 
-export const moduleAccent: Record<ModuleId, string> = {
-  1: colors.cyan,
-  2: colors.amber,
-  3: colors.magenta,
-};
+export const moduleAccent: Record<ModuleId, string> = new Proxy({} as Record<ModuleId, string>, {
+  get(_target, prop: string) {
+    const id = Number(prop);
+    if (id === 1) return colors.cyan;
+    if (id === 2) return colors.amber;
+    if (id === 3) return colors.magenta;
+    return undefined;
+  },
+}) as Record<ModuleId, string>;
 
 export const moduleName: Record<ModuleId, string> = {
   1: "Architecture",

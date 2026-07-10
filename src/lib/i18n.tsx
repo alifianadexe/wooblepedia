@@ -80,6 +80,8 @@ export const UI = {
     fontSizeAria: "Reading text size",
     fontSmaller: "Decrease text size",
     fontLarger: "Increase text size",
+    themeToDark: "Switch to dark mode",
+    themeToLight: "Switch to light mode",
   },
   id: {
     keyTakeaways: "POIN-POIN KUNCI",
@@ -108,6 +110,8 @@ export const UI = {
     fontSizeAria: "Ukuran teks bacaan",
     fontSmaller: "Perkecil ukuran teks",
     fontLarger: "Perbesar ukuran teks",
+    themeToDark: "Ganti ke mode gelap",
+    themeToLight: "Ganti ke mode terang",
   },
 } as const;
 
