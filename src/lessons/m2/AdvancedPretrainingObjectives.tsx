@@ -118,7 +118,7 @@ export default function AdvancedPretrainingObjectives() {
         <ScopeScreen label="Fill-in-the-middle training sequence rearrangement lab">
           <pre className="mono" style={{ fontSize: 12.5, margin: 0, whiteSpace: "pre-wrap" }}>
             <span style={{ color: colors.muted }}>{prefix}</span>
-            <span style={{ background: "rgba(232,106,166,0.25)", color: colors.magenta }}>{middle}</span>
+            <span style={{ background: "rgba(255,100,200,0.22)", color: colors.magenta }}>{middle}</span>
             <span style={{ color: colors.muted }}>{suffix}</span>
           </pre>
           <Slider label="MIDDLE START (char index)" value={start} min={0} max={SNIPPET.length - 1} step={1} onChange={setMidStart} />
@@ -129,7 +129,7 @@ export default function AdvancedPretrainingObjectives() {
             <span style={{ color: colors.amber }}>&lt;PRE&gt;</span> {prefix}{" "}
             <span style={{ color: colors.cyan }}>&lt;SUF&gt;</span> {suffix}{" "}
             <span style={{ color: colors.magenta }}>&lt;MID&gt;</span>{" "}
-            <span style={{ background: "rgba(232,106,166,0.25)", color: colors.magenta }}>{middle}</span>
+            <span style={{ background: "rgba(255,100,200,0.22)", color: colors.magenta }}>{middle}</span>
           </pre>
           <p className="mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>
             {pick(
@@ -170,7 +170,7 @@ export default function AdvancedPretrainingObjectives() {
             {SEQ_TOKENS.map((t, i) => (
               <g key={i}>
                 <circle cx={20 + i * 38} cy={70} r={i === currentPos ? 7 : 5} fill={i === currentPos ? colors.amber : colors.cyan} />
-                <text x={20 + i * 38} y={86} fontSize={9} fontFamily="monospace" fill={colors.text} textAnchor="middle">{t}</text>
+                <text x={20 + i * 38} y={86} fontSize={9} fontFamily="Inter, sans-serif" fill={colors.text} textAnchor="middle">{t}</text>
               </g>
             ))}
             {(multiToken ? [1, 2, 3, 4] : [1]).map((k) => {

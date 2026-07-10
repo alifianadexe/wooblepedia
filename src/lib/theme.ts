@@ -1,26 +1,35 @@
 /**
  * Solid-color palette for inline SVG/canvas rendering, where fills must be
- * opaque (no CSS variables, no translucency). `panel`/`panel2`/`screen`/
- * `border` are deliberately solid here even though the same-named CSS
- * custom properties in styles/global.css are translucent glass surfaces --
- * SVG rects and canvas fillStyle need a real opaque backdrop to stay
- * readable regardless of what the page's glass panels are doing.
+ * opaque (no CSS variables, no translucency). Mirrors the CSS custom
+ * properties in styles/global.css -- a warm-paper, single-accent system
+ * modeled on Notion's marketing design language: one structural blue,
+ * everything else decorative "sticker" color.
  */
 export const colors = {
-  background: "#05070D",
-  panel: "#0C1322",
-  panel2: "#101A2E",
-  screen: "#08101E",
-  border: "#1C2B44",
-  gridLine: "rgba(62,219,211,0.06)",
-  amber: "#FFB454",
-  cyan: "#3EDBD3",
-  green: "#8CE05F",
-  magenta: "#E86AA6",
-  red: "#F0716B",
-  text: "#DCE6F2",
-  muted: "#7688A4",
-  faint: "#3A4A61",
+  background: "#F6F5F4",
+  panel: "#FFFFFF",
+  panel2: "#F0EEEB",
+  screen: "#FBFAF9",
+  border: "#E6E6E6",
+  borderStrong: "#D8D6D3",
+  gridLine: "rgba(25,25,24,0.05)",
+  amber: "#DD5B00",
+  cyan: "#0075DE",
+  green: "#1AAE39",
+  magenta: "#FF64C8",
+  red: "#E5484D",
+  text: "#191918",
+  muted: "#615D59",
+  faint: "#A39E98",
+  // Extended sticker + brand tokens (not aliased above, used directly where needed)
+  ink2: "#31302E",
+  primaryActive: "#005BAB",
+  secondary: "#213183",
+  sky: "#62AEF0",
+  purple: "#D6B6F6",
+  purpleDeep: "#391C57",
+  brown: "#523410",
+  onPrimary: "#FFFFFF",
 } as const;
 
 export type ModuleId = 1 | 2 | 3;
@@ -38,6 +47,6 @@ export const moduleName: Record<ModuleId, string> = {
 };
 
 export const fonts = {
-  mono: `"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace`,
-  sans: `"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`,
+  mono: `"Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif`,
+  sans: `"Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif`,
 };

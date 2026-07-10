@@ -449,9 +449,9 @@ export default function Introduction() {
                   const y = i * 19;
                   return (
                     <g key={v}>
-                      <text x={0} y={y + 13} fontSize={10} fill={colors.text} fontFamily="monospace">{v}</text>
+                      <text x={0} y={y + 13} fontSize={10} fill={colors.text} fontFamily="Inter, sans-serif">{v}</text>
                       <rect x={46} y={y + 2} width={Math.max(barW, 1)} height={12} fill={colors.green} />
-                      <text x={46 + barW + 6} y={y + 12} fontSize={9} fill={colors.muted} fontFamily="monospace">
+                      <text x={46 + barW + 6} y={y + 12} fontSize={9} fill={colors.muted} fontFamily="Inter, sans-serif">
                         {(p * 100).toFixed(1)}%
                       </text>
                     </g>

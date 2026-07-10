@@ -170,7 +170,7 @@ export default function Overview() {
             {Array.from({ length: LOG_C_MAX - LOG_C_MIN + 1 }, (_, i) => LOG_C_MIN + i).map((exp) => (
               <g key={exp}>
                 <line x1={10 + logAxisX(10 ** exp)} y1={36} x2={10 + logAxisX(10 ** exp)} y2={44} stroke={colors.border} />
-                <text x={10 + logAxisX(10 ** exp)} y={58} fontSize={9} fontFamily="monospace" fill={colors.muted} textAnchor="middle">1e{exp}</text>
+                <text x={10 + logAxisX(10 ** exp)} y={58} fontSize={9} fontFamily="Inter, sans-serif" fill={colors.muted} textAnchor="middle">1e{exp}</text>
               </g>
             ))}
             {MARKERS.map((m) => {
@@ -186,7 +186,7 @@ export default function Overview() {
                   onKeyDown={(e) => { if (e.key === "Enter") setSelected(m); }}
                 >
                   <circle cx={10 + logAxisX(mc)} cy={40} r={6} fill={colors.magenta} />
-                  <text x={10 + logAxisX(mc)} y={25} fontSize={9} fontFamily="monospace" fill={colors.text} textAnchor="middle">{m.name}</text>
+                  <text x={10 + logAxisX(mc)} y={25} fontSize={9} fontFamily="Inter, sans-serif" fill={colors.text} textAnchor="middle">{m.name}</text>
                 </g>
               );
             })}

@@ -150,7 +150,7 @@ export default function SupervisedFineTuning() {
               return (
                 <div key={i} style={{ opacity: dim ? 0.3 : 1 }}>
                   <span className="token-chip" style={{ color: colors.amber, borderColor: colors.amber }}>{turn.tag}</span>{" "}
-                  <span style={{ background: !dim && turn.role === "assistant" ? "rgba(140,224,95,0.12)" : undefined, padding: "2px 4px", borderRadius: 3 }}>
+                  <span style={{ background: !dim && turn.role === "assistant" ? "rgba(26,174,57,0.14)" : undefined, padding: "2px 4px", borderRadius: 3 }}>
                     {turn.text}
                   </span>
                 </div>

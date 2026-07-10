@@ -242,7 +242,7 @@ export default function ScalingLawsOptimization() {
               x2={10 + (warmup / totalSteps) * 380} y2={130}
               stroke={colors.border} strokeDasharray="3 3"
             />
-            <text x={10 + (warmup / totalSteps) * 380 + 4} y={20} fontSize={9} fontFamily="monospace" fill={colors.muted}>warmup ends</text>
+            <text x={10 + (warmup / totalSteps) * 380 + 4} y={20} fontSize={9} fontFamily="Inter, sans-serif" fill={colors.muted}>warmup ends</text>
           </svg>
         </ScopeScreen>
       </Section>

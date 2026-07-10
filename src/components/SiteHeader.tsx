@@ -31,10 +31,13 @@ export function SiteHeader() {
                 onClick={() => setLang(l.value)}
                 aria-pressed={lang === l.value}
                 style={{
-                  padding: "2px 8px",
+                  padding: "3px 9px",
                   fontSize: 11,
+                  fontWeight: 600,
+                  borderRadius: "var(--radius-full)",
                   borderColor: lang === l.value ? colors.cyan : undefined,
                   color: lang === l.value ? colors.cyan : undefined,
+                  background: lang === l.value ? "rgba(0,117,222,0.1)" : undefined,
                 }}
               >
                 {l.label}

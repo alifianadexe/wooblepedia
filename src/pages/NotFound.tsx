@@ -4,12 +4,12 @@ import { useUI } from "../lib/i18n";
 export function NotFound() {
   const ui = useUI();
   return (
-    <div className="panel" style={{ padding: 32, textAlign: "center" }}>
-      <div className="mono" style={{ fontSize: 13, color: "var(--red)", marginBottom: 12 }}>
+    <div className="panel" style={{ padding: 40, textAlign: "center" }}>
+      <div className="uppercase-label" style={{ fontSize: 12, color: "var(--red)", marginBottom: 14 }}>
         SIGNAL LOST — 404
       </div>
-      <p>{ui.notFoundMsg}</p>
-      <Link className="btn btn--primary" to="/">
+      <p style={{ color: "var(--text-secondary)" }}>{ui.notFoundMsg}</p>
+      <Link className="btn btn--primary" to="/" style={{ display: "inline-block", marginTop: 8 }}>
         {ui.backToDashboard}
       </Link>
     </div>

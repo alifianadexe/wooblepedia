@@ -222,7 +222,7 @@ export default function EmbeddingLayer() {
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") toggleSelect(w.id); }}
                 >
                   <circle cx={sx} cy={sy} r={isSelected ? 6 : 4} fill={CLUSTER_COLOR[w.cluster]} stroke={isSelected ? colors.text : "none"} strokeWidth={1.5} />
-                  <text x={sx + 8} y={sy + 4} fontSize={11} fontFamily="monospace" fill={colors.text}>{w.word}</text>
+                  <text x={sx + 8} y={sy + 4} fontSize={11} fontFamily="Inter, sans-serif" fill={colors.text}>{w.word}</text>
                 </g>
               );
             })}

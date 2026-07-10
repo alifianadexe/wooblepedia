@@ -18,7 +18,7 @@ const MATRIX = buildSinusoidalPEMatrix(NUM_POSITIONS, D_MODEL);
 
 function divergeColor(v: number): string {
   const t = Math.min(1, Math.abs(v));
-  return v >= 0 ? `rgba(255,180,84,${0.12 + 0.85 * t})` : `rgba(62,219,211,${0.12 + 0.85 * t})`;
+  return v >= 0 ? `rgba(221,91,0,${0.1 + 0.8 * t})` : `rgba(0,117,222,${0.1 + 0.8 * t})`;
 }
 
 function PEHeatmap({ highlightPos }: { highlightPos: number }) {
