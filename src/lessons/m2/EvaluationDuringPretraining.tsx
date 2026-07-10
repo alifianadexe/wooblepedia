@@ -52,12 +52,12 @@ export default function EvaluationDuringPretraining() {
           }
           id={
             <p>
-              Pelatihan bisa berlangsung berbulan-bulan dan menelan jutaan dolar, dan kamu tak bisa begitu
-              saja berhenti lalu bertanya pada model setengah-jadi bagaimana perasaannya. Seperti penerbangan
-              panjang melintasi samudra, kamu terbang dengan instrumen -- dan satu-satunya instrumen yang
-              kamu punya adalah yang kamu pasang sebelum lepas landas. Pelajaran ini tentang apa sebenarnya
-              instrumen-instrumen itu, dan kenapa dua di antaranya -- satu mulus, satu melonjak-lonjak --
-              bisa sedang mengukur perbaikan mendasar yang persis sama.
+              Training bisa berlangsung berbulan-bulan dan nelen jutaan dolar, dan kamu nggak bisa gitu aja
+              berhenti terus nanya ke model setengah-jadi gimana perasaannya. Kayak penerbangan panjang
+              nyebrang samudra, kamu terbang pakai instrumen -- dan satu-satunya instrumen yang kamu punya itu
+              yang kamu pasang sebelum lepas landas. Pelajaran ini soal apa sebenernya instrumen-instrumen itu,
+              dan kenapa dua di antaranya -- satu mulus, satu melonjak-lonjak -- bisa lagi ngukur perbaikan
+              mendasar yang persis sama.
             </p>
           }
         />
@@ -72,11 +72,11 @@ export default function EvaluationDuringPretraining() {
           "When the wrongness score suddenly spikes, the fix is mundane: rewind to the last save-point, skip the batch that caused it, maybe ease off the learning speed, and resume.",
         ],
         [
-          "Pengukur utamanya adalah skor kesalahan yang diukur pada teks sisihan yang tak pernah dilatihkan ke model -- cukup murah untuk dicek terus-menerus, seperti kuis dadakan yang tak pernah bisa dipelajari model sebelumnya.",
-          "Kurva scaling law dari pelajaran 2.3 merangkap rencana penerbangan: kalau skor terukur melenceng parah dari jalur prediksi, ada yang salah -- tertangkap jauh sebelum tes lain menyadarinya.",
-          "Paket tes standar (trivia, akal sehat, soal koding) hanya dijalankan sesekali dan menilai lulus/gagal -- yang bisa membuat perbaikan mulus di baliknya tampak seperti lompatan ajaib mendadak.",
-          "Skor tes itu hanya bermakna berkat tahap pembersihan dari pelajaran 2.4 yang membuang soal-soal tes dari data latihan -- kalau tidak, model sekadar sudah melihat jawabannya.",
-          "Saat skor kesalahan tiba-tiba melonjak, perbaikannya membosankan: mundur ke titik-simpan terakhir, lewati batch penyebabnya, mungkin kendurkan kecepatan belajar, lalu lanjutkan.",
+          "Pengukur utamanya itu skor kesalahan yang diukur di teks sisihan yang nggak pernah di-training-in ke model -- cukup murah buat dicek terus-terusan, kayak kuis dadakan yang nggak pernah bisa dipelajarin model sebelumnya.",
+          "Kurva scaling law dari pelajaran 2.3 nyambi jadi rencana penerbangan: kalau skor terukur melenceng parah dari jalur prediksi, ada yang salah -- ketangkep jauh sebelum tes lain nyadar.",
+          "Paket tes standar (trivia, akal sehat, soal koding) cuma dijalanin sesekali dan nilainya lulus/gagal -- yang bisa bikin perbaikan mulus di baliknya keliatan kayak lompatan ajaib mendadak.",
+          "Skor tes itu cuma bermakna berkat tahap pembersihan dari pelajaran 2.4 yang buang soal-soal tes dari data training -- kalau nggak, model cuma udah lihat jawabannya.",
+          "Pas skor kesalahan tiba-tiba melonjak, perbaikannya ngebosenin: mundur ke checkpoint terakhir, skip batch penyebabnya, mungkin kendurin learning rate, terus lanjut.",
         ],
       )}
       references={[
@@ -97,7 +97,7 @@ export default function EvaluationDuringPretraining() {
         },
       ]}
     >
-      <Section title={pick(lang, "Lab — a simulated training run", "Lab — simulasi pelatihan")}>
+      <Section title={pick(lang, "Lab — a simulated training run", "Lab — simulasi training")}>
         <Bi
           en={
             <p>
@@ -110,11 +110,11 @@ export default function EvaluationDuringPretraining() {
           }
           id={
             <p>
-              Kurva skor kesalahan ini dihasilkan dari bentuk matematis asli yang diikuti pelatihan sungguhan
-              (dengan derau realistis dan dua lonjakan yang sengaja disuntikkan) -- bukan digambar tangan.
-              Seret melintasi langkah-langkah pelatihan dan lihat pembacaannya berubah. Lalu nyalakan lapisan
-              benchmark untuk membandingkan dua jenis instrumen: skor yang diukur di setiap langkah versus
-              tes yang hanya dijalankan sesekali.
+              Kurva skor kesalahan ini dihasilin dari bentuk matematis asli yang diikutin training beneran
+              (dengan noise realistis dan dua lonjakan yang sengaja disuntikin) -- bukan digambar tangan. Seret
+              nyusurin langkah-langkah training dan lihat pembacaannya berubah. Terus nyalain lapisan benchmark
+              buat ngebandingin dua jenis instrumen: skor yang diukur tiap langkah versus tes yang cuma dijalanin
+              sesekali.
             </p>
           }
         />
@@ -153,7 +153,7 @@ export default function EvaluationDuringPretraining() {
             {pick(
               lang,
               `cyan = loss (measured every step, smooth) — amber = benchmark accuracy (sampled every ${SAMPLE_EVERY} steps, jumpier) — red dashed = injected loss spikes`,
-              `biru kehijauan = loss (diukur tiap langkah, mulus) — kuning = akurasi benchmark (dicuplik tiap ${SAMPLE_EVERY} langkah, lebih melonjak) — merah putus-putus = lonjakan loss suntikan`,
+              `biru kehijauan = loss (diukur tiap langkah, mulus) — kuning = akurasi benchmark (dicuplik tiap ${SAMPLE_EVERY} langkah, lebih melonjak) — merah putus-putus = lonjakan loss suntikkan`,
             )}
           </div>
           {nearestSpike && (
@@ -165,7 +165,7 @@ export default function EvaluationDuringPretraining() {
                 {pick(
                   lang,
                   "Real teams respond by rewinding to the last stable checkpoint, skipping the batch that triggered it, or lowering the learning rate before resuming -- rarely anything more exotic.",
-                  "Tim sungguhan menanggapinya dengan mundur ke titik-simpan stabil terakhir, melewati batch pemicunya, atau menurunkan learning rate sebelum melanjutkan -- jarang ada yang lebih eksotis.",
+                  "Tim beneran nanggepinnya dengan mundur ke checkpoint stabil terakhir, skip batch pemicunya, atau nurunin learning rate sebelum lanjut -- jarang ada yang lebih eksotis.",
                 )}
               </div>
             </div>
@@ -196,16 +196,15 @@ export default function EvaluationDuringPretraining() {
           }
           id={
             <p>
-              Kamu mungkin pernah dengar model besar tiba-tiba "membuka" kemampuan entah dari mana. Sering
-              kali, ketiba-tibaan itu ilusi yang diciptakan cara kita mengukur. Skor kesalahan adalah angka
-              mulus yang dicek tiap langkah, jadi ia memperlihatkan perbaikan bertahap secara langsung.
-              Benchmark, sebaliknya, menilai lulus/gagal -- model dapat jawaban persis atau tidak -- dan
-              hanya dijalankan sesekali. Bayangkan anak yang tembakan basketnya membaik sedikit demi sedikit
-              setiap hari, tetapi satu-satunya statistik yang dicatat adalah "masuk atau meleset": selama
-              berbulan-bulan lembar nilai bilang nol, lalu suatu minggu bilang 60%, dan itu tampak seperti
-              sulap. Tak ada yang melompat -- keterampilannya tumbuh mulus, dan penggaris lulus/gagal tak
-              bisa melihatnya sampai ia melewati garis. Para peneliti sudah menunjukkan banyak "lompatan
-              kemunculan" terkenal di AI persis merupakan jebakan pengukuran ini.
+              Kamu mungkin pernah denger model gede tiba-tiba "ngebuka" kemampuan entah dari mana. Seringnya,
+              ketiba-tibaan itu ilusi yang diciptain cara kita ngukur. Skor kesalahan itu angka mulus yang dicek
+              tiap langkah, jadi dia nunjukin perbaikan bertahap secara langsung. Benchmark, sebaliknya, nilainya
+              lulus/gagal -- model dapet jawaban persis atau nggak -- dan cuma dijalanin sesekali. Bayangin anak
+              yang tembakan basketnya makin bagus dikit demi dikit tiap hari, tapi satu-satunya statistik yang
+              dicatet cuma "masuk atau meleset": selama berbulan-bulan lembar nilai bilang nol, terus suatu
+              minggu bilang 60%, dan itu keliatan kayak sulap. Nggak ada yang melompat -- skill-nya tumbuh
+              mulus, dan penggaris lulus/gagal nggak bisa ngeliatnya sampai dia ngelewatin garis. Para peneliti
+              udah nunjukin banyak "lompatan kemunculan" terkenal di AI persis merupakan jebakan pengukuran ini.
             </p>
           }
         />

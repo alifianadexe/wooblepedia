@@ -59,12 +59,11 @@ export default function CaseStudyLlama3() {
           }
           id={
             <p>
-              Setiap ide di modul ini -- tiga mata uang, pertukaran komponen, scaling laws, pembersihan
-              data, gudang GPU, instrumen-instrumennya -- muncul dalam satu model nyata yang
-              terdokumentasi penuh: LLaMA 3 405B, dibangun Meta pada 2024. Kebanyakan perusahaan
-              merahasiakan detail berantakan pelatihan besar. Tim Meta menuliskan milik mereka dengan
-              kejujuran yang tak biasa, kegagalan pun disertakan, menjadikannya jendela publik terbaik ke
-              dalam pelatihan kelas terdepan yang ada saat ini.
+              Setiap ide di modul ini -- tiga mata uang, pertukaran komponen, scaling laws, pembersihan data,
+              gudang GPU, instrumen-instrumennya -- muncul dalam satu model nyata yang terdokumentasi penuh:
+              LLaMA 3 405B, dibangun Meta pada 2024. Kebanyakan perusahaan ngerahasiain detail berantakan
+              training gede. Tim Meta nulis punya mereka dengan kejujuran yang nggak biasa, kegagalan pun
+              disertain, bikin ini jadi jendela publik terbaik ke dalam training kelas terdepan yang ada saat ini.
             </p>
           }
         />
@@ -79,11 +78,11 @@ export default function CaseStudyLlama3() {
           "The paper openly reports how often hardware failed and how the team recovered -- exactly the save-and-restart reality described in lesson 2.5.",
         ],
         [
-          "405 miliar parameter, semuanya aktif untuk tiap token -- Meta sengaja memilih desain sederhana, bertaruh bahwa data bersih dan skala mentah mengalahkan kecerdikan arsitektur.",
-          "Ia membaca 15,6 triliun token -- sekitar 38 per parameter, hampir dua kali lipat angka optimal buku teks yaitu 20. Itulah pertukaran sengaja 'latih lebih lama, layani lebih murah' dari pelajaran 2.3.",
-          "Head attention-nya berbagi catatan key/value dalam kelompok (8 set catatan untuk 128 head) -- persis trik hemat memori dari kalkulator pelajaran 2.2, wajib untuk menangani teks panjang.",
-          "Pelatihannya memakai sampai 16.000 GPU -- bukan terutama karena modelnya butuh ruang, melainkan karena dengan mesin lebih sedikit pelatihan yang sama memakan bertahun-tahun, bukan berbulan-bulan.",
-          "Makalahnya terbuka melaporkan seberapa sering perangkat keras gagal dan bagaimana tim memulihkan -- persis kenyataan simpan-dan-mulai-ulang yang digambarkan pelajaran 2.5.",
+          "405 miliar parameter, semuanya aktif buat tiap token -- Meta sengaja milih desain sederhana, bertaruh kalau data bersih dan skala mentah ngalahin kecerdikan arsitektur.",
+          "Dia baca 15,6 triliun token -- sekitar 38 per parameter, hampir dua kali lipat angka optimal buku teks yaitu 20. Itulah pertukaran sengaja 'training lebih lama, layanin lebih murah' dari pelajaran 2.3.",
+          "Head attention-nya sharing catatan key/value dalam kelompok (8 set catatan buat 128 head) -- persis trik hemat memori dari kalkulator pelajaran 2.2, wajib buat nanganin teks panjang.",
+          "Training-nya pakai sampai 16.000 GPU -- bukan terutama karena modelnya butuh ruang, tapi karena dengan mesin lebih dikit training yang sama makan bertahun-tahun, bukan berbulan-bulan.",
+          "Makalahnya terbuka ngelaporin seberapa sering hardware gagal dan gimana tim mulihin -- persis kenyataan simpan-dan-restart yang digambarin pelajaran 2.5.",
         ],
       )}
       references={[
@@ -104,7 +103,7 @@ export default function CaseStudyLlama3() {
           {pick(
             lang,
             "Every headline number, cross-linked back to the lesson that explains where it comes from.",
-            "Setiap angka utamanya, tertaut balik ke pelajaran yang menjelaskan asal-usulnya.",
+            "Setiap angka utamanya, ke-link balik ke pelajaran yang njelasin asal-usulnya.",
           )}
         </p>
         <ScopeScreen label="LLaMA 3 405B specification dashboard with cards linking to the lessons that explain each figure">
@@ -134,11 +133,10 @@ export default function CaseStudyLlama3() {
           }
           id={
             <p>
-              Terapkan rumus pelajaran 2.1 (C = 6·N·D) pada ukuran dan daftar bacaan asli model ini dan kamu
-              mendapat <strong>{C.toExponential(2)}</strong> operasi matematika satuan -- angka 4 diikuti 25
-              nol. Geser jumlah GPU di bawah dan lihat perkiraan waktu pelatihannya berubah. Klaster 16.000
-              GPU bukan pamer: itu bedanya antara selesai dalam hitungan bulan dan selesai dalam hitungan
-              tahun.
+              Terapin rumus pelajaran 2.1 (C = 6·N·D) ke ukuran dan daftar bacaan asli model ini dan kamu
+              dapet <strong>{C.toExponential(2)}</strong> operasi matematika satuan -- angka 4 diikuti 25 nol.
+              Geser jumlah GPU di bawah dan lihat perkiraan waktu training-nya berubah. Klaster 16.000 GPU
+              bukan pamer: itu bedanya antara selesai dalam hitungan bulan dan selesai dalam hitungan tahun.
             </p>
           }
         />
@@ -152,7 +150,7 @@ export default function CaseStudyLlama3() {
             {pick(
               lang,
               "Assumes each GPU achieves about 40% of its theoretical top speed -- realistic in practice. At 16,000 GPUs the estimate lands in the same few-months range as the real reported run; drop to a few hundred GPUs and the identical run stretches to years. That, more than storage space, is the real argument for a cluster this size.",
-              "Mengasumsikan tiap GPU mencapai sekitar 40% kecepatan puncak teoretisnya -- realistis dalam praktik. Pada 16.000 GPU perkiraannya mendarat di rentang beberapa-bulan yang sama dengan laporan aslinya; turunkan ke beberapa ratus GPU dan pelatihan identiknya molor bertahun-tahun. Itulah, lebih dari ruang penyimpanan, argumen sesungguhnya untuk klaster sebesar ini.",
+              "Ngasumsiin tiap GPU nyampe sekitar 40% kecepatan puncak teoretisnya -- realistis dalam praktik. Di 16.000 GPU perkiraannya mendarat di rentang beberapa-bulan yang sama dengan laporan aslinya; turunin ke beberapa ratus GPU dan training identiknya molor bertahun-tahun. Itulah, lebih dari ruang penyimpanan, argumen sesungguhnya buat klaster segede ini.",
             )}
           </p>
         </ScopeScreen>
@@ -174,21 +172,20 @@ export default function CaseStudyLlama3() {
           }
           id={
             <p>
-              Sebagian model pesaing di skala ini memakai desain bernama "mixture of experts", di mana model
-              dipecah menjadi sub-jaringan spesialis dan tiap token hanya mengunjungi beberapa saja --
-              seperti rumah sakit yang mengarahkan tiap pasien ke bagian yang tepat alih-alih semua dokter
-              memeriksa semua pasien. Cerdik dan menghemat komputasi. Meta bertaruh sebaliknya: satu
-              jaringan polos di mana setiap parameter menggarap setiap token, dengan tenaga dialihkan ke
-              kualitas data, kestabilan pelatihan, dan skala mentah. Makalah mereka membingkainya
-              gamblang sebagai memilih keandalan di atas kecerdikan -- taruhan yang bisa dibela mengingat
-              betapa isi modul ini (data, sistem, aritmetika penskalaan) lebih penting daripada satu trik
-              arsitektur mana pun.
+              Sebagian model pesaing di skala ini pakai desain namanya "mixture of experts", di mana model
+              dipecah jadi sub-jaringan spesialis dan tiap token cuma ngunjungin beberapa aja -- kayak rumah
+              sakit yang ngarahin tiap pasien ke bagian yang tepat daripada semua dokter meriksa semua pasien.
+              Cerdik dan ngehemat compute. Meta bertaruh sebaliknya: satu jaringan polos di mana setiap
+              parameter nggarap setiap token, dengan tenaga dialihin ke kualitas data, kestabilan training, dan
+              skala mentah. Makalah mereka mbingkainya gamblang sebagai milih keandalan di atas kecerdikan --
+              taruhan yang bisa dibela ngingat betapa isi modul ini (data, sistem, aritmetika penskalaan) lebih
+              penting daripada satu trik arsitektur mana pun.
             </p>
           }
         />
       </Section>
 
-      <Section title={pick(lang, "What the paper is unusually candid about", "Hal-hal yang dibeberkan makalahnya dengan tak biasa")}>
+      <Section title={pick(lang, "What the paper is unusually candid about", "Hal-hal yang dibeberin makalahnya dengan nggak biasa")}>
         <Bi
           en={
             <p>
@@ -203,13 +200,13 @@ export default function CaseStudyLlama3() {
           }
           id={
             <p>
-              Kebanyakan lab terdepan menjaga rapat detail pelatihannya. Makalah LLaMA 3 justru
-              mendokumentasikan seluruh buku panduan yang baru kamu pelajari: berlatih kebanyakan pada teks
-              lebih pendek dan meregang ke yang panjang belakangan (trik positional encoding pelajaran 2.6),
-              hitung-hitungan jujur seberapa sering perangkat keras mati di skala 16.000 GPU dan bagaimana
-              rutinitas simpan-dan-mulai-ulang menanganinya, serta fase akhir yang memusatkan bahan bacaan
-              kualitas terbaik di ujung pelatihan. Gabungan skala dan kejujuran itulah kenapa satu makalah
-              ini, lebih dari dokumen publik mana pun, berfungsi sebagai tulang punggung seluruh modul ini.
+              Kebanyakan lab terdepan njaga rapat detail training-nya. Makalah LLaMA 3 justru
+              ngedokumentasiin seluruh buku panduan yang baru kamu pelajarin: training kebanyakan di teks lebih
+              pendek dan meregang ke yang panjang belakangan (trik positional encoding pelajaran 2.6),
+              hitung-hitungan jujur seberapa sering hardware mati di skala 16.000 GPU dan gimana rutinitas
+              simpan-dan-restart nanganinnya, plus fase akhir yang musatin bahan bacaan kualitas terbaik di
+              ujung training. Gabungan skala dan kejujuran itulah kenapa satu makalah ini, lebih dari dokumen
+              publik mana pun, berfungsi sebagai tulang punggung seluruh modul ini.
             </p>
           }
         />

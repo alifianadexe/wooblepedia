@@ -57,14 +57,14 @@ export default function ScalingLawsOptimization() {
           }
           id={
             <p>
-              Misalkan kamu punya anggaran pelatihan yang tetap. Sebaiknya bangun model lebih besar dan beri
-              ia lebih sedikit bacaan, atau model lebih kecil dengan bacaan lebih banyak? Luar biasanya,
-              pertanyaan ini punya jawaban matematis. Para peneliti menemukan bahwa skor kesalahan akhir
-              sebuah model turun mengikuti kurva yang mulus dan bisa diprediksi saat kamu menambah komputasi,
-              parameter, atau data -- begitu terprediksinya sampai kamu bisa merencanakan pelatihan senilai
-              $100 juta dengannya. Sebuah studi terkenal tahun 2022 berjulukan "Chinchilla" lalu menunjukkan
-              hampir semua orang salah membaginya: model terlalu besar dan bacaannya terlalu sedikit.
-              Pelajaran ini membiarkanmu menghitung pembagian yang benar sendiri.
+              Misalkan kamu punya anggaran training yang tetap. Mendingan bikin model lebih gede dan kasih dia
+              bacaan lebih dikit, atau model lebih kecil dengan bacaan lebih banyak? Anehnya, pertanyaan ini
+              punya jawaban matematis. Para peneliti nemuin kalau skor kesalahan akhir sebuah model turun
+              ngikutin kurva yang mulus dan bisa diprediksi pas kamu nambah compute, parameter, atau data --
+              saking bisa diprediksinya sampai kamu bisa ngerencanain training senilai $100 juta pakai itu.
+              Sebuah studi terkenal tahun 2022 yang dijuluki "Chinchilla" terus nunjukin hampir semua orang
+              salah ngebaginya: modelnya kegedean dan bacaannya kedikitan. Pelajaran ini bikin kamu bisa ngitung
+              pembagian yang bener sendiri.
             </p>
           }
         />
@@ -79,11 +79,11 @@ export default function ScalingLawsOptimization() {
           "Around the main training loop sits standard scaffolding -- easing the learning speed up then smoothly down, capping oversized updates, starting with smaller batches. Not optional extras; every big run uses them.",
         ],
         [
-          "Rumus Chinchilla memprediksi skor kesalahan akhir model dari hanya dua masukan -- ukuran model dan banyaknya teks latihan: L(N,D) = 1,69 + 406,4/N^0,34 + 410,7/D^0,28. Model lebih besar mengecilkan satu suku, data lebih banyak mengecilkan suku lainnya.",
-          "Angka 1,69 di depan adalah lantainya: bahasa manusia memang tak terprediksi sampai taraf tertentu, dan skala sebesar apa pun tak menghapus bagian itu.",
-          "Aturan praktis utamanya: untuk model terbaik per satuan anggaran, latih dengan sekitar 20 token teks per parameter. (Rasio terbaik persisnya bergeser sedikit saat anggaran tumbuh.)",
-          "Banyak model sungguhan sengaja 'overtrain' jauh melewati 20-banding-1: membayar agak lebih di waktu pelatihan membeli model lebih kecil yang selamanya lebih murah dijalankan untuk setiap pengguna -- biasanya pertukaran yang hebat.",
-          "Di sekeliling loop pelatihan utama ada perancah standar -- menaikkan kecepatan belajar pelan-pelan lalu menurunkannya mulus, membatasi pembaruan kebesaran, memulai dengan batch lebih kecil. Bukan pelengkap opsional; setiap pelatihan besar memakainya.",
+          "Rumus Chinchilla memprediksi skor kesalahan akhir model dari cuma dua input -- ukuran model dan banyaknya teks training: L(N,D) = 1,69 + 406,4/N^0,34 + 410,7/D^0,28. Model lebih gede ngecilin satu suku, data lebih banyak ngecilin suku satunya.",
+          "Angka 1,69 di depan itu lantainya: bahasa manusia emang nggak bisa diprediksi sampai taraf tertentu, dan skala segede apa pun nggak ngehapus bagian itu.",
+          "Aturan praktis utamanya: buat model terbaik per satuan anggaran, training pakai sekitar 20 token teks per parameter. (Rasio terbaik persisnya geser dikit pas anggaran makin gede.)",
+          "Banyak model beneran sengaja 'overtrain' jauh melewati 20-banding-1: bayar agak lebih pas training itu beli model lebih kecil yang selamanya lebih murah dijalanin buat tiap user -- biasanya trade yang bagus banget.",
+          "Di sekeliling loop training utama ada perancah standar -- naikin learning rate pelan-pelan terus turunin mulus, ngebatasin update yang kegedean, mulai dengan batch lebih kecil. Bukan pelengkap opsional; tiap training gede pakai ini.",
         ],
       )}
       references={[
@@ -118,12 +118,12 @@ export default function ScalingLawsOptimization() {
           }
           id={
             <p>
-              Atur total anggaran komputasi, lalu pilih cara membaginya lewat rasio token-per-parameter --
-              rasio rendah berarti "model besar, bacaan sedikit", rasio tinggi berarti "model kecil, bacaan
-              banyak". Ukuran model, jumlah data, dan skor kesalahan terprediksi semuanya berubah langsung
-              dari rumus Chinchilla asli. Kurvanya menelusuri skor prediksi di semua rasio dari 1 sampai 400
-              pada anggaran pilihanmu, dengan titik terbaik sejati ditandai hijau -- perhatikan ia melayang
-              dekat 20 tetapi tak terpaku persis di sana.
+              Atur total anggaran compute, terus pilih cara ngebaginya lewat rasio token-per-parameter --
+              rasio rendah artinya "model gede, bacaan dikit", rasio tinggi artinya "model kecil, bacaan
+              banyak". Ukuran model, jumlah data, dan skor kesalahan prediksi semuanya berubah secara langsung
+              dari rumus Chinchilla asli. Kurvanya nelusurin skor prediksi di semua rasio dari 1 sampai 400 di
+              anggaran pilihanmu, dengan titik terbaik sejati ditandain hijau -- perhatiin dia ngambang dekat
+              20 tapi nggak nempel persis di situ.
             </p>
           }
         />
@@ -167,7 +167,7 @@ export default function ScalingLawsOptimization() {
             {pick(
               lang,
               `green = numerically-optimal ratio at this budget (≈${optimal.r.toFixed(0)} tokens/param) — amber = your current ratio`,
-              `hijau = rasio optimal numerik pada anggaran ini (≈${optimal.r.toFixed(0)} token/param) — kuning = rasiomu saat ini`,
+              `hijau = rasio optimal numerik di anggaran ini (≈${optimal.r.toFixed(0)} token/param) — kuning = rasiomu sekarang`,
             )}
           </div>
         </ScopeScreen>
@@ -189,15 +189,14 @@ export default function ScalingLawsOptimization() {
           }
           id={
             <p>
-              Lihat bentuk kurvanya: curam di kiri (model besar yang kelaparan bahan bacaan adalah pemborosan
-              anggaran yang buruk) tetapi nyaris rata di kanan (model kecil yang membaca ekstra hanya
-              kehilangan sedikit kualitas). Sekarang tambahkan fakta bisnis: biaya <em>memakai</em> model
-              setiap hari bergantung pada ukurannya, bukan pada banyaknya bacaan saat pelatihan. Perusahaan
-              yang mengantisipasi miliaran percakapan akan dengan senang hati membayar agak lebih sekali, di
-              waktu pelatihan, demi berakhir dengan model lebih kecil yang lebih murah dijalankan selamanya --
-              sengaja meluncur ke kanan sepanjang bagian rata kurva itu. Persis itulah kenapa model-model
-              LLaMA berlatih jauh melewati rasio 20-banding-1 (LLaMA 3 405B, di pelajaran 2.8, membaca sekitar
-              38 token per parameter).
+              Lihat bentuk kurvanya: curam di kiri (model gede yang kelaperan bahan bacaan itu pemborosan
+              anggaran yang parah) tapi nyaris rata di kanan (model kecil yang baca ekstra cuma kehilangan
+              dikit kualitas). Sekarang tambahin fakta bisnis: biaya <em>make</em> model tiap hari itu
+              tergantung ukurannya, bukan banyaknya bacaan pas training. Perusahaan yang ngantisipasi miliaran
+              percakapan bakal dengan senang hati bayar agak lebih sekali, pas training, demi dapet model lebih
+              kecil yang lebih murah dijalanin selamanya -- sengaja ngeluncur ke kanan sepanjang bagian rata
+              kurva itu. Persis itulah kenapa model-model LLaMA di-training jauh melewati rasio 20-banding-1
+              (LLaMA 3 405B, di pelajaran 2.8, baca sekitar 38 token per parameter).
             </p>
           }
         />
@@ -217,12 +216,12 @@ export default function ScalingLawsOptimization() {
           }
           id={
             <p>
-              Ingat learning rate dari pelajaran 1.7 -- panjang langkah si pendaki? Di pelatihan besar ia
-              tidak dibiarkan konstan; ia mengikuti jadwal terencana, seperti pelari mengatur tempo maraton.
-              Mulai pelan ("warmup" -- angka-angka model masih sampah acak di awal, dan langkah besar terlalu
-              dini menimbulkan kekacauan), naikkan ke kecepatan penuh, lalu turunkan mulus menuju nol di
-              akhir supaya model mengendap tepat di tempatnya alih-alih memantul-mantul di sekitar jawaban
-              akhirnya. Mainkan ketiga kenop di bawah dan lihat bentuknya berubah.
+              Inget learning rate dari pelajaran 1.7 -- panjang langkah si pendaki? Di training gede dia nggak
+              dibiarin konstan; dia ngikutin jadwal terencana, kayak pelari ngatur tempo maraton. Mulai pelan
+              ("warmup" -- angka-angka model masih sampah acak di awal, dan langkah gede kepagian bikin kacau),
+              naikin ke kecepatan penuh, terus turunin mulus menuju nol di akhir biar model ngendap tepat di
+              tempatnya bukannya mantul-mantul di sekitar jawaban akhirnya. Mainin ketiga kenop di bawah dan
+              lihat bentuknya berubah.
             </p>
           }
         />
@@ -265,16 +264,15 @@ export default function ScalingLawsOptimization() {
           }
           id={
             <p>
-              Dua pengaman lagi lebih penting daripada kesederhanaannya. <strong>Gradient clipping</strong>{" "}
-              memasang batas keras seberapa besar satu pembaruan boleh terjadi -- supaya satu batch teks yang
-              aneh tak bisa mendorong model dengan kasar ke arah yang salah.{" "}
-              <strong>Batch-size ramp-up</strong> memulai pelatihan dengan batch teks lebih kecil dan
-              menumbuhkannya di fase awal, saat model sedang paling rapuh. Dan meski semua itu, pelatihan
-              besar tetap menabrak <strong>loss spike</strong>: skor kesalahan tiba-tiba melonjak tanpa
-              alasan jelas. Tim menanganinya seperti berkas save yang rusak di gim video -- mundur ke
-              titik-simpan bagus terakhir, lewati batch pembuat masalah, mungkin kendurkan learning rate,
-              lalu lanjut. Itu ilmu operasional hasil jerih payah sekaligus teori, dan pelajaran 2.7
-              memperlakukannya persis begitu.
+              Dua pengaman lagi yang lebih penting daripada kelihatannya. <strong>Gradient clipping</strong>{" "}
+              masang batas keras seberapa gede satu update boleh terjadi -- biar satu batch teks yang aneh
+              nggak bisa nyorong model dengan kasar ke arah yang salah. <strong>Batch-size ramp-up</strong>{" "}
+              mulai training dengan batch teks lebih kecil dan ngegedein dia di fase awal, pas model lagi paling
+              rapuh. Dan walaupun udah semua itu, training gede tetap nabrak <strong>loss spike</strong>: skor
+              kesalahan tiba-tiba melonjak tanpa alasan jelas. Tim nanganinnya kayak file save yang rusak di
+              gim video -- mundur ke checkpoint bagus terakhir, skip batch yang bikin masalah, mungkin kendurin
+              learning rate, terus lanjut. Itu ilmu operasional hasil jerih payah sekaligus teori, dan pelajaran
+              2.7 nganggepnya persis begitu.
             </p>
           }
         />

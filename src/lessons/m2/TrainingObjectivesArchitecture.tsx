@@ -51,27 +51,27 @@ const DETAILS_EN: Record<DetailKey, Detail> = {
 const DETAILS_ID: Record<DetailKey, Detail> = {
   norm: {
     title: "NORMALISASI (kenop volume)",
-    gpt2: "LayerNorm — memusatkan ulang angka di sekitar nol, lalu menskalakan ulang",
-    llama: "RMSNorm — melewati pemusatan ulang, hanya menskalakan",
-    why: "Ternyata langkah pemusatan ulang tidak sepadan biayanya. RMSNorm hanya menyimpan penskalaan ulang, lebih murah dihitung, dan model yang dilatih dengannya sama bagusnya. Kemenangan penyederhanaan murni.",
+    gpt2: "LayerNorm — nge-center ulang angka di sekitar nol, terus nge-scale ulang",
+    llama: "RMSNorm — skip yang nge-center ulang, cuma nge-scale",
+    why: "Ternyata langkah nge-center ulang itu nggak sepadan sama biayanya. RMSNorm cuma nyimpen bagian scaling-nya, lebih murah dihitung, dan model yang di-training pakai ini sama bagusnya. Kemenangan penyederhanaan murni.",
   },
   attention: {
-    title: "ATENSI",
-    gpt2: "Multi-head attention — tiap head menyimpan catatan key/value pribadinya sendiri",
-    llama: "Grouped-query attention (GQA) — kelompok kecil head berbagi satu set catatan",
-    why: "Ingat KV-cache dari pelajaran 1.5 — catatan tersimpan yang membuat pembuatan teks cepat? Kalau tiap head menyimpan catatan pribadi, cache itu jadi raksasa. Membiarkan kelompok head berbagi satu set mengecilkannya drastis, dengan nyaris tanpa penurunan kualitas terukur. Kalkulator di bawah membuatnya konkret.",
+    title: "ATTENTION",
+    gpt2: "Multi-head attention — tiap head nyimpen catatan key/value pribadinya sendiri",
+    llama: "Grouped-query attention (GQA) — kelompok kecil head sharing satu set catatan",
+    why: "Inget KV-cache dari pelajaran 1.5 — catatan tersimpan yang bikin generate teks jadi cepat? Kalau tiap head nyimpen catatan pribadi, cache itu jadi raksasa. Ngebiarin kelompok head sharing satu set bikin dia ngecil drastis, dengan nyaris nggak ada penurunan kualitas yang keukur. Kalkulator di bawah bikin ini konkret.",
   },
   position: {
-    title: "PENGODEAN POSISI",
-    gpt2: "Tabel stempel posisi hasil belajar, ditambahkan ke tiap kata di awal",
-    llama: "RoPE — memutar angka tiap kata dengan sudut berdasarkan posisinya",
-    why: "RoPE membuat attention peduli pada seberapa jauh dua kata terpisah, alih-alih titik mutlak tiap kata di teks. 'Terpisah lima kata' bekerja sama di mana pun, jadi model jauh lebih tahan pada teks yang lebih panjang dari apa pun yang pernah ia latih (pelajaran 1.4).",
+    title: "POSITION ENCODING",
+    gpt2: "Tabel stempel posisi hasil training, ditambahin ke tiap kata di awal",
+    llama: "RoPE — muter angka tiap kata pakai sudut berdasarkan posisinya",
+    why: "RoPE bikin attention peduli sama seberapa jauh dua kata kepisah, bukan posisi mutlak tiap kata di teks. 'Kepisah lima kata' jalannya sama di mana pun, jadi model jauh lebih tahan sama teks yang lebih panjang dari apa pun yang pernah dia latih (pelajaran 1.4).",
   },
   mlp: {
-    title: "MLP (langkah berpikir)",
+    title: "MLP (langkah mikir)",
     gpt2: "Dua kisi angka dengan saringan sederhana di antaranya",
-    llama: "SwiGLU — tiga kisi, di mana satu berperan sebagai gerbang hasil belajar",
-    why: "Gerbangnya seperti sakelar peredup yang dipelajari model: untuk tiap keping informasi, ia memutuskan berapa banyak yang lolos. Untuk membayar kisi ketiga, lapisan tengah dibuat sedikit lebih sempit, jadi ukuran total tetap hampir sama -- tetapi kualitas membaik.",
+    llama: "SwiGLU — tiga kisi, di mana satu jadi gate hasil training",
+    why: "Gate-nya kayak sakelar peredup yang dipelajari model: buat tiap keping informasi, dia mutusin berapa banyak yang lolos. Buat bayar kisi ketiga, layer tengahnya dibikin agak lebih sempit, jadi ukuran totalnya tetap hampir sama -- tapi kualitasnya naik.",
   },
 };
 
@@ -116,10 +116,10 @@ export default function TrainingObjectivesArchitecture() {
           }
           id={
             <p>
-              Latih model modern dan tujuannya masih persis pelajaran 1.7: tebak token berikutnya, dinilai,
-              membaik. Yang berubah sejak GPT-2 adalah komponen dalam mesinnya. Bayangkan membandingkan mesin
-              mobil 2019 dengan yang sekarang -- prinsip sama, tetapi empat komponen spesifik ditukar,
-              masing-masing dengan alasan konkret dan terukur. Pelajaran ini menelusuri keempat pertukaran itu.
+              Training model modern dan tujuannya masih persis pelajaran 1.7: tebak token berikutnya, dinilai,
+              makin bagus. Yang berubah sejak GPT-2 itu komponen dalam mesinnya. Bayangin ngebandingin mesin
+              mobil 2019 sama yang sekarang -- prinsipnya sama, tapi empat komponen spesifik ditukar,
+              masing-masing dengan alasan yang konkret dan keukur. Pelajaran ini nelusurin keempat pertukaran itu.
             </p>
           }
         />
@@ -134,11 +134,11 @@ export default function TrainingObjectivesArchitecture() {
           "Modern models also dropped many small add-on numbers ('biases') from their layers -- a minor saving with basically no downside.",
         ],
         [
-          "Yang dilatih model tak berubah sejak GPT-2: menebak token berikutnya di teks berjumlah masif.",
-          "Tukar 1: langkah 'kenop volume' (layer norm) disederhanakan menjadi versi lebih murah bernama RMSNorm yang melewati satu langkah yang tak ada yang merindukannya. Tukar 2: stempel posisi digantikan RoPE, yang mengodekan seberapa jauh kata-kata terpisah dan jauh lebih tahan teks panjang (pelajaran 1.4).",
-          "Tukar 3: MLP mendapat gerbang hasil belajar (SwiGLU) yang membuatnya bisa memilih apa yang lolos. Tukar 4: head attention kini berbagi catatan key/value dalam kelompok (GQA), alih-alih tiap head menyimpan miliknya sendiri.",
-          "Pertukaran terakhir itu sepenuhnya soal memori: makin sedikit set catatan terpisah, makin kecil KV-cache secara sebanding -- kalkulator di bawah menghitung persis seberapa kecil.",
-          "Model modern juga membuang banyak angka tambahan kecil ('bias') dari lapisannya -- penghematan minor yang nyaris tanpa kerugian.",
+          "Yang dilatih model nggak berubah sejak GPT-2: nebak token berikutnya di teks berjumlah masif.",
+          "Tukar 1: langkah 'kenop volume' (layer norm) disederhanain jadi versi lebih murah namanya RMSNorm yang nge-skip satu langkah yang nggak ada yang kangen. Tukar 2: stempel posisi diganti RoPE, yang nge-encode seberapa jauh kata-kata kepisah dan jauh lebih tahan teks panjang (pelajaran 1.4).",
+          "Tukar 3: MLP dapet gate hasil training (SwiGLU) yang bikin dia bisa milih apa yang lolos. Tukar 4: head attention sekarang sharing catatan key/value dalam kelompok (GQA), bukan tiap head nyimpen punyanya sendiri.",
+          "Pertukaran terakhir itu sepenuhnya soal memori: makin dikit set catatan terpisah, makin kecil KV-cache-nya secara sebanding -- kalkulator di bawah ngitung persis seberapa kecil.",
+          "Model modern juga buang banyak angka tambahan kecil ('bias') dari layer-nya -- penghematan kecil yang nyaris nggak ada ruginya.",
         ],
       )}
       references={[
@@ -165,7 +165,7 @@ export default function TrainingObjectivesArchitecture() {
       ]}
     >
       <Section title={pick(lang, "Lab — GPT-2 block vs. Llama-3 block", "Lab — blok GPT-2 vs. blok Llama-3")}>
-        <p>{pick(lang, "Click any row to see why that component changed.", "Klik baris mana pun untuk melihat kenapa komponen itu diganti.")}</p>
+        <p>{pick(lang, "Click any row to see why that component changed.", "Klik baris mana pun buat lihat kenapa komponen itu diganti.")}</p>
         <ScopeScreen label="Side by side comparison of a GPT-2 block and a Llama-3 style block, with clickable rows explaining each difference">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <div className="mono" style={{ fontSize: 11, color: "var(--muted)", textAlign: "center" }}>GPT-2 BLOCK</div>
@@ -211,10 +211,10 @@ export default function TrainingObjectivesArchitecture() {
           }
           id={
             <p>
-              Memori yang dimakan catatan tersimpan itu perkalian lurus: 2 (key dan value) × lapisan × head
+              Memori yang dimakan catatan tersimpan itu perkalian lurus: 2 (key dan value) × layer × head
               pencatat × angka per head × panjang teks × byte per angka × berapa percakapan sekaligus. Geser
-              "KV heads" turun dari 128 (tiap head menyimpan catatan pribadi) menuju 8 (gaya berbagi catatan
-              modern) dan lihat memorinya menyusut dalam proporsi persis.
+              "KV heads" turun dari 128 (tiap head nyimpen catatan pribadi) ke 8 (gaya sharing catatan modern)
+              dan lihat memorinya nyusut dalam proporsi yang persis.
             </p>
           }
         />
@@ -234,7 +234,7 @@ export default function TrainingObjectivesArchitecture() {
             {pick(
               lang,
               `${currentGB <= 8 ? "FITS" : "EXCEEDS"} your 8GB card's budget for the KV cache alone at this configuration.`,
-              `${currentGB <= 8 ? "MUAT di" : "MELEBIHI"} anggaran kartu 8GB-mu untuk KV cache saja pada konfigurasi ini.`,
+              `${currentGB <= 8 ? "MUAT di" : "MELEBIHI"} anggaran kartu 8GB-mu buat KV cache doang di konfigurasi ini.`,
             )}
           </div>
         </ScopeScreen>
