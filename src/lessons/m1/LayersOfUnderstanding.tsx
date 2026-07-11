@@ -249,7 +249,7 @@ export default function LayersOfUnderstanding() {
         <ScopeScreen label="Residual stream diagram: attention and MLP sublayers read from and add back into a shared horizontal stream">
           <svg viewBox="0 0 400 130" width="100%" height="150" aria-label="Residual stream diagram with attention and MLP sublayers tapping into a shared horizontal bus via addition junctions">
             <line x1={20} y1={20} x2={380} y2={20} stroke={colors.cyan} strokeWidth={3} className="residual-stream-line" />
-            <text x={20} y={12} fontSize={10} fontFamily="monospace" fill={colors.muted}>RESIDUAL STREAM</text>
+            <text x={20} y={12} fontSize={10} fontFamily="Inter, sans-serif" fill={colors.muted}>RESIDUAL STREAM</text>
 
             {[
               { cx: 130, label: "ATTENTION", color: colors.amber },
@@ -258,7 +258,7 @@ export default function LayersOfUnderstanding() {
               <g key={s.label}>
                 <line x1={s.cx} y1={20} x2={s.cx} y2={55} stroke={colors.border} strokeWidth={2} />
                 <rect x={s.cx - 55} y={55} width={110} height={34} rx={6} fill={colors.panel2} stroke={s.color} />
-                <text x={s.cx} y={76} fontSize={11} textAnchor="middle" fontFamily="monospace" fill={s.color}>{s.label}</text>
+                <text x={s.cx} y={76} fontSize={11} textAnchor="middle" fontFamily="Inter, sans-serif" fill={s.color}>{s.label}</text>
                 <line x1={s.cx} y1={89} x2={s.cx} y2={112} stroke={colors.border} strokeWidth={2} />
                 <circle cx={s.cx} cy={20} r={9} fill={colors.screen} stroke={colors.text} strokeWidth={1.5} />
                 <text x={s.cx} y={24} fontSize={12} textAnchor="middle" fill={colors.text}>+</text>

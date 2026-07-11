@@ -252,7 +252,7 @@ export default function Attention() {
               return (
                 <g key={i}>
                   <circle cx={positions[i]} cy={y} r={i === queryIdx ? 7 : 5} fill={i === queryIdx ? colors.amber : masked ? colors.faint : colors.cyan} />
-                  <text x={positions[i]} y={y + 22} fontSize={11} fontFamily="monospace" fill={colors.text} textAnchor="middle">{t}</text>
+                  <text x={positions[i]} y={y + 22} fontSize={11} fontFamily="Inter, sans-serif" fill={colors.text} textAnchor="middle">{t}</text>
                 </g>
               );
             })}
@@ -304,7 +304,7 @@ export default function Attention() {
               row.map((w, j) => (
                 <g key={`${i}-${j}`}>
                   <rect x={j * 36} y={i * 36} width={34} height={34} fill={colors.amber} opacity={Math.max(w, 0.04)} stroke={colors.border} />
-                  <text x={j * 36 + 17} y={i * 36 + 20} fontSize={9} fontFamily="monospace" textAnchor="middle" fill={w > 0.5 ? colors.screen : colors.text}>
+                  <text x={j * 36 + 17} y={i * 36 + 20} fontSize={9} fontFamily="Inter, sans-serif" textAnchor="middle" fill={w > 0.5 ? colors.screen : colors.text}>
                     {w.toFixed(2)}
                   </text>
                 </g>

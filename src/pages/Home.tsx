@@ -15,10 +15,10 @@ export function Home() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 20 }}>{ui.homeTitle}</h1>
-      <p className="lesson-prose" style={{ maxWidth: "68ch", color: "var(--muted)" }}>
-        {ui.homeIntro}
-      </p>
+      <div className="hero-band">
+        <h1 className="hero-band__title">{ui.homeTitle}</h1>
+        <p className="hero-band__intro">{ui.homeIntro}</p>
+      </div>
 
       {MODULES.map((m) => {
         const topics = lessonsByModule(m);
@@ -31,7 +31,6 @@ export function Home() {
             style={{
               borderTopColor: accent,
               borderTopWidth: 3,
-              boxShadow: `var(--card-shadow), 0 0 40px -22px ${accent}`,
             }}
           >
             <div className="module-card__header">
